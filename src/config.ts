@@ -1,4 +1,6 @@
 import { logger } from '#/logger.ts'
+import { importPKCS8, importSPKI } from 'jose'
+import { readFile } from 'node:fs/promises'
 
 try {
     process.loadEnvFile()
@@ -34,6 +36,8 @@ export function loadConfig() {
         'S3_URL',
         'S3_ACCESS_KEY_ID',
         'S3_SECRET_ACCESS_KEY',
+        'DISCORD_CLIENT_SECRET',
+        'DISCORD_REDIRECT_URI',
     ]
 
     const recomended = [
@@ -64,6 +68,9 @@ export function loadConfig() {
         S3_URL = '',
         S3_ACCESS_KEY_ID = '',
         S3_SECRET_ACCESS_KEY = '',
+        DISCORD_CLIENT_SECRET = '',
+        DISCORD_REDIRECT_URI = '',
+        DISCORD_CLIENT_ID = '',
     } = process.env
 
     const recommendedMissing = recomended.filter(key => !process.env[key])
@@ -93,7 +100,7 @@ export function loadConfig() {
 
     return {
         token: process.env.DISCORD_TOKEN!,
-        clientId: process.env.DISCORD_CLIENT_ID!,
+        DISCORD_CLIENT_ID: DISCORD_CLIENT_ID,
         DISCORD_GUILD_ID: process.env.DISCORD_GUILD_ID!,
         inactivityChannelId: process.env.DISCORD_INACTIVITY_CHANNEL_ID!,
         adminLogChannelId: process.env.DISCORD_ADMIN_LOG_CHANNEL_ID!,
@@ -117,10 +124,37 @@ export function loadConfig() {
         S3_URL,
         S3_ACCESS_KEY_ID,
         S3_SECRET_ACCESS_KEY,
+        DISCORD_CLIENT_SECRET,
+        DISCORD_REDIRECT_URI,
+    }
+}
+
+async function getPrivateKey() {
+    try {
+        const pem = await readFile('./private.pem', 'utf-8')
+        return await importPKCS8(pem, 'RS256')
+    } catch {
+        logger.error(
+            'No se pudo cargar la clave privada para JWT de private.pem. Puede generar una clave RSA con el comando `openssl genrsa -out private.pem 2048`.',
+        )
+        process.exit(1)
+    }
+}
+async function getPublicKey() {
+    try {
+        const pem = await readFile('./public.pem', 'utf-8')
+        return await importSPKI(pem, 'RS256')
+    } catch {
+        logger.error(
+            'No se pudo cargar la clave publica para JWT de public.pem. Puede generar una clave RSA con el comando `openssl rsa -in private.pem -pubout -out public.pem`.',
+        )
+        process.exit(1)
     }
 }
 
 export const envs = loadConfig()
+export const PRIVATE_KEY = await getPrivateKey()
+export const PUBLIC_KEY = await getPublicKey()
 
 /**
  * Lista ordenada de roles de rango. El orden determina prioridad cuando se

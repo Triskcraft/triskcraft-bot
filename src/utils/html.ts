@@ -1,4 +1,6 @@
-function html(strings: TemplateStringsArray, ...values: any[]) {
+import type { Response } from 'express'
+
+export function html(strings: TemplateStringsArray, ...values: unknown[]) {
     let result = ''
 
     for (let i = 0; i < strings.length; i++) {
@@ -10,4 +12,7 @@ function html(strings: TemplateStringsArray, ...values: any[]) {
 
     return result
 }
-export { html }
+
+export function render(res: Response, content: string) {
+    return res.send(content)
+}

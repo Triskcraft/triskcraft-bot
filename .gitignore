@@ -4,7 +4,7 @@ npm-debug.log*
 .DS_Store
 data/
 database/
-src/prisma/generated
+src/db/generated
 build
 dist
 *.db
@@ -13,3 +13,4 @@ dist
 whitelist.json
 # tests
 stats
+*.pem

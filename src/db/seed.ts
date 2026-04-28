@@ -24,3 +24,16 @@ try {
     }
 }
 logger.info('Por favor actualize el DEFAULT_ROLE_ID en .env')
+
+const clientCount = await db.client.count()
+if (!clientCount) {
+    await db.client.create({
+        data: {
+            id: 'api-panel',
+            redirect_uris: [
+                'http://localhost:8080/auth/callback',
+                'https://api.triskcraft.com/auth/callback',
+            ],
+        },
+    })
+}

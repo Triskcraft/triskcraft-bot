@@ -1,6 +1,7 @@
 import Express, { type ErrorRequestHandler } from 'express'
 import cors from 'cors'
 import v1 from '#/api/v1/route.ts'
+import auth from '#/api/auth/route.ts'
 import webhooks from '#/api/webhooks/route.ts'
 import console from '#/api/console/route.ts'
 import files from '#/api/files/route.ts'
@@ -39,6 +40,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 app.use(errorHandler)
 
 app.use('/v1', Express.json({ type: 'application/json' }), v1)
+app.use('/auth', Express.json({ type: 'application/json' }), auth)
 app.use('/webhooks', Express.raw({ type: 'application/json' }), webhooks)
 app.use('/console', console)
 app.use('/files', files)

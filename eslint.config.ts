@@ -62,7 +62,8 @@ export default defineConfig([
                 'error',
                 {
                     selector: "CallExpression[callee.property.name='send']",
-                    message: 'Usa res.json() en lugar de res.send()',
+                    message:
+                        'Usa res.json() o render(res, content) en lugar de res.send().',
                 },
             ],
         },
