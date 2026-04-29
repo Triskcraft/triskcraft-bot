@@ -48,7 +48,7 @@ export async function getSessionCookie(req: Request) {
     }
 }
 
-export async function refreshToken(refresh_token: string) {
+export async function refreshDiscordToken(refresh_token: string) {
     const params = new URLSearchParams({
         client_id: envs.DISCORD_CLIENT_ID,
         client_secret: envs.DISCORD_CLIENT_SECRET,
@@ -70,13 +70,4 @@ export async function refreshToken(refresh_token: string) {
 
     const response = await request.json()
     return response as DiscordAccessTokenResponse
-}
-
-export async function getConsoleSession(req: Request) {
-    try {
-        const cookie = req.cookies['console_session'] ?? ''
-        return await jwtVerify(cookie, PUBLIC_KEY)
-    } catch {
-        return null
-    }
 }

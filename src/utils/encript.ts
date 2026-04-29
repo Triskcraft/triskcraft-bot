@@ -64,3 +64,11 @@ export async function hash(content: string) {
         parallelism: 1,
     })
 }
+
+export function generateCodeChallenge(verifier: string) {
+    return createHash('sha256').update(verifier).digest('base64url')
+}
+
+export function generateCodeVerifier() {
+    return randomBytes(32).toString('base64url')
+}

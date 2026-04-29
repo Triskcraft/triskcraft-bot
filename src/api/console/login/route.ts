@@ -1,46 +1,61 @@
 import { envs } from '#/config.ts'
-import type { DiscordAccessTokenResponse } from '#/utils/api.ts'
-import { Router } from 'express'
+import { generateCodeChallenge, generateCodeVerifier } from '#/utils/encript.ts'
+import { Router, type Response } from 'express'
+import { randomUUID } from 'node:crypto'
 
 const router = Router()
+const states = new Map<string, string>()
 
 router.get('/', async (req, res) => {
-    const { code } = req.query
+    const { code, state } = req.query
 
-    if (!code) {
-        return res.redirect(
-            `/auth/authorize?${new URLSearchParams({
-                response_type: 'code',
-                client_id: 'api-panel',
-                code_challenge: 'eIVsW83uLPZmbiKwsR7J86HuUoMqpAWFuoLyo36gpaU', // TODO: dynamic
-                code_challenge_method: 'S256',
-                redirect_uri: 'http://localhost:8080/console/login',
-            })}`,
-        )
+    if (!code || typeof state !== 'string') {
+        return login(res)
     }
+
+    const code_verifier = states.get(state)
 
     const request = await fetch('/auth/token', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            grant_type: 'authorization_code',
-            code,
             redirect_uri: envs.CONSOLE_LOGIN_REDIRECT,
-            client_id: 'api-console',
-            code_verifier: '',
+            grant_type: 'authorization_code',
+            client_id: 'api-panel',
+            code_verifier,
+            code,
         }),
     })
 
-    const response = (await request.json()) as Omit<
-        DiscordAccessTokenResponse,
-        'scope'
-    >
+    if (!request.ok) {
+        return login(res)
+    }
+
+    const response = await request.json()
 
     res.cookie('console-session', JSON.stringify(response))
 
     res.redirect('/console')
 })
+
+function login(res: Response) {
+    const verifier = generateCodeVerifier()
+    const state = randomUUID()
+    const code_challenge = generateCodeChallenge(verifier)
+    states.set(state, verifier)
+
+    return res.redirect(
+        `/auth/authorize?${new URLSearchParams({
+            response_type: 'code',
+            client_id: 'api-panel',
+            code_challenge, // TODO: dynamic
+            code_challenge_method: 'S256',
+            redirect_uri: 'http://localhost:8080/console/login',
+            state,
+        })}`,
+    )
+}
 
 export default router

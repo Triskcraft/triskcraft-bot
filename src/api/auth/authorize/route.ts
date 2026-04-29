@@ -1,6 +1,6 @@
 import { envs, PRIVATE_KEY } from '#/config.ts'
 import { db } from '#/db/prisma.ts'
-import { getSession, refreshToken } from '#/utils/api.ts'
+import { getSession, refreshDiscordToken } from '#/utils/api.ts'
 import { render } from '#/utils/html.ts'
 import { ErrorCard } from '#/web/components/error-card.ts'
 import { Layout } from '#/web/components/layout.ts'
@@ -164,7 +164,9 @@ router.get('/', cookieParser(), async (req, res) => {
     const expires_at = Date.now() + session.discord.expires_in * 1000
 
     if (Date.now() > expires_at - buffer) {
-        const newDiscord = await refreshToken(session.discord.refresh_token)
+        const newDiscord = await refreshDiscordToken(
+            session.discord.refresh_token,
+        )
         if (!newDiscord) {
             return discordLogin(req, res)
         }

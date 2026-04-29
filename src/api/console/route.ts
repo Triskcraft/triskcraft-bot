@@ -3,19 +3,15 @@ import { Router } from 'express'
 import mods from './mods/route.ts'
 import login from './login/route.ts'
 import { Layout } from '#/web/components/layout.ts'
-import { getConsoleSession } from '#/utils/api.ts'
+import { checkAuthToken } from './auth-middleware.ts'
 
 const router = Router()
 
-router.use('/mods', mods)
 router.use('/login', login)
+router.use(checkAuthToken)
+router.use('/mods', mods)
 
 router.get('/', async (req, res) => {
-    const session = await getConsoleSession(req)
-    if (!session) {
-        return res.redirect('/console/login')
-    }
-
     render(
         res,
         Layout({
