@@ -1,4 +1,4 @@
-export class AppError extends Error {
+export class ApiError extends Error {
     statusCode: number
 
     constructor(
@@ -11,31 +11,31 @@ export class AppError extends Error {
     }
 }
 
-export class BadRequestError extends AppError {
+export class BadRequestError extends ApiError {
     constructor(message: string, cause: Record<string, unknown> = {}) {
         super(message, 400, { cause })
     }
 }
 
-export class UnauthorizedError extends AppError {
+export class UnauthorizedError extends ApiError {
     constructor(message = 'Unauthorized', cause: Record<string, unknown> = {}) {
         super(message, 401, { cause })
     }
 }
 
-export class ForbiddenError extends AppError {
+export class ForbiddenError extends ApiError {
     constructor(message = 'Forbidden', cause: Record<string, unknown> = {}) {
         super(message, 403, { cause })
     }
 }
 
-export class NotFoundError extends AppError {
+export class NotFoundError extends ApiError {
     constructor(message = 'NotFound', cause: Record<string, unknown> = {}) {
         super(message, 404, { cause })
     }
 }
 
-export class InternalServerError extends AppError {
+export class InternalServerError extends ApiError {
     constructor(
         message = 'Internal Server Error',
         cause: Record<string, unknown> = {},

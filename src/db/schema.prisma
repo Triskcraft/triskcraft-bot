@@ -205,7 +205,7 @@ model PostBlocks {
 
 model User {
     id              String   @id @default(dbgenerated("snowflake()"))
-    rank            String   @default("Miembro")
+    rank            String   @default("User")
     mc_player_uuid  String?  @unique
     discord_user_id String   @unique
     created_at      DateTime @default(now())

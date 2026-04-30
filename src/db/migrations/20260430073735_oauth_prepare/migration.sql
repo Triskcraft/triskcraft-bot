@@ -13,7 +13,7 @@ ALTER TABLE "posts" DROP CONSTRAINT "posts_minecraft_player_uuid_fkey";
 -- CreateTable
 CREATE TABLE "users" (
     "id" TEXT NOT NULL DEFAULT snowflake(),
-    "rank" TEXT NOT NULL DEFAULT 'Miembro',
+    "rank" TEXT NOT NULL DEFAULT 'User',
     "mc_player_uuid" TEXT,
     "discord_user_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

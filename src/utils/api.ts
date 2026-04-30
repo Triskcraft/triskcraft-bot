@@ -84,6 +84,6 @@ export async function createJWT(payload: JWTPayload) {
         .setProtectedHeader({ alg: 'RS256' })
         .setIssuedAt()
         .setIssuer(envs.API_URL)
-        .setExpirationTime('1d')
+        .setExpirationTime('1h')
         .sign(PRIVATE_KEY)
 }

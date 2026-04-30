@@ -3,7 +3,7 @@ import cors from 'cors'
 import v1 from '#/api/v1/route.ts'
 import auth from '#/api/auth/route.ts'
 import webhooks from '#/api/webhooks/route.ts'
-import { AppError } from '#/api/errors.ts'
+import { ApiError } from '#/api/errors.ts'
 import { logger } from '#/logger.ts'
 
 /**
@@ -20,7 +20,7 @@ app.use(
 )
 
 const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
-    if (err instanceof AppError) {
+    if (err instanceof ApiError) {
         const details = err.cause ?? {}
         return res.status(err.statusCode).json({
             ...details,
