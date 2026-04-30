@@ -1,11 +1,12 @@
 import { PLAYER_STATUS } from '#/db/generated/enums.ts'
 import { db } from '#/db/prisma.ts'
 import type { RequestHandler } from 'express'
+import { type MinecraftPlayer } from '@triskcraft/api-types'
 
 type includesQuery = 'roles' | 'medias' | 'rank' | 'description' | (string & {})
 export const getPlayers: RequestHandler<
     { game: string },
-    Member[],
+    MinecraftPlayer[],
     null,
     { includes: includesQuery | includesQuery[] }
 > = async (req, res) => {
@@ -60,7 +61,7 @@ export const getPlayers: RequestHandler<
     })
     const pobled = members.map(
         ({ digs, rank, linked_roles, medias, nickname, uuid, user }) => {
-            const member: Member = {
+            const member: MinecraftPlayer = {
                 digs,
                 nickname,
                 uuid,
@@ -80,17 +81,4 @@ export const getPlayers: RequestHandler<
         },
     )
     return res.json(pobled)
-}
-
-interface Member {
-    uuid: string
-    nickname: string
-    digs: number
-    user_id: string
-    rank?: string
-    roles?: string[]
-    medias?: {
-        type: string
-        url: string
-    }[]
 }
