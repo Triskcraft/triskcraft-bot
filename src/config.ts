@@ -1,4 +1,6 @@
 import { logger } from '#/logger.ts'
+import { importPKCS8, importSPKI } from 'jose'
+import { readFile } from 'node:fs/promises'
 
 try {
     process.loadEnvFile()
@@ -28,9 +30,14 @@ export function loadConfig() {
         'DISCORD_ADMIN_LOG_CHANNEL_ID',
         'PANEL_CHANNEL_ID',
         'ENCRYPT_KEY',
-        'JWT_SECRERT',
         'BLOG_CHANNEL_ID',
         'BLOG_ROLE_ID',
+        'S3_URL',
+        'S3_ACCESS_KEY_ID',
+        'S3_SECRET_ACCESS_KEY',
+        'DISCORD_CLIENT_SECRET',
+        'DISCORD_REDIRECT_URI',
+        'API_URL',
     ]
 
     const recomended = [
@@ -51,13 +58,19 @@ export function loadConfig() {
         DEPLOY_INACTIVITY_PANEL = false,
         PANEL_CHANNEL_ID = '',
         ENCRYPT_KEY = '',
-        JWT_SECRERT = '',
         DEFAULT_ROLE_NAME = 'Digger',
         DEFAULT_ROLE_ID = '',
         DEFAULT_RANK = 'Miembro',
         BLOG_CHANNEL_ID = '',
         BLOG_ROLE_ID = '',
         ROLE_SERVICE = false,
+        S3_URL = '',
+        S3_ACCESS_KEY_ID = '',
+        S3_SECRET_ACCESS_KEY = '',
+        DISCORD_CLIENT_SECRET = '',
+        DISCORD_REDIRECT_URI = '',
+        DISCORD_CLIENT_ID = '',
+        API_URL = '',
     } = process.env
 
     const recommendedMissing = recomended.filter(key => !process.env[key])
@@ -87,7 +100,7 @@ export function loadConfig() {
 
     return {
         token: process.env.DISCORD_TOKEN!,
-        clientId: process.env.DISCORD_CLIENT_ID!,
+        DISCORD_CLIENT_ID: DISCORD_CLIENT_ID,
         DISCORD_GUILD_ID: process.env.DISCORD_GUILD_ID!,
         inactivityChannelId: process.env.DISCORD_INACTIVITY_CHANNEL_ID!,
         adminLogChannelId: process.env.DISCORD_ADMIN_LOG_CHANNEL_ID!,
@@ -101,17 +114,47 @@ export function loadConfig() {
         NODE_ENV,
         PANEL_CHANNEL_ID,
         ENCRYPT_KEY: Buffer.from(ENCRYPT_KEY, 'base64'),
-        JWT_SECRERT: new TextEncoder().encode(JWT_SECRERT),
         DEFAULT_ROLE_NAME,
         DEFAULT_ROLE_ID,
         DEFAULT_RANK,
         BLOG_CHANNEL_ID,
         BLOG_ROLE_ID,
         ROLE_SERVICE: ROLE_SERVICE === 'true',
+        S3_URL,
+        S3_ACCESS_KEY_ID,
+        S3_SECRET_ACCESS_KEY,
+        DISCORD_CLIENT_SECRET,
+        DISCORD_REDIRECT_URI,
+        API_URL,
+    }
+}
+
+async function getPrivateKey() {
+    try {
+        const pem = await readFile('./private.pem', 'utf-8')
+        return await importPKCS8(pem, 'RS256')
+    } catch {
+        logger.error(
+            'No se pudo cargar la clave privada para JWT de private.pem. Puede generar una clave RSA con el comando `openssl genrsa -out private.pem 2048`.',
+        )
+        process.exit(1)
+    }
+}
+async function getPublicKey() {
+    try {
+        const pem = await readFile('./public.pem', 'utf-8')
+        return await importSPKI(pem, 'RS256')
+    } catch {
+        logger.error(
+            'No se pudo cargar la clave publica para JWT de public.pem. Puede generar una clave RSA con el comando `openssl rsa -in private.pem -pubout -out public.pem`.',
+        )
+        process.exit(1)
     }
 }
 
 export const envs = loadConfig()
+export const PRIVATE_KEY = await getPrivateKey()
+export const PUBLIC_KEY = await getPublicKey()
 
 /**
  * Lista ordenada de roles de rango. El orden determina prioridad cuando se

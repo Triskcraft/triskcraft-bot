@@ -1,6 +1,6 @@
 import { client } from '#/client.ts'
 import { envs } from '#/config.ts'
-import { db } from '#/prisma/database.ts'
+import { db } from '#/db/prisma.ts'
 import { Router } from 'express'
 import { getRank } from '#/utils/roles.ts'
 import z from 'zod'
@@ -9,7 +9,7 @@ import {
     InternalServerError,
     NotFoundError,
 } from '#/api/errors.ts'
-import { PLAYER_STATUS } from '#/prisma/generated/enums.ts'
+import { PLAYER_STATUS } from '#/db/generated/enums.ts'
 
 const router = Router()
 

@@ -121,6 +121,7 @@ model Player {
     linked_roles LinkedRole[]
     medias       Media[]
     posts        Post[]
+    user         User?
 
     @@map("minecraft_users")
 }
@@ -136,6 +137,7 @@ model DiscordUser {
     webhook_tokens     WebhookToken[]
     posts              Post[]
     post_blocks        PostBlocks[]
+    user               User?
 
     @@map("discord_users")
 }
@@ -178,8 +180,8 @@ model Post {
     created_at      DateTime    @default(now())
     updated_at      DateTime    @updatedAt
 
-    discord_user DiscordUser  @relation(fields: [discord_user_id], references: [id])
-    player       Player?      @relation(fields: [player_uuid], references: [uuid])
+    discord_user DiscordUser  @relation(fields: [discord_user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    player       Player?      @relation(fields: [player_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
     post_blocks  PostBlocks[]
 
     @@map("posts")
@@ -195,8 +197,69 @@ model PostBlocks {
     attachments Json[]   @default([])
     author_id   String
 
-    author DiscordUser @relation(fields: [author_id], references: [id])
-    post   Post        @relation(fields: [post_id], references: [id])
+    author DiscordUser @relation(fields: [author_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    post   Post        @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
     @@map("post_blocks")
+}
+
+model User {
+    id              String   @id @default(dbgenerated("snowflake()"))
+    rank            String   @default("User")
+    mc_player_uuid  String?  @unique
+    discord_user_id String   @unique
+    created_at      DateTime @default(now())
+    updated_at      DateTime @updatedAt
+
+    mc_player    Player?     @relation(fields: [mc_player_uuid], references: [uuid], onDelete: SetNull, onUpdate: Cascade)
+    discord_user DiscordUser @relation(fields: [discord_user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    authorization_codes AuthorizationCode[]
+    sessions            Session[]
+
+    @@map("users")
+}
+
+model Client {
+    id            String   @id
+    client_secret String?
+    redirect_uris String[]
+    created_at    DateTime @default(now())
+    updated_at    DateTime @updatedAt
+
+    authorization_codes AuthorizationCode[]
+    sessions            Session[]
+
+    @@map("clients")
+}
+
+model AuthorizationCode {
+    id             String   @id @default(dbgenerated("snowflake()"))
+    code           String   @unique
+    user_id        String
+    client_id      String
+    redirect_uri   String
+    code_challenge String
+    expires_at     DateTime
+    created_at     DateTime @default(now())
+
+    user   User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    client Client @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@map("authorization_codes")
+}
+
+model Session {
+    id            String   @id @default(dbgenerated("snowflake()"))
+    user_id       String
+    /// Hashed
+    refresh_token String   @unique
+    client_id     String
+    expires_at    DateTime
+    created_at    DateTime @default(now())
+
+    user   User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    client Client @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@map("sessions")
 }

@@ -1,8 +1,9 @@
 import Express, { type ErrorRequestHandler } from 'express'
 import cors from 'cors'
 import v1 from '#/api/v1/route.ts'
+import auth from '#/api/oauth/route.ts'
 import webhooks from '#/api/webhooks/route.ts'
-import { AppError } from '#/api/errors.ts'
+import { ApiError } from '#/api/errors.ts'
 import { logger } from '#/logger.ts'
 
 /**
@@ -19,7 +20,7 @@ app.use(
 )
 
 const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
-    if (err instanceof AppError) {
+    if (err instanceof ApiError) {
         const details = err.cause ?? {}
         return res.status(err.statusCode).json({
             ...details,
@@ -37,6 +38,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 app.use(errorHandler)
 
 app.use('/v1', Express.json({ type: 'application/json' }), v1)
+app.use('/auth', Express.json({ type: 'application/json' }), auth)
 app.use('/webhooks', Express.raw({ type: 'application/json' }), webhooks)
 
 export { app }

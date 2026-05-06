@@ -1,6 +1,6 @@
 import { inspect } from 'node:util'
-import { POST_STATUS } from '#/prisma/generated/enums.ts'
-import { db } from '#/prisma/database.ts'
+import { POST_STATUS } from '#/db/generated/enums.ts'
+import { db } from '#/db/prisma.ts'
 import type { Message } from 'discord.js'
 
 export class Post {

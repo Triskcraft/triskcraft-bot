@@ -8,14 +8,16 @@
 1. [Resumen ejecutivo](#resumen-ejecutivo)
 2. [Convención de versionado](#convención-de-versionado)
 3. [API HTTP v1](#api-http-v1)
-4. [Flujo de arranque y apagado](#flujo-de-arranque-y-apagado)
-5. [Configuración y dependencias](#configuración-y-dependencias)
-6. [Componentes de Discord (clientes, interacciones y comandos)](#componentes-de-discord-clientes-interacciones-y-comandos)
-7. [Servicios de dominio](#servicios-de-dominio)
-8. [Scheduler y jobs recurrentes](#scheduler-y-jobs-recurrentes)
-9. [Persistencia y Prisma](#persistencia-y-prisma)
-10. [Utilidades comunes](#utilidades-comunes)
-11. [Ejemplos de uso actualizados](#ejemplos-de-uso-actualizados)
+4. [Webhooks y seguridad](#webhooks-y-seguridad)
+5. [OAuth y autenticación](#oauth-y-autenticación)
+6. [Flujo de arranque y apagado](#flujo-de-arranque-y-apagado)
+7. [Configuración y dependencias](#configuración-y-dependencias)
+8. [Componentes de Discord (clientes, interacciones y comandos)](#componentes-de-discord-clientes-interacciones-y-comandos)
+9. [Servicios de dominio](#servicios-de-dominio)
+10. [Scheduler y jobs recurrentes](#scheduler-y-jobs-recurrentes)
+11. [Persistencia y Prisma](#persistencia-y-prisma)
+12. [Utilidades comunes](#utilidades-comunes)
+13. [Ejemplos de uso actualizados](#ejemplos-de-uso-actualizados)
 
 ---
 
@@ -69,11 +71,12 @@ solo lectura. La arquitectura separa:
 
 ### Endpoint: `GET /v1/members`
 
-Entrega la lista de miembros de Minecraft enriquecida con datos de Discord.
+Entrega la lista de jugadores de Minecraft enriquecida con datos de Discord, roles, rangos y medios.
 
 **Origen de datos**
 
-- Tabla `MinecraftUser` con relaciones a `DiscordUser`, `Media` y `Role`.
+- Modelo `Player` mapeado a la tabla `minecraft_users`.
+- Relaciones con `DiscordUser`, `Media`, `LinkedRole` y `Role`.
 
 **Respuesta**
 
@@ -96,12 +99,87 @@ Entrega la lista de miembros de Minecraft enriquecida con datos de Discord.
 ]
 ```
 
-**Notas técnicas**
+### Endpoint: `GET /v1/posts`
 
-- El endpoint utiliza Prisma para cargar relaciones con `include`.
-- La lista de roles se deriva de la relación N:M `LinkedRole`.
-- La whitelist file-based está comentada en el código y **no** se utiliza en
-  la implementación actual.
+Entrega el listado de publicaciones de blog con estado y metadatos de autor.
+
+**Origen de datos**
+
+- Modelo `Post` con relación a `DiscordUser` y datos opcionales de `Player`.
+
+### Endpoint: `GET /v1/games/minecraft/players`
+
+Devuelve información de los jugadores activos de Minecraft para integraciones externas.
+
+**Características**
+
+- Incluye nombre, UUID, `digs`, `rank` y estado `PLAYER_STATUS`.
+- Solo jugadores con estado `ACTIVE` se consideran activos.
+
+### Notas técnicas
+
+- Los endpoints v1 están montados en `src/api/v1/route.ts`.
+- Cada ruta utiliza Prisma para cargar relaciones necesarias y devolver datos estructurados.
+- Los modelos mapean tablas con nombres personalizados usando `@@map`.
+
+---
+
+## Webhooks y seguridad
+
+La API de webhooks expone rutas que reciben eventos externos del servidor Minecraft y servicios asociados.
+
+### Endpoints de webhook
+
+- `POST /webhooks/digs`
+    - Actualiza los contadores `digs` de jugadores.
+    - Procesamiento por lote y consolidación periódica para reducir escrituras.
+- `POST /webhooks/link`
+    - Vincula cuentas Minecraft ↔ Discord usando un código temporal generado por `/dis-session`.
+- `POST /webhooks/join`
+    - Registra logins de jugadores y actualiza el campo `last_seen`.
+
+### Seguridad de webhooks
+
+- Middleware en `src/api/webhook-auth.middleware.ts` valida JWT y firma HMAC.
+- Requiere `Authorization: Bearer <jwt>`, `x-timestamp` y `x-signature`.
+- Valida permisos granulares de token (`DIGS`, `LINK`, `JOIN`).
+- Protege contra replay attacks con ventana temporal y comparación segura.
+
+---
+
+## OAuth y autenticación
+
+El sistema OAuth implementa un flujo de autorización con PKCE y refresh tokens para aplicaciones externas.
+
+### Endpoints OAuth
+
+- `GET /auth/oauth/authorize` - inicia el flujo de autorización.
+- `POST /auth/oauth/token` - intercambia authorization code por tokens.
+- `GET /auth/oauth/refresh` - renueva el access token.
+- `GET /auth/oauth/me` - obtiene la información del usuario autenticado.
+- `GET /auth/oauth/discord` - integración con Discord OAuth.
+
+### Modelo de datos clave
+
+- `User` - usuario canónico del sistema que une `DiscordUser` y `Player`.
+- `Client` - aplicación OAuth autorizada con URIs de redirección.
+- `AuthorizationCode` - códigos temporales con `code_challenge` para PKCE.
+- `Session` - sesiones con `refresh_token` para renovar accesos.
+
+### Flujo de autorización
+
+1. El cliente genera `code_verifier` y `code_challenge`.
+2. Redirige a `/auth/oauth/authorize` con `client_id`, `redirect_uri` y `code_challenge`.
+3. El servidor valida el cliente y emite un authorization code.
+4. El cliente intercambia el code en `/auth/oauth/token` enviando el `code_verifier`.
+5. El servidor valida la firma PKCE y devuelve `access_token` + `refresh_token`.
+
+### Seguridad OAuth
+
+- PKCE evita que un authorization code interceptado sea reutilizado.
+- `Client.redirect_uris` se valida estrictamente.
+- `Session.refresh_token` está almacenado como valor único para revocación.
+- `access_token` es un JWT firmado por el servidor.
 
 ---
 
@@ -148,7 +226,7 @@ Entrega la lista de miembros de Minecraft enriquecida con datos de Discord.
 
 ### `prisma.config.ts`
 
-- **Define schema**: `src/prisma/schema.prisma`.
+- **Define schema**: `src/db/schema.prisma`.
 - **Datasource**: toma `DATABASE_PATH` desde `.env`.
 
 ---
@@ -165,58 +243,59 @@ Entrega la lista de miembros de Minecraft enriquecida con datos de Discord.
 - **Registro condicional de comandos**: se ejecuta si `DEPLOY_COMMAND=true`.
 - **Login y exportación**: autentica con `DISCORD_TOKEN` y exporta `client`.
 
-### `src/interactions/commands.ts`
+### `src/interactions/commands/inactividad.command.ts`
 
 **Bloques clave**
 
-- **`registerCommands()`**: registra slash commands usando REST API v10.
-- **Comandos definidos**:
-    - `/inactividad listar`
-    - `/inactividad estadisticas`
-    - `/inactividad roles agregar|eliminar|listar`
-    - `/dis-session`
+- Define subcomandos para administración de inactividad.
+- Permite listar, ver estadísticas y gestionar roles monitoreados.
+- Se utiliza para operaciones de servidor desde Discord.
 
-### `src/interactions/inactivityPanel.ts`
+### `src/interactions/commands/dis-session.command.ts`
 
 **Bloques clave**
 
-- **`buildInactivityPanel()`**: crea embed y botones del panel.
-- **`buildInactivityModal()`**: modal con campos `duration` y `until`.
+- Genera código de vinculación temporal para el flujo Discord ↔ Minecraft.
+- Crea o actualiza `LinkCode` y `DiscordUser` en la base de datos.
+- Envía el código por DM y confirma en la interacción de Discord.
 
-**Flujo de UI**
+### Botones y modales
 
-- Botones → modal o acciones directas (limpiar/mostrar).
-- Modal → validación y persistencia de inactividad.
+- `src/interactions/buttons/inactivity.ts` - botones de autogestión de inactividad.
+- `src/interactions/buttons/wh-add.ts` - abre modal para crear tokens webhook.
+- `src/interactions/buttons/wh-delete.ts` - confirma eliminación de token webhook.
+- `src/interactions/buttons/blog/blog-create.ts` - inicia creación del borrador de post.
+- `src/interactions/buttons/blog/blog-title.ts` - inicia edición del título del post.
+- `src/interactions/buttons/blog/blog-post.ts` - publica, despublica o marca posts como obsoletos.
+- `src/interactions/buttons/role/*.ts` - flow completo de creación, edición, selección,
+  paginación y asignación de roles Minecraft.
 
-### `src/handlers/interactionHandler.ts`
+- `src/interactions/modals/inactive.ts` - procesa alta y edición de inactividad.
+- `src/interactions/modals/webhook-add.ts` - captura permisos y crea token webhook.
+- `src/interactions/modals/webhook-delete.ts` - confirma borrado de token webhook.
+- `src/interactions/modals/role-create.ts` - crea rol Minecraft desde formulario.
+- `src/interactions/modals/role-edit.ts` - edita nombre de rol.
+- `src/interactions/modals/blog/blog-create.ts` - captura título para un nuevo post.
+- `src/interactions/modals/blog/blog-title.ts` - edita el título de un post existente.
+
+### Menús de selección
+
+- `src/interactions/stringMenu/role.ts` - selecciona jugador para el panel de roles.
+- `src/interactions/stringMenu/role-add.ts` - selecciona rol para asignar a un jugador.
+- `src/interactions/stringMenu/role-mode.ts` - cambia el modo/vista del panel de roles.
+
+### `src/services/interactions.service.ts`
 
 **Bloques clave**
 
-- **`registerInteractionHandlers()`**: enruta eventos a handlers específicos.
-- **`handleButton()`**: gestiona `set/edit/clear/show` de inactividad.
-- **`handleModal()`**: parsea y valida fecha o duración.
-- **`handleCommand()`**: enruta a `/inactividad` o `/dis-session`.
-- **`inactividadCommand()`**: valida permisos admin y subcomandos.
-- **`handleList()`**: genera embed con miembros activos/inactivos.
-- **`handleStats()`**: resume porcentajes por rol + historial.
-- **`handleRoleAdd/Remove/List()`**: gestiona roles monitoreados.
-- **`logAdminAction()`**: auditoría en canal admin.
-- **Utilidades**: `buildBar`, `buildHistoryField`, `buildSparkline`.
-
-### `src/commands/dis-session.command.ts`
-
-**Bloques clave**
-
-- **Generación de código**: random 6 dígitos.
-- **Determinación de rango**: usando `RANK_ROLES` y jerarquía por posición.
-- **Persistencia**: crea/actualiza `LinkCode` y `DiscordUser`.
-- **Notificación**: DM al usuario + respuesta efímera en Discord.
+- Carga y enruta los handlers de comandos, botones, modales y menús.
+- Centraliza la resolución de interacciones recibidas desde Discord.
 
 ---
 
 ## Servicios de dominio
 
-### `src/services/inactivityService.ts`
+### `src/services/inactivity.service.ts`
 
 **Bloques clave**
 
@@ -229,15 +308,51 @@ Entrega la lista de miembros de Minecraft enriquecida con datos de Discord.
 - **`deployInactivityPanel()`**: inserta o actualiza mensaje del panel.
 - **`mapRow()`**: deserializa `role_snapshot` en array utilizable.
 
-### `src/services/roleService.ts`
+### `src/services/roles.service.ts`
 
 **Bloques clave**
 
-- **`addRole()`**: inserta rol monitoreado.
-- **`removeRole()`**: borra rol monitoreado.
-- **`listRoles()`**: devuelve lista de IDs de roles monitoreados.
-- **`persistSnapshot()`**: inserta estadísticas por rol.
-- **`getSnapshots()`**: obtiene historial de snapshots (30 días por defecto).
+- Gestiona el panel y operaciones del sistema de roles Minecraft.
+- Controla creación, edición, eliminación y asignación de roles.
+- Filtra jugadores `ACTIVE` y genera vistas de rol detalladas.
+
+### `src/services/blog.service.ts`
+
+**Bloques clave**
+
+- Administra el ciclo de vida de publicaciones: `DRAFT`, `PUBLISHED`, `OUTDATED`.
+- Sincroniza posts y bloques de mensajes en Discord.
+- Actualiza títulos y estados desde botones y modales.
+
+### `src/services/webhook.service.ts`
+
+**Bloques clave**
+
+- Despliega un panel de administración de tokens webhook.
+- Crea, lista y revoca tokens con permisos granulares.
+- Emite secretos y JWT firmados para el acceso de webhook.
+
+### `src/services/players.service.ts`
+
+**Bloques clave**
+
+- Gestiona jugadores de Minecraft y su estado de vinculación.
+- Marca jugadores como `DELETED` cuando hay baneos o removals.
+- Actualiza `last_seen` con eventos de webhook.
+
+### `src/services/monitored.service.ts`
+
+**Bloques clave**
+
+- Monitorea roles configurados y agrega snapshots históricos.
+- Calcula conteos activos/inactivos por rol.
+
+### `src/services/rank.service.ts`
+
+**Bloques clave**
+
+- Determina el rango de los jugadores según jerarquía de roles Discord.
+- Sincroniza el rango de Minecraft con base en roles asignados.
 
 ---
 
@@ -271,7 +386,7 @@ Entrega la lista de miembros de Minecraft enriquecida con datos de Discord.
 - **Adapter `PrismaPg`**: conecta a PostgreSQL.
 - **Exporta `db`**: instancia única para reutilizar conexión.
 
-### `src/prisma/schema.prisma`
+### `src/db/schema.prisma`
 
 **Modelos esenciales**
 
@@ -282,9 +397,34 @@ Entrega la lista de miembros de Minecraft enriquecida con datos de Discord.
 - **`RoleStatistic`**
     - Snapshot de conteos activos/inactivos por rol.
 - **`LinkCode`**
-    - Código temporal de vinculación de sesiones.
-- **`Role`, `LinkedRole`, `Media`, `MinecraftUser`, `DiscordUser`**
-    - Representan datos de usuarios y su vínculo entre Discord/Minecraft.
+    - Código temporal de vinculación de cuentas.
+- **`Player`**
+    - Representa un usuario de Minecraft.
+    - Campos clave: `uuid`, `nickname`, `digs`, `rank`, `status`, `last_seen`.
+    - `status` usa el enum `PLAYER_STATUS` (`ACTIVE`, `DELETED`) para soft delete.
+- **`DiscordUser`**
+    - Usuario Discord con relación a inactividad, posts y tokens webhook.
+- **`WebhookToken`**
+    - Token para autenticación de webhooks con permisos y secreto cifrado.
+- **`Post`**
+    - Publicaciones de blog con estados `DRAFT`, `PUBLISHED`, `OUTDATED`.
+- **`PostBlocks`**
+    - Bloques de mensaje asociados a un post, con contenido, embeds y attachments.
+- **`User`**
+    - Usuario canónico del sistema para OAuth y vinculación de cuentas.
+- **`Client`**
+    - Aplicación OAuth autorizada con URIs de redirección.
+- **`AuthorizationCode`**
+    - Códigos temporales para autorización OAuth con PKCE.
+- **`Session`**
+    - Sesiones activas con `refresh_token` para renovación de accesos.
+
+### Notas del esquema
+
+- El modelo `Player` se mapea a la tabla `minecraft_users`.
+- El modelo `User` es el punto de anclaje para OAuth y enlace entre Discord y Minecraft.
+- `Client`, `AuthorizationCode` y `Session` sostienen el flujo OAuth con PKCE.
+- `WebhookToken.permissions` es un arreglo de strings que define permisos granulares.
 
 ---
 
@@ -333,6 +473,7 @@ npm start
 
 ```bash
 curl -s http://localhost:3000/v1/members | jq
+curl -s http://localhost:3000/v1/posts | jq
 ```
 
 ### 5) Variables mínimas de entorno

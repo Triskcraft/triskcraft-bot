@@ -1,6 +1,6 @@
 import { envs } from '#/config.ts'
-import { db } from '#/prisma/database.ts'
-import { PLAYER_STATUS } from '#/prisma/generated/enums.ts'
+import { db } from '#/db/prisma.ts'
+import { PLAYER_STATUS } from '#/db/generated/enums.ts'
 import { inspect } from 'node:util'
 
 export class Player {

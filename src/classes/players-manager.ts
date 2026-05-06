@@ -1,7 +1,7 @@
-import { db } from '#/prisma/database.ts'
+import { db } from '#/db/prisma.ts'
 import { Collection } from 'discord.js'
 import { Player } from '#/classes/player.ts'
-import { PLAYER_STATUS } from '#/prisma/generated/enums.ts'
+import { PLAYER_STATUS } from '#/db/generated/enums.ts'
 import { roleService } from '#/services/roles.service.ts'
 
 type UUID = string

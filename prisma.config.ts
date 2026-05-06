@@ -6,13 +6,13 @@ try {
 }
 
 export default defineConfig({
-    schema: 'src/prisma/schema.prisma',
+    schema: 'src/db/schema.prisma',
 
     datasource: {
         url: process.env.DATABASE_PATH!,
     },
 
     migrations: {
-        seed: 'node src/prisma/seed.ts',
+        seed: 'node src/db/seed.ts',
     },
 })

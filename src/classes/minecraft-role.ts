@@ -1,11 +1,11 @@
-import { db } from '#/prisma/database.ts'
+import { db } from '#/db/prisma.ts'
 import { inspect } from 'node:util'
 import { logger } from '#/logger.ts'
 import { envs } from '#/config.ts'
 import { Player } from '#/classes/player.ts'
 import { Collection } from 'discord.js'
-import { PrismaClientKnownRequestError } from '#/prisma/generated/internal/prismaNamespace.ts'
-import { PLAYER_STATUS } from '#/prisma/generated/enums.ts'
+import { PrismaClientKnownRequestError } from '#/db/generated/internal/prismaNamespace.ts'
+import { PLAYER_STATUS } from '#/db/generated/enums.ts'
 import { playersService } from '#/services/players.service.ts'
 
 type UUID = string

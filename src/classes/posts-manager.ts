@@ -1,4 +1,4 @@
-import { db } from '#/prisma/database.ts'
+import { db } from '#/db/prisma.ts'
 import { Collection } from 'discord.js'
 import { Post } from '#/classes/post.ts'
 

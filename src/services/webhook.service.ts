@@ -15,7 +15,7 @@ import {
     type SendableChannels,
 } from 'discord.js'
 import { logger } from '#/logger.ts'
-import { db } from '#/prisma/database.ts'
+import { db } from '#/db/prisma.ts'
 
 const PANNEL_NAME = '# 🔐 **Panel de Webhooks**'
 

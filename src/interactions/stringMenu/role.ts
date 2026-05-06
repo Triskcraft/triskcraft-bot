@@ -17,16 +17,26 @@ export default class extends StringMenuHandler {
             .setMaxValues(1)
             .setPlaceholder('Selecciona un usuario')
 
-        for (const {
-            nickname,
-            uuid,
-        } of playersService.players.cache.values()) {
+        if (playersService.players.cache.size > 0) {
+            for (const {
+                nickname,
+                uuid,
+            } of playersService.players.cache.values()) {
+                selectUserMenu.addOptions(
+                    new StringSelectMenuOptionBuilder()
+                        .setLabel(nickname)
+                        .setValue(uuid)
+                        .setDefault(uuid === selected),
+                )
+            }
+        } else {
             selectUserMenu.addOptions(
                 new StringSelectMenuOptionBuilder()
-                    .setLabel(nickname)
-                    .setValue(uuid)
-                    .setDefault(uuid === selected),
+                    .setLabel('No hay registros de jugadores')
+                    .setValue('0')
+                    .setDefault(true),
             )
+            selectUserMenu.setDisabled(true)
         }
         return selectUserMenu
     }

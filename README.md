@@ -55,6 +55,16 @@ Crea un archivo `.env` en la raíz con al menos estas claves obligatorias:
 | `DISCORD_GUILD_ID`              | ID del servidor donde se registrarán comandos.                                         |
 | `DISCORD_INACTIVITY_CHANNEL_ID` | Canal donde se publica el panel y se envían recordatorios.                             |
 | `DISCORD_ADMIN_LOG_CHANNEL_ID`  | Canal opcional para registrar acciones administrativas.                                |
+| `PANEL_CHANNEL_ID`              | Canal donde se publica/actualiza el panel de inactividad.                              |
+| `ENCRYPT_KEY`                   | Clave simétrica en base64 usada para cifrado/descifrado interno.                       |
+| `BLOG_CHANNEL_ID`               | Canal donde se publican notificaciones o posts de blog.                                |
+| `BLOG_ROLE_ID`                  | ID del rol asociado a las publicaciones de blog.                                       |
+| `S3_URL`                        | URL base del bucket S3 o servidor compatible con S3.                                   |
+| `S3_ACCESS_KEY_ID`              | Access key para el servicio S3.                                                        |
+| `S3_SECRET_ACCESS_KEY`          | Secret key para el servicio S3.                                                        |
+| `DISCORD_CLIENT_SECRET`         | Secreto del cliente de Discord para OAuth.                                             |
+| `DISCORD_REDIRECT_URI`          | URI de redirección usada por OAuth de Discord.                                         |
+| `API_URL`                       | URL pública de la API, usada por OAuth y callbacks.                                    |
 | `DATABASE_PATH`                 | Cadena de conexión PostgreSQL para Prisma (ej. `postgresql://user:pass@host:5432/db`). |
 
 Claves recomendadas y su valor por defecto:
@@ -65,8 +75,24 @@ Claves recomendadas y su valor por defecto:
 | `DEPLOY_INACTIVITY_PANEL`   | Si es `true`, publica/actualiza el panel de inactividad al iniciar. | `false`         |
 | `REMINDER_INTERVAL_MINUTES` | Frecuencia con la que se revisan inactividades vencidas.            | `5`             |
 | `API_PORT`                  | Puerto para la API HTTP.                                            | `3000`          |
-| `FRONT_ORIGIN`              | Origen permitido por CORS para la API.                              | sin restricción |
 | `NODE_ENV`                  | Entorno (`development`, `production`, etc.).                        | `development`   |
+| `DEFAULT_ROLE_NAME`         | Nombre del rol por defecto cuando no hay rol explícito.             | `Digger`        |
+| `DEFAULT_ROLE_ID`           | ID del rol por defecto usado en algunos flujos.                     | ``              |
+| `DEFAULT_RANK`              | Nombre del rango por defecto.                                       | `Miembro`       |
+| `ROLE_SERVICE`              | Si es `true`, habilita lógica adicional de roles monitoreados.      | `false`         |
+| `FRONT_ORIGIN`              | Origen permitido por CORS para la API.                              | sin restricción |
+
+También es necesario generar un par de claves RSA en la raíz del proyecto:
+
+- `private.pem`: clave privada en formato PKCS#8 para firmar JWT.
+- `public.pem`: clave pública en formato SPKI para verificar JWT.
+
+Por ejemplo:
+
+```bash
+openssl genrsa -out private.pem 2048
+openssl rsa -in private.pem -pubout -out public.pem
+```
 
 Ejemplo de `.env`:
 
@@ -76,6 +102,16 @@ DISCORD_CLIENT_ID=123456789012345678
 DISCORD_GUILD_ID=123456789012345678
 DISCORD_INACTIVITY_CHANNEL_ID=123456789012345678
 DISCORD_ADMIN_LOG_CHANNEL_ID=123456789012345678
+PANEL_CHANNEL_ID=123456789012345678
+ENCRYPT_KEY=base64:...  # valor en base64
+BLOG_CHANNEL_ID=123456789012345678
+BLOG_ROLE_ID=123456789012345678
+S3_URL=https://example-bucket.s3.amazonaws.com
+S3_ACCESS_KEY_ID=AKIA...
+S3_SECRET_ACCESS_KEY=...
+DISCORD_CLIENT_SECRET=tu_secreto
+DISCORD_REDIRECT_URI=https://tudominio.com/oauth/callback
+API_URL=https://api.tudominio.com
 DATABASE_PATH=postgresql://user:pass@localhost:5432/bot_inactividad
 DEPLOY_COMMAND=true
 DEPLOY_INACTIVITY_PANEL=true
@@ -176,7 +212,7 @@ DEPLOY_COMMAND=true DEPLOY_INACTIVITY_PANEL=true npm start
 ### Consumir la API v1 desde una herramienta CLI
 
 ```bash
-curl -s http://localhost:3000/v1/members | jq
+curl -s http://localhost:3000/v1/games/minecraft/players | jq
 ```
 
 ### Consultas de administración en Discord

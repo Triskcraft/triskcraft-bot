@@ -39,10 +39,11 @@ El sistema de webhooks permite que servicios externos (por ejemplo, backend web 
 
 **Cómo funciona:**
 
-1. Valida `nickname`
-2. Actualiza el `last_seen` del jugador.
+1. Valida `nickname` del jugador.
+2. Actualiza el campo `last_seen` del jugador con timestamp actual.
+3. Puede desactivar automáticamente el estado "inactivo" si estaba marcado.
 
-**Por qué está diseñado así:** registrar los logins de un sistema externo al bot.
+**Por qué está diseñado así:** registrar los logins de un sistema externo al bot (servidor Minecraft) para tracking de actividad en tiempo real.
 
 ## Capa de seguridad: `webhookAuth`
 
@@ -58,7 +59,7 @@ Cada webhook pasa por middleware de autenticación y firma.
 ## Validaciones aplicadas
 
 1. **JWT válido** (firma + claims).
-2. **Permisos del token** (`digs`, `link`) según ruta.
+2. **Permisos del token** (`digs`, `link`, `join`) según ruta.
 3. **Ventana temporal** con tolerancia de drift (anti-replay).
 4. **Firma HMAC** sobre `timestamp.body` con secreto cifrado en BD.
 5. **Comparación segura** con `timingSafeEqual`.
@@ -67,18 +68,19 @@ Cada webhook pasa por middleware de autenticación y firma.
 
 `src/services/webhook.service.ts` publica un panel administrativo para:
 
-- listar tokens,
-- crear token con permisos,
+- listar tokens con sus permisos,
+- crear token con permisos granulares (DIGS, LINK, JOIN),
 - eliminar token.
 
 ### Creación de token
 
+- Se especifican permisos deseados: `DIGS` (actualizar estadísticas), `LINK` (vincular usuarios), `JOIN` (registrar logins).
 - Se genera un `secret` aleatorio.
 - Se cifra (`AES-256-GCM`) para guardar en BD.
-- Se emite JWT firmado.
+- Se emite JWT firmado con los permisos incluidos.
 - Token y secret se muestran **solo una vez**.
 
-**Por qué existe este patrón:** minimiza exposición de credenciales y permite revocación inmediata borrando el token.
+**Por qué existe este patrón:** minimiza exposición de credenciales, permite revocación inmediata y limita daño en caso de exposición.
 
 ## Riesgos mitigados
 

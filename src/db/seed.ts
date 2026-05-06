@@ -1,7 +1,7 @@
 import { envs } from '#/config.ts'
-import { db } from '#/prisma/database.ts'
+import { db } from '#/db/prisma.ts'
 import { logger } from '#/logger.ts'
-import { PrismaClientKnownRequestError } from '#/prisma/generated/internal/prismaNamespace.ts'
+import { PrismaClientKnownRequestError } from '#/db/generated/internal/prismaNamespace.ts'
 
 try {
     const defaultRole = await db.role.create({
@@ -24,3 +24,16 @@ try {
     }
 }
 logger.info('Por favor actualize el DEFAULT_ROLE_ID en .env')
+
+const clientCount = await db.client.count()
+if (!clientCount) {
+    await db.client.create({
+        data: {
+            id: 'api-panel',
+            redirect_uris: [
+                'http://localhost:8080/oauth/callback',
+                'https://api.triskcraft.com/oauth/callback',
+            ],
+        },
+    })
+}

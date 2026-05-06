@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express'
-import { db } from '#/prisma/database.ts'
-import { POST_STATUS } from '#/prisma/generated/enums.ts'
+import { db } from '#/db/prisma.ts'
+import { POST_STATUS } from '#/db/generated/enums.ts'
 
 /**
  * Endpoint que entrega el listado de post disponibles para el blog

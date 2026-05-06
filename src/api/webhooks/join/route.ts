@@ -1,4 +1,4 @@
-import { db } from '#/prisma/database.ts'
+import { db } from '#/db/prisma.ts'
 import { Router } from 'express'
 import z from 'zod'
 import {
@@ -6,7 +6,7 @@ import {
     InternalServerError,
     NotFoundError,
 } from '#/api/errors.ts'
-import { PrismaClientKnownRequestError } from '#/prisma/generated/internal/prismaNamespace.ts'
+import { PrismaClientKnownRequestError } from '#/db/generated/internal/prismaNamespace.ts'
 
 const router = Router()
 

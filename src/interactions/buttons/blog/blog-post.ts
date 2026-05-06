@@ -6,7 +6,7 @@ import {
 } from 'discord.js'
 import { ButtonInteractionHandler } from '#/services/interactions.service.ts'
 import { blogService } from '#/services/blog.service.ts'
-import { POST_STATUS } from '#/prisma/generated/enums.ts'
+import { POST_STATUS } from '#/db/generated/enums.ts'
 
 export default class extends ButtonInteractionHandler<'id'> {
     override regex = /^blog:post:(?<id>\d+)$/

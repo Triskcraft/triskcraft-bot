@@ -1,6 +1,6 @@
 import { client } from '#/client.ts'
 import { envs } from '#/config.ts'
-import { db } from '#/prisma/database.ts'
+import { db } from '#/db/prisma.ts'
 import { logger } from '#/logger.ts'
 import {
     ButtonStyle,
@@ -29,7 +29,7 @@ import { MinecraftRole } from '#/classes/minecraft-role.ts'
 import { Player } from '#/classes/player.ts'
 import { MinecraftRolesManager } from '#/classes/minecraft-roles-manager.ts'
 import roleBack from '#/interactions/buttons/role/role-back.ts'
-import { PLAYER_STATUS } from '#/prisma/generated/enums.ts'
+import { PLAYER_STATUS } from '#/db/generated/enums.ts'
 import { playersService } from './players.service.ts'
 
 const PANNEL_NAME = '# 🎭 **Panel de Roles**'

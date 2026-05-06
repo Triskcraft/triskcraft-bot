@@ -1,4 +1,4 @@
-import { db } from '#/prisma/database.ts'
+import { db } from '#/db/prisma.ts'
 import {
     LabelBuilder,
     MessageFlags,

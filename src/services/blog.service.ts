@@ -1,6 +1,6 @@
 import { client } from '#/client.ts'
 import { envs } from '#/config.ts'
-import { db } from '#/prisma/database.ts'
+import { db } from '#/db/prisma.ts'
 import { logger } from '#/logger.ts'
 import {
     ActionRowBuilder,
@@ -20,7 +20,7 @@ import {
 } from 'discord.js'
 import blogCreate from '#/interactions/buttons/blog/blog-create.ts'
 import { PostsManager } from '#/classes/posts-manager.ts'
-import { POST_STATUS } from '#/prisma/generated/enums.ts'
+import { POST_STATUS } from '#/db/generated/enums.ts'
 import type { Post } from '#/classes/post.ts'
 import blogState from '#/interactions/buttons/blog/blog-post.ts'
 import blogTitle from '#/interactions/buttons/blog/blog-title.ts'
