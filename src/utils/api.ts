@@ -57,7 +57,7 @@ export async function refreshToken(refresh_token: string) {
         refresh_token,
     })
 
-    const request = await fetch('https://discord.com', {
+    const request = await fetch('https://discord.com/api/v10/oauth2/token', {
         method: 'POST',
         body: params,
         headers: {
