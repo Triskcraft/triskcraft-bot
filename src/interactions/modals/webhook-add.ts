@@ -14,7 +14,7 @@ import {
 import { SignJWT } from 'jose'
 import { randomBytes } from 'node:crypto'
 import { encrypt } from '#/utils/encript.ts'
-import { envs, WEBHOOK_PERMISSIONS } from '#/config.ts'
+import { PRIVATE_KEY, WEBHOOK_PERMISSIONS } from '#/config.ts'
 import { ModalInteractionHandler } from '#/services/interactions.service.ts'
 import { deployWebhookPanel } from '#/services/webhook.service.ts'
 import type { WebhookToken } from '#/db/generated/client.ts'
@@ -130,7 +130,7 @@ export default class extends ModalInteractionHandler {
         })
             .setProtectedHeader({ alg })
             .setIssuedAt()
-            .sign(envs.JWT_SECRERT)
+            .sign(PRIVATE_KEY)
 
         const embedDescription = [
             'Estas son tus credenciales:',

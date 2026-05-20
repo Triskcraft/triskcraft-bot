@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import authorize from '#/api/auth/authorize/route.ts'
-import discord from '#/api/auth/discord/route.ts'
-import token from '#/api/auth/token/route.ts'
+import authorize from '#/api/oauth/authorize/route.ts'
+import discord from '#/api/oauth/discord/route.ts'
+import token from '#/api/oauth/token/route.ts'
 
 const router = Router()
 

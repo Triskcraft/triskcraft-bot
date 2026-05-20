@@ -2,11 +2,12 @@
 
 ## Objetivo del proyecto
 
-Este bot unifica tres necesidades operativas de la comunidad:
+Este bot unifica cuatro necesidades operativas de la comunidad:
 
 1. **Gestionar inactividad en Discord** (autogestión por usuario + control administrativo).
 2. **Sincronizar estado de miembros Minecraft** (vinculación, rango, roles y métricas como `digs`).
 3. **Administrar herramientas internas** (tokens de webhook, panel de roles y flujo de publicaciones tipo blog).
+4. **Autenticación OAuth 2.0 con PKCE** (integración segura con aplicaciones externas).
 
 ## Componentes principales
 
@@ -43,6 +44,18 @@ Este bot unifica tres necesidades operativas de la comunidad:
 
 **Por qué existe:** no todo depende de interacción humana; parte del sistema necesita mantenimiento automático.
 
+## 5) Autenticación OAuth 2.0
+
+- **`src/api/oauth/`** expone endpoints de autenticación con PKCE:
+    - `GET /auth/oauth/authorize` - Iniciar flujo de autorización
+    - `POST /auth/oauth/token` - Intercambiar código por tokens
+    - `GET /auth/oauth/refresh` - Renovar access tokens
+    - `GET /auth/oauth/me` - Información del usuario autenticado
+- **Tablas asociadas**: `users`, `clients`, `authorization_codes`, `sessions`
+- **Integración con Discord OAuth** para autenticación transparente
+
+**Por qué existe:** permite que aplicaciones terceras accedan al sistema de forma segura sin exponer credenciales.
+
 ## Flujo de arranque
 
 `src/index.ts` orquesta este orden:
@@ -78,3 +91,6 @@ src/
 - **Estado mínimo en memoria + fuente en BD:** mejora resiliencia tras reinicios.
 - **Autenticación con JWT + firma HMAC en webhooks:** protege contra robo/replay/manipulación.
 - **Servicios separados por dominio:** reduce acoplamiento y facilita mantenimiento.
+- **OAuth 2.0 con PKCE:** flujo seguro para autenticación de terceros sin comprometer credenciales.
+- **Soft-delete de jugadores:** uso de `PLAYER_STATUS` enum en lugar de eliminar registros para mantener histórico.
+- **Tracking de actividad:** campo `last_seen` registra logins para detectar inactividad en tiempo real.

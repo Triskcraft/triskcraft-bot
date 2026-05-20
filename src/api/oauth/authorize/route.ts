@@ -260,7 +260,7 @@ router.get('/', cookieParser(), async (req, res) => {
 
 export default router
 
-// test http://localhost:8080/auth/authorize?response_type=code&client_id=api-panel&code_challenge=eIVsW83uLPZmbiKwsR7J86HuUoMqpAWFuoLyo36gpaU&code_challenge_method=S256&redirect_uri=http://localhost:8080/console/login
+// test http://localhost:8080/oauth/authorize?response_type=code&client_id=api-panel&code_challenge=eIVsW83uLPZmbiKwsR7J86HuUoMqpAWFuoLyo36gpaU&code_challenge_method=S256&redirect_uri=http://localhost:8080/oauth/callback
 
 function discordLogin(req: Request, res: Response) {
     res.cookie('oauth_ctx', JSON.stringify(req.query), {

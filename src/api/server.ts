@@ -1,7 +1,7 @@
 import Express, { type ErrorRequestHandler } from 'express'
 import cors from 'cors'
 import v1 from '#/api/v1/route.ts'
-import auth from '#/api/auth/route.ts'
+import auth from '#/api/oauth/route.ts'
 import webhooks from '#/api/webhooks/route.ts'
 import console from '#/api/console/route.ts'
 import files from '#/api/files/route.ts'

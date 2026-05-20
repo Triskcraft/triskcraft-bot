@@ -1,4 +1,4 @@
-import { envs, type WebhookPermission } from '#/config.ts'
+import { PUBLIC_KEY, type WebhookPermission } from '#/config.ts'
 import { db } from '#/db/prisma.ts'
 import type { NextFunction, Request, Response } from 'express'
 import { jwtVerify } from 'jose'
@@ -48,7 +48,7 @@ export function webhookAuth(permissions: WebhookPermission[]) {
             permissions: string[]
             name: string
             iat: number
-        }>(tokenString, envs.JWT_SECRERT).catch(() => null)
+        }>(tokenString, PUBLIC_KEY).catch(() => null)
         if (!jwtPayload) {
             throw new UnauthorizedError()
         }

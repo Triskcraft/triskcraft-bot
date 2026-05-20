@@ -13,7 +13,7 @@ const router = Router()
 
 router.get('/', cookieParser(), async (req, res) => {
     if (typeof req.query.code !== 'string') {
-        return res.redirect('/auth/authorize')
+        return res.redirect('/oauth/authorize')
     }
     const params = new URLSearchParams({
         client_id: envs.DISCORD_CLIENT_ID,
@@ -48,7 +48,7 @@ router.get('/', cookieParser(), async (req, res) => {
             }),
         )
     }
-    res.redirect(`/auth/authorize?${new URLSearchParams(oauthCtx)}`)
+    res.redirect(`/oauth/authorize?${new URLSearchParams(oauthCtx)}`)
 })
 
 export default router

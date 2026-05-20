@@ -22,6 +22,7 @@
 - `docs/03-sistema-posts-blog.md`: sistema editorial de publicaciones.
 - `docs/04-inactividad-y-estadisticas.md`: inactividad, recordatorios y métricas.
 - `docs/05-mapa-de-archivos.md`: este mapa completo.
+- `docs/06-oauth-y-autenticacion.md`: sistema OAuth 2.0 con PKCE e integración Discord.
 
 ## Scripts
 
@@ -40,14 +41,30 @@
 - `src/api/server.ts`: servidor Express, CORS y montaje de rutas.
 - `src/api/errors.ts`: jerarquía de errores HTTP reutilizable.
 - `src/api/webhook-auth.middleware.ts`: autenticación + firma para webhooks.
+
+### OAuth 2.0
+
+- `src/api/oauth/authorize/route.ts`: iniciar flujo OAuth y presentar consentimiento.
+- `src/api/oauth/token/route.ts`: intercambiar authorization_code por tokens.
+- `src/api/oauth/refresh/route.ts`: renovar access_token usando refresh_token.
+- `src/api/oauth/me/route.ts`: obtener información del usuario autenticado.
+- `src/api/oauth/discord/route.ts`: integración con Discord OAuth.
+
+### API v1
+
 - `src/api/v1/route.ts`: agregador de rutas v1.
 - `src/api/v1/members/route.ts`: router de `/v1/members`.
 - `src/api/v1/members/get.ts`: handler de listado enriquecido de miembros.
 - `src/api/v1/posts/route.ts`: router de `/v1/posts`.
 - `src/api/v1/posts/get.ts`: handler de listado enriquecido de posts.
+- `src/api/v1/games/[game]/route.ts`: router de games (Minecraft players).
+
+### Webhooks
+
 - `src/api/webhooks/route.ts`: agregador de rutas webhook.
-- `src/api/webhooks/digs/route.ts`: webhook para actualizar `digs`.
-- `src/api/webhooks/link/route.ts`: webhook para vinculación Discord↔Minecraft.
+- `src/api/webhooks/digs/route.ts`: webhook para actualizar `digs` (POST).
+- `src/api/webhooks/link/route.ts`: webhook para vinculación Discord↔Minecraft (POST).
+- `src/api/webhooks/join/route.ts`: webhook para registrar logins de jugadores (POST).
 
 ## Interacciones Discord (`src/interactions/`)
 
@@ -63,9 +80,15 @@
 - `src/interactions/buttons/inactivity.ts`: botones de autogestión de inactividad.
 - `src/interactions/buttons/wh-add.ts`: abre modal para crear token de webhook.
 - `src/interactions/buttons/wh-delete.ts`: abre confirmación para eliminar token.
+
+#### Blog
+
 - `src/interactions/buttons/blog/blog-create.ts`: inicia creación de borrador.
 - `src/interactions/buttons/blog/blog-title.ts`: modifica título del post.
 - `src/interactions/buttons/blog/blog-post.ts`: cambia estado del post (publicar/despublicar).
+
+#### Roles
+
 - `src/interactions/buttons/role/role-create.ts`: crea rol Minecraft.
 - `src/interactions/buttons/role/role-edit.ts`: renombra rol Minecraft.
 - `src/interactions/buttons/role/role-delete.ts`: elimina rol Minecraft.
@@ -88,7 +111,8 @@
 - `src/interactions/modals/webhook-delete.ts`: confirma borrado de token.
 - `src/interactions/modals/role-create.ts`: crea rol desde formulario.
 - `src/interactions/modals/role-edit.ts`: edita nombre de rol.
-- `src/interactions/modals/blog-create.ts`: captura título para nuevo borrador.
+- `src/interactions/modals/blog/blog-create.ts`: captura título para nuevo borrador (max 100 caracteres).
+- `src/interactions/modals/blog/blog-title.ts`: edita título del post existente.
 
 ## Servicios (`src/services/`)
 
@@ -96,12 +120,12 @@
 - `src/services/inactivity.service.ts`: CRUD de inactividad y despliegue de panel.
 - `src/services/monitored.service.ts`: roles monitorizados y snapshots.
 - `src/services/scheduler.ts`: jobs recurrentes (recordatorios + snapshots).
-- `src/services/webhook.service.ts`: panel de administración de tokens webhook.
+- `src/services/webhook.service.ts`: panel de administración de tokens webhook con permisos granulares.
 - `src/services/digs.service.ts`: sincronización periódica de estadística de minería.
 - `src/services/rank.service.ts`: sincroniza rango Minecraft según roles Discord.
-- `src/services/roles.service.ts`: panel y operaciones de roles Minecraft.
-- `src/services/blog.service.ts`: panel y flujo de publicaciones/blog.
-- `src/services/players.service.ts`: gestiona los players y su estado.
+- `src/services/roles.service.ts`: panel y operaciones de roles Minecraft (filtra jugadores ACTIVE).
+- `src/services/blog.service.ts`: panel y flujo de publicaciones/blog con ciclo de vida (DRAFT → PUBLISHED → OUTDATED).
+- `src/services/players.service.ts`: gestiona los players y su estado, marca como DELETED en baneos.
 
 ## Clases de dominio (`src/classes/`)
 
@@ -145,4 +169,6 @@
 - `src/prisma/migrations/20260202234919_discord_user_username/migration.sql`: campo username en usuario Discord.
 - `src/prisma/migrations/20260202235832_uq_discord_username/migration.sql`: unicidad para username Discord.
 - `src/prisma/migrations/20260301230127_blog/migration.sql`: estructura para posts/blog.
-- `src/prisma/migrations/20260308062159_player_status/migration.sql`: state en la tabla Players para soft delete.
+- `src/prisma/migrations/20260308062159_player_status/migration.sql`: enum PLAYER_STATUS para soft delete (ACTIVE, DELETED).
+- `src/prisma/migrations/20260314152500_last_seen/migration.sql`: campo `last_seen` (Datetime?) para tracking de login.
+- `src/prisma/migrations/20260430073735_oauth_prepare/migration.sql`: sistema OAuth 2.0 completo (tablas users, clients, authorization_codes, sessions).
