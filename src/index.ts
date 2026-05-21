@@ -60,7 +60,6 @@ await deployWebhookPanel()
 initializeRankService()
 // Activa los jobs programados que mantienen el sistema actualizado.
 scheduler.start()
-roleService.start()
 blogService.start()
 welcomeService.start()
 if (envs.ROLE_SERVICE) {
