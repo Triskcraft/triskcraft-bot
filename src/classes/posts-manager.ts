@@ -53,7 +53,7 @@ export class PostsManager {
     }
 
     async delete(id: string) {
-        await db.role.delete({
+        await db.post.delete({
             where: { id },
         })
         this.#cache.delete(id)
