@@ -10,7 +10,7 @@ router.post('/', async (req, res) => {
     if (!authorization) {
         throw new UnauthorizedError()
     }
-    if (/Bearer\s.+/.test(authorization)) {
+    if (!/Bearer\s.+/.test(authorization)) {
         throw new UnauthorizedError()
     }
     const token = authorization.replace('Bearer ', '')
