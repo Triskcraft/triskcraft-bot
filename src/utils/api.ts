@@ -31,7 +31,9 @@ export function getOauthCtxCookie(req: Request): OAuthCtx | null {
     }
 }
 
-export function getDiscordAccessCookie(req: Request): DiscordAccessTokenResponse | null {
+export function getDiscordAccessCookie(
+    req: Request,
+): DiscordAccessTokenResponse | null {
     try {
         const raw = JSON.parse(req.cookies['discord_access'])
         return DiscordAccessSchema.safeParse(raw).data ?? null
@@ -41,7 +43,7 @@ export function getDiscordAccessCookie(req: Request): DiscordAccessTokenResponse
 }
 export async function getSessionCookie(req: Request) {
     try {
-        const cookie = req.cookies['session'] ?? '' // TODO: validate this as {DiscordAccessTokenResponse}
+        const cookie = req.cookies['session'] ?? ''
         return await jwtVerify(cookie, PUBLIC_KEY)
     } catch {
         return null
