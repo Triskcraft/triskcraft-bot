@@ -1,7 +1,7 @@
 import { BadRequestError, UnauthorizedError } from '#/api/errors.ts'
 import { db } from '#/db/prisma.ts'
 import { createJWT } from '#/utils/api.ts'
-import { generateCodeVerifier, hash, weakHash } from '#/utils/encript.ts'
+import { generateCodeVerifier, weakHash } from '#/utils/encript.ts'
 import { Router } from 'express'
 
 const router = Router()
@@ -58,7 +58,7 @@ router.post('/', async (req, res) => {
         where: { id: session.id },
         data: {
             expires_at,
-            refresh_token: await hash(new_refresh_token),
+            refresh_token: weakHash(new_refresh_token),
         },
     })
 
