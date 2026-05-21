@@ -8,9 +8,9 @@ const router = Router()
 
 router.post('/', async (req, res) => {
     const { grant_type, redirect_uri, client_id, refresh_token } = req.body
-    if (grant_type !== 'authorization_code') {
+    if (grant_type !== 'refresh_token') {
         throw new BadRequestError(
-            'Invalid grant_type. Expected "authorization_code".',
+            'Invalid grant_type. Expected "refresh_token".',
         )
     }
     if (!client_id) {
