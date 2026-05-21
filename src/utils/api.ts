@@ -2,6 +2,19 @@ import { envs, PRIVATE_KEY, PUBLIC_KEY } from '#/config.ts'
 import type { Request } from 'express'
 import { SignJWT } from 'jose'
 import { jwtVerify, type JWTPayload as JoseJWTPayload } from 'jose'
+import { z } from 'zod'
+
+const OAuthCtxSchema = z.record(z.string(), z.string())
+export type OAuthCtx = z.infer<typeof OAuthCtxSchema>
+
+const DiscordAccessSchema = z.object({
+    token_type: z.literal('Bearer'),
+    access_token: z.string().min(1),
+    expires_in: z.number(),
+    refresh_token: z.string().min(1),
+    scope: z.string(),
+})
+export type DiscordAccessTokenResponse = z.infer<typeof DiscordAccessSchema>
 
 export async function getSession(req: Request) {
     const discord = getDiscordAccessCookie(req)
@@ -9,37 +22,23 @@ export async function getSession(req: Request) {
     return { discord, session }
 }
 
-export function getOauthCtxCookie(req: Request) {
+export function getOauthCtxCookie(req: Request): OAuthCtx | null {
     try {
-        return JSON.parse(req.cookies['oauth_ctx']) // TODO: validate this
+        const raw = JSON.parse(req.cookies['oauth_ctx'])
+        return OAuthCtxSchema.safeParse(raw).data ?? null
     } catch {
         return null
     }
 }
 
-export interface DiscordAccessTokenResponse {
-    token_type: 'Bearer'
-    access_token: string
-    expires_in: number
-    refresh_token: string
-    scope: string
-}
-export function getDiscordAccessCookie(req: Request) {
+export function getDiscordAccessCookie(req: Request): DiscordAccessTokenResponse | null {
     try {
-        return JSON.parse(
-            req.cookies['discord_access'],
-        ) as DiscordAccessTokenResponse // TODO: validate this as {DiscordAccessTokenResponse}
+        const raw = JSON.parse(req.cookies['discord_access'])
+        return DiscordAccessSchema.safeParse(raw).data ?? null
     } catch {
         return null
     }
 }
-// interface DiscordAccessTokenResponse {
-//     token_type: 'Bearer'
-//     access_token: string
-//     expires_in: number
-//     refresh_token: string
-//     scope: string
-// }
 export async function getSessionCookie(req: Request) {
     try {
         const cookie = req.cookies['session'] ?? '' // TODO: validate this as {DiscordAccessTokenResponse}
