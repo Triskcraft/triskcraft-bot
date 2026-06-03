@@ -43,7 +43,15 @@ router.post('/', async (req, res) => {
         },
         select: {
             created_at: true,
-            rank: scopes.includes('identify'),
+            linked_roles: {
+                select: {
+                    role: {
+                        select: {
+                            name: true,
+                        },
+                    },
+                },
+            },
             discord_user: {
                 select: {
                     id: true,
@@ -55,7 +63,6 @@ router.post('/', async (req, res) => {
                     uuid: true,
                     nickname: true,
                     digs: true,
-                    rank: true,
                     medias: {
                         select: {
                             type: true,
@@ -81,6 +88,7 @@ router.post('/', async (req, res) => {
     }
 
     const response: Record<string, unknown> = {}
+    const rank = user.linked_roles[0]?.role.name ?? 'User'
 
     if (scopes.includes('openid')) {
         response.sub = payload.sub
@@ -91,7 +99,7 @@ router.post('/', async (req, res) => {
 
     if (scopes.includes('identify')) {
         response.id = payload.sub
-        response.rank = user.rank
+        response.rank = rank
         response.created_at = user.created_at.getTime()
         response.discord_user = user.discord_user
     }
@@ -103,7 +111,7 @@ router.post('/', async (req, res) => {
                     digs: user.mc_player.digs,
                     nickname: user.mc_player.nickname,
                     uuid: user.mc_player.uuid,
-                    rank: user.mc_player.rank,
+                    rank,
                     user_id: payload.sub,
                     medias: user.mc_player.medias,
                     roles: user.mc_player.linked_roles.map(lr => lr.role.name),

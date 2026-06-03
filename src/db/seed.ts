@@ -4,7 +4,7 @@ import { logger } from '#/logger.ts'
 import { PrismaClientKnownRequestError } from '#/db/generated/internal/prismaNamespace.ts'
 
 try {
-    const defaultRole = await db.role.create({
+    const defaultRole = await db.minecraftRole.create({
         data: {
             name: envs.DEFAULT_ROLE_NAME,
         },

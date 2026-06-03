@@ -206,6 +206,7 @@ router.get('/', cookieParser(), async (req, res) => {
             }),
         )
     }
+    const serializedScopes = serializeScopes(requestedScopes)
 
     const session = await getSession(req)
 
@@ -231,6 +232,9 @@ router.get('/', cookieParser(), async (req, res) => {
         },
     })
     const discordUser = (await request.json()) as APIUser
+    const roleName =
+        discordUser.id === envs.SUPER_USER_DISCORD_ID ? 'super' : 'user'
+    const rolePermissions = roleName === 'super' ? 1n : 0n
 
     const user = await db.user.upsert({
         create: {
@@ -240,6 +244,19 @@ router.get('/', cookieParser(), async (req, res) => {
                     create: {
                         id: discordUser.id,
                         username: discordUser.username,
+                    },
+                },
+            },
+            linked_roles: {
+                create: {
+                    role: {
+                        connectOrCreate: {
+                            where: { name: roleName },
+                            create: {
+                                name: roleName,
+                                permissions: rolePermissions,
+                            },
+                        },
                     },
                 },
             },
@@ -258,6 +275,7 @@ router.get('/', cookieParser(), async (req, res) => {
 
     const jwt = await new SignJWT({
         sub: user.id,
+        scope: serializedScopes,
     })
         .setProtectedHeader({ alg: 'RS256' })
         .setIssuedAt()
@@ -283,7 +301,7 @@ router.get('/', cookieParser(), async (req, res) => {
             code_challenge,
             expires_at: new Date(Date.now() + 5 * 60 * 1000), // 5 min
             client_id: client.id,
-            scope: serializeScopes(requestedScopes),
+            scope: serializedScopes,
         },
     })
 
