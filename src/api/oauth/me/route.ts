@@ -1,6 +1,7 @@
-import { InternalServerError, UnauthorizedError } from '#/api/errors.ts'
+import { ForbiddenError, InternalServerError, UnauthorizedError } from '#/api/errors.ts'
 import { db } from '#/db/prisma.ts'
 import { verifyToken } from '#/utils/encript.ts'
+import { parseScopes } from '#/utils/api.ts'
 import { Router } from 'express'
 
 const router = Router()
@@ -10,7 +11,7 @@ router.post('/', async (req, res) => {
     if (!authorization) {
         throw new UnauthorizedError()
     }
-    if (/Bearer\s.+/.test(authorization)) {
+    if (!/Bearer\s.+/.test(authorization)) {
         throw new UnauthorizedError()
     }
     const token = authorization.replace('Bearer ', '')
@@ -19,6 +20,10 @@ router.post('/', async (req, res) => {
         sub: string
         session_id: string
         client_id: string
+        aud: string
+        exp?: number
+        iss?: string
+        scope: string
     }>(token)
 
     if (!verify) {
@@ -26,24 +31,53 @@ router.post('/', async (req, res) => {
     }
 
     const { payload } = verify
+    const scopes = parseScopes(payload.scope)
+
+    if (!scopes.length) {
+        throw new ForbiddenError('Missing required scope.')
+    }
 
     const user = await db.user.findUnique({
         where: {
             id: verify.payload.sub,
         },
         select: {
-            rank: true,
             created_at: true,
+            linked_roles: {
+                select: {
+                    role: {
+                        select: {
+                            name: true,
+                        },
+                    },
+                },
+            },
             discord_user: {
                 select: {
                     id: true,
-                    username: true,
+                    username: scopes.includes('identify'),
                 },
             },
             mc_player: {
                 select: {
                     uuid: true,
                     nickname: true,
+                    digs: true,
+                    medias: {
+                        select: {
+                            type: true,
+                            url: true,
+                        },
+                    },
+                    linked_roles: {
+                        select: {
+                            role: {
+                                select: {
+                                    name: true,
+                                },
+                            },
+                        },
+                    },
                 },
             },
         },
@@ -53,13 +87,39 @@ router.post('/', async (req, res) => {
         throw new InternalServerError()
     }
 
-    return res.json({
-        id: payload.sub,
-        rank: user.rank,
-        created_at: user.created_at.getTime(),
-        discord_user: user.discord_user,
-        mc_player: user.mc_player,
-    })
+    const response: Record<string, unknown> = {}
+    const rank = user.linked_roles[0]?.role.name ?? 'User'
+
+    if (scopes.includes('openid')) {
+        response.sub = payload.sub
+        response.iss = payload.iss
+        response.aud = payload.aud
+        response.exp = payload.exp
+    }
+
+    if (scopes.includes('identify')) {
+        response.id = payload.sub
+        response.rank = rank
+        response.created_at = user.created_at.getTime()
+        response.discord_user = user.discord_user
+    }
+
+    if (scopes.includes('minecraft')) {
+        response.mc_player =
+            user.mc_player ?
+                {
+                    digs: user.mc_player.digs,
+                    nickname: user.mc_player.nickname,
+                    uuid: user.mc_player.uuid,
+                    rank,
+                    user_id: payload.sub,
+                    medias: user.mc_player.medias,
+                    roles: user.mc_player.linked_roles.map(lr => lr.role.name),
+                }
+            :   null
+    }
+
+    return res.json(response)
 })
 
 export default router

@@ -21,7 +21,7 @@ import type { WebhookToken } from '#/db/generated/client.ts'
 import { PrismaClientKnownRequestError } from '#/db/generated/internal/prismaNamespace.ts'
 import { logger } from '#/logger.ts'
 
-const alg = 'HS256'
+const alg = 'RS256'
 
 const Permissions = {
     [WEBHOOK_PERMISSIONS.DIGS]: 'Webhook de digs',

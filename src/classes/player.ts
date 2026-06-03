@@ -1,6 +1,5 @@
 import { envs } from '#/config.ts'
 import { db } from '#/db/prisma.ts'
-import { PLAYER_STATUS } from '#/db/generated/enums.ts'
 import { inspect } from 'node:util'
 
 export class Player {
@@ -22,34 +21,34 @@ export class Player {
         return this.#discord_user_id
     }
 
-    #rank: string
+    #role: string
 
-    get rank() {
-        return this.#rank
+    get role() {
+        return this.#role
     }
 
     constructor({
         discord_user_id,
         nickname,
         uuid,
-        rank = envs.DEFAULT_RANK,
+        role = envs.DEFAULT_RANK,
     }: {
         uuid: string
         nickname: string
         discord_user_id: string
-        rank?: string
+        role?: string
     }) {
         this.#uuid = uuid
         this.#nicknname = nickname
         this.#discord_user_id = discord_user_id
-        this.#rank = rank
+        this.#role = role
     }
 
     toJSON() {
         return {
             uuid: this.#uuid,
             nicknname: this.#nicknname,
-            rank: this.#rank,
+            rank: this.#role,
             discord_user_id: this.#discord_user_id,
         }
     }
@@ -58,12 +57,19 @@ export class Player {
         return this.toJSON()
     }
 
-    async setRank(rank: string) {
-        await db.player.update({
-            where: { uuid: this.#uuid, status: PLAYER_STATUS.ACTIVE },
-            data: { rank },
+    async setRole(role: string) {
+        await db.linkedMinecraftRole.deleteMany({
+            where: {
+                mc_user_uuid: this.#uuid,
+            },
         })
-        this.#rank = rank
+        await db.linkedMinecraftRole.create({
+            data: {
+                mc_user_uuid: this.#uuid,
+                role_id: role,
+            },
+        })
+        this.#role = role
         return this
     }
 }

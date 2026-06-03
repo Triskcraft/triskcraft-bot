@@ -47,11 +47,12 @@ Este bot unifica cuatro necesidades operativas de la comunidad:
 ## 5) Autenticación OAuth 2.0
 
 - **`src/api/oauth/`** expone endpoints de autenticación con PKCE:
-    - `GET /auth/oauth/authorize` - Iniciar flujo de autorización
-    - `POST /auth/oauth/token` - Intercambiar código por tokens
-    - `GET /auth/oauth/refresh` - Renovar access tokens
-    - `GET /auth/oauth/me` - Información del usuario autenticado
+    - `GET /auth/authorize` - Iniciar flujo de autorización
+    - `POST /auth/token` - Intercambiar código por tokens
+    - `POST /auth/refresh` - Renovar access tokens
+    - `POST /auth/me` - Información del usuario autenticado según scopes
 - **Tablas asociadas**: `users`, `clients`, `authorization_codes`, `sessions`
+- **Scopes disponibles**: `openid`, `identify`, `minecraft`
 - **Integración con Discord OAuth** para autenticación transparente
 
 **Por qué existe:** permite que aplicaciones terceras accedan al sistema de forma segura sin exponer credenciales.

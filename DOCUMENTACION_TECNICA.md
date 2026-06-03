@@ -153,32 +153,49 @@ El sistema OAuth implementa un flujo de autorización con PKCE y refresh tokens 
 
 ### Endpoints OAuth
 
-- `GET /auth/oauth/authorize` - inicia el flujo de autorización.
-- `POST /auth/oauth/token` - intercambia authorization code por tokens.
-- `GET /auth/oauth/refresh` - renueva el access token.
-- `GET /auth/oauth/me` - obtiene la información del usuario autenticado.
-- `GET /auth/oauth/discord` - integración con Discord OAuth.
+- `GET /auth/authorize` - inicia el flujo de autorización.
+- `POST /auth/token` - intercambia authorization code por tokens.
+- `POST /auth/refresh` - renueva el access token.
+- `POST /auth/me` - obtiene la información del usuario autenticado según scopes.
+- `GET /auth/discord` - integración con Discord OAuth.
 
 ### Modelo de datos clave
 
 - `User` - usuario canónico del sistema que une `DiscordUser` y `Player`.
-- `Client` - aplicación OAuth autorizada con URIs de redirección.
-- `AuthorizationCode` - códigos temporales con `code_challenge` para PKCE.
-- `Session` - sesiones con `refresh_token` para renovar accesos.
+- `Client` - aplicación OAuth autorizada con URIs de redirección y scopes permitidos.
+- `AuthorizationCode` - códigos temporales con `code_challenge` y scopes concedidos para PKCE.
+- `Session` - sesiones con `refresh_token` y scopes para renovar accesos.
+
+### Scopes OAuth
+
+Los scopes se piden en `GET /auth/authorize` mediante `scope`, separados por espacio. El servidor valida que todos los scopes sean conocidos y que el cliente esté autorizado a solicitarlos.
+
+- `openid` - habilita claims de identidad en `/auth/me`: `sub`, `iss`, `aud`, `exp`.
+- `identify` - habilita datos generales del usuario: `id`, `rank`, `created_at`, `discord_user`.
+- `minecraft` - habilita datos del jugador vinculado: `mc_player` con `digs`, `nickname`, `uuid`, `rank`, `user_id`, `medias`, `roles`.
+
+Ejemplo de solicitud:
+
+```text
+scope=openid identify minecraft
+```
 
 ### Flujo de autorización
 
 1. El cliente genera `code_verifier` y `code_challenge`.
-2. Redirige a `/auth/oauth/authorize` con `client_id`, `redirect_uri` y `code_challenge`.
-3. El servidor valida el cliente y emite un authorization code.
-4. El cliente intercambia el code en `/auth/oauth/token` enviando el `code_verifier`.
+2. Redirige a `/auth/authorize` con `client_id`, `redirect_uri`, `code_challenge` y `scope`.
+3. El servidor valida el cliente, redirect URI y scopes, y emite un authorization code.
+4. El cliente intercambia el code en `/auth/token` enviando el `code_verifier`.
 5. El servidor valida la firma PKCE y devuelve `access_token` + `refresh_token`.
+6. El access token conserva los scopes concedidos; `/auth/me` arma la respuesta sólo con las secciones permitidas.
 
 ### Seguridad OAuth
 
 - PKCE evita que un authorization code interceptado sea reutilizado.
 - `Client.redirect_uris` se valida estrictamente.
-- `Session.refresh_token` está almacenado como valor único para revocación.
+- `Client.scopes` limita qué datos puede solicitar cada aplicación.
+- `Session.refresh_token` está almacenado como hash único para revocación.
+- `Session.scope` conserva los permisos al renovar tokens.
 - `access_token` es un JWT firmado por el servidor.
 
 ---

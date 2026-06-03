@@ -39,7 +39,7 @@ export default class extends ModalInteractionHandler {
                 })
                 return
             }
-            inactivityService.markInactivity(
+            await inactivityService.markInactivity(
                 interaction.guildId,
                 interaction.member,
                 untilDate.toJSDate(),

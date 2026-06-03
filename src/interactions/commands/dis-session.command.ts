@@ -7,6 +7,7 @@ import {
 import { db } from '#/db/prisma.ts'
 import { logger } from '#/logger.ts'
 import type { CommandInteractionHandler } from '#/services/interactions.service.ts'
+import { randomInt } from 'node:crypto'
 
 /**
  * Genera un código de vinculación de sesión y lo persiste en la base de datos.
@@ -15,9 +16,7 @@ import type { CommandInteractionHandler } from '#/services/interactions.service.
 export default class implements CommandInteractionHandler {
     name = 'dis-session'
     async run(interaction: ChatInputCommandInteraction<'cached'>) {
-        const code = Math.floor(Math.random() * 1000000)
-            .toString()
-            .padStart(6, '0')
+        const code = randomInt(100000, 999999).toString()
         const discord_id = interaction.user.id
         const username = interaction.user.username
         const discord_nickname = interaction.member?.displayName || username

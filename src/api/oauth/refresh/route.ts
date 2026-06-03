@@ -1,16 +1,16 @@
 import { BadRequestError, UnauthorizedError } from '#/api/errors.ts'
 import { db } from '#/db/prisma.ts'
 import { createJWT } from '#/utils/api.ts'
-import { generateCodeVerifier, hash, weakHash } from '#/utils/encript.ts'
+import { generateCodeVerifier, weakHash } from '#/utils/encript.ts'
 import { Router } from 'express'
 
 const router = Router()
 
 router.post('/', async (req, res) => {
     const { grant_type, redirect_uri, client_id, refresh_token } = req.body
-    if (grant_type !== 'authorization_code') {
+    if (grant_type !== 'refresh_token') {
         throw new BadRequestError(
-            'Invalid grant_type. Expected "authorization_code".',
+            'Invalid grant_type. Expected "refresh_token".',
         )
     }
     if (!client_id) {
@@ -31,11 +31,16 @@ router.post('/', async (req, res) => {
         where: { refresh_token: weakHash(refresh_token) },
         select: {
             id: true,
+            client_id: true,
+            scope: true,
             user_id: true,
         },
     })
 
     if (!session) {
+        throw new UnauthorizedError()
+    }
+    if (session.client_id !== client_id) {
         throw new UnauthorizedError()
     }
 
@@ -48,8 +53,9 @@ router.post('/', async (req, res) => {
     const access_token = await createJWT({
         session_id: session.id,
         sub: session.user_id,
-        client_id,
-        aud: client_id,
+        client_id: session.client_id,
+        aud: session.client_id,
+        scope: session.scope,
     })
 
     const new_refresh_token = generateCodeVerifier()
@@ -58,7 +64,7 @@ router.post('/', async (req, res) => {
         where: { id: session.id },
         data: {
             expires_at,
-            refresh_token: await hash(new_refresh_token),
+            refresh_token: weakHash(new_refresh_token),
         },
     })
 
@@ -67,6 +73,7 @@ router.post('/', async (req, res) => {
         token_type: 'Bearer',
         expires_in: 60 * 60 * 24,
         refresh_token: new_refresh_token,
+        scope: session.scope,
     })
 })
 

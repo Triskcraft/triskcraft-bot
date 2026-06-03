@@ -28,13 +28,26 @@ export async function getMembers(req: Request, res: Response) {
                     },
                 },
             },
+            user: {
+                select: {
+                    linked_roles: {
+                        select: {
+                            role: {
+                                select: {
+                                    name: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
     })
     const pobled = members.map(
         ({
             description,
             digs,
-            rank,
+            user,
             linked_roles,
             medias,
             nickname: mc_name,
@@ -47,7 +60,7 @@ export async function getMembers(req: Request, res: Response) {
                 mc_name,
                 mc_uuid,
                 medias,
-                rank,
+                rank: user?.linked_roles[0]?.role.name ?? 'User',
                 roles,
             } satisfies Member
         },
