@@ -31,11 +31,16 @@ router.post('/', async (req, res) => {
         where: { refresh_token: weakHash(refresh_token) },
         select: {
             id: true,
+            client_id: true,
+            scope: true,
             user_id: true,
         },
     })
 
     if (!session) {
+        throw new UnauthorizedError()
+    }
+    if (session.client_id !== client_id) {
         throw new UnauthorizedError()
     }
 
@@ -48,8 +53,9 @@ router.post('/', async (req, res) => {
     const access_token = await createJWT({
         session_id: session.id,
         sub: session.user_id,
-        client_id,
-        aud: client_id,
+        client_id: session.client_id,
+        aud: session.client_id,
+        scope: session.scope,
     })
 
     const new_refresh_token = generateCodeVerifier()
@@ -67,6 +73,7 @@ router.post('/', async (req, res) => {
         token_type: 'Bearer',
         expires_in: 60 * 60 * 24,
         refresh_token: new_refresh_token,
+        scope: session.scope,
     })
 })
 

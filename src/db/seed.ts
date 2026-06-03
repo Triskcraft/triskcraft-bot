@@ -34,6 +34,7 @@ if (!clientCount) {
                 'http://localhost:8080/oauth/callback',
                 'https://api.triskcraft.com/oauth/callback',
             ],
+            scopes: ['openid', 'identify', 'minecraft'],
         },
     })
 }

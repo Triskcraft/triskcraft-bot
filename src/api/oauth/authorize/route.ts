@@ -1,6 +1,12 @@
 import { envs, PRIVATE_KEY } from '#/config.ts'
 import { db } from '#/db/prisma.ts'
-import { getSession, refreshToken } from '#/utils/api.ts'
+import {
+    OAUTH_SCOPES,
+    getSession,
+    parseScopes,
+    refreshToken,
+    serializeScopes,
+} from '#/utils/api.ts'
 import { render } from '#/utils/html.ts'
 import { ErrorCard } from '#/web/components/error-card.ts'
 import { Layout } from '#/web/components/layout.ts'
@@ -19,6 +25,7 @@ router.get('/', cookieParser(), async (req, res) => {
         redirect_uri,
         code_challenge,
         code_challenge_method,
+        scope,
         state,
     } = req.query
 
@@ -125,6 +132,7 @@ router.get('/', cookieParser(), async (req, res) => {
         select: {
             id: true,
             redirect_uris: true,
+            scopes: true,
         },
     })
 
@@ -151,6 +159,49 @@ router.get('/', cookieParser(), async (req, res) => {
                     title: 'Bad Request',
                     message:
                         'Invalid redirect_uri. The provided redirect_uri is not registered for the given client_id.',
+                }),
+            }),
+        )
+    }
+
+    const requestedScopes = parseScopes(scope)
+    const requestedScopeNames = new Set(
+        typeof scope === 'string' ?
+            scope
+                .split(/\s+/)
+                .map(s => s.trim())
+                .filter(Boolean)
+        :   [],
+    )
+
+    if (requestedScopes.length !== requestedScopeNames.size) {
+        return render(
+            res,
+            Layout({
+                children: ErrorCard({
+                    code: 400,
+                    title: 'Bad Request',
+                    message: 'Invalid scope.',
+                }),
+            }),
+        )
+    }
+
+    const allowedScopes =
+        client.scopes?.length > 0 ? client.scopes : [...OAUTH_SCOPES]
+    const invalidClientScopes = requestedScopes.filter(
+        scope => !allowedScopes.includes(scope),
+    )
+
+    if (invalidClientScopes.length) {
+        return render(
+            res,
+            Layout({
+                children: ErrorCard({
+                    code: 400,
+                    title: 'Bad Request',
+                    message:
+                        'Invalid scope. The client is not allowed to request one or more scopes.',
                 }),
             }),
         )
@@ -232,6 +283,7 @@ router.get('/', cookieParser(), async (req, res) => {
             code_challenge,
             expires_at: new Date(Date.now() + 5 * 60 * 1000), // 5 min
             client_id: client.id,
+            scope: serializeScopes(requestedScopes),
         },
     })
 

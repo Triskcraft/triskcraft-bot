@@ -4,6 +4,28 @@ import { SignJWT } from 'jose'
 import { jwtVerify, type JWTPayload as JoseJWTPayload } from 'jose'
 import { z } from 'zod'
 
+export const OAUTH_SCOPES = ['openid', 'identify', 'minecraft'] as const
+export type OAuthScope = (typeof OAUTH_SCOPES)[number]
+
+export function parseScopes(scope: unknown): OAuthScope[] {
+    if (typeof scope !== 'string') {
+        return []
+    }
+
+    const requested = new Set(
+        scope
+            .split(/\s+/)
+            .map(s => s.trim())
+            .filter(Boolean),
+    )
+
+    return OAUTH_SCOPES.filter(scope => requested.has(scope))
+}
+
+export function serializeScopes(scopes: readonly OAuthScope[]) {
+    return scopes.join(' ')
+}
+
 const OAuthCtxSchema = z.record(z.string(), z.string())
 export type OAuthCtx = z.infer<typeof OAuthCtxSchema>
 
@@ -77,6 +99,7 @@ export async function refreshToken(refresh_token: string) {
 export interface JWTPayload extends JoseJWTPayload {
     aud: string
     client_id: string
+    scope: string
     sub: string
     session_id: string
 }
