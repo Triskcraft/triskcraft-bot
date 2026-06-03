@@ -51,3 +51,16 @@ if (!superRole) {
         },
     })
 }
+
+const userRole = await db.role.findUnique({
+    where: { name: 'user' },
+})
+
+if (!userRole) {
+    await db.role.create({
+        data: {
+            name: 'user',
+            permissions: 0,
+        },
+    })
+}
