@@ -2,8 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/dineug/erd-editor/main/json-schema/schema.json",
   "version": "3.0.0",
   "settings": {
-    "width": 2000,
-    "height": 2000,
+    "width": 2200,
+    "height": 2200,
     "scrollTop": 0,
     "scrollLeft": 0,
     "zoomLevel": 1,
@@ -31,979 +31,634 @@
   },
   "doc": {
     "tableIds": [
-      "b8nl1d9q1L_OVrVyFu5Ep",
-      "n9NjBRzd61itcrapIFLdG",
-      "pECNhZMNZeVe28wxGPj1Q",
-      "UGhWVLlojdQeC5QLHkbwZ",
-      "zqLzFlMfEfTSYFAHoKV-p",
-      "hosHFkkJm_RzAUmJnWa0R",
-      "8M0iaeBZJGmInhPC2TgAp",
-      "awFsLieJv3UqMDztul_Yc",
-      "3_9V8n4eraYwE5RkJdFhU"
+      "tbl_inactivity_periods",
+      "tbl_tracked_roles",
+      "tbl_role_statistics",
+      "tbl_link_codes",
+      "tbl_roles",
+      "tbl_linked_roles",
+      "tbl_medias",
+      "tbl_minecraft_users",
+      "tbl_discord_users",
+      "tbl_webhook_tokens",
+      "tbl_states",
+      "tbl_posts",
+      "tbl_post_blocks",
+      "tbl_users",
+      "tbl_clients",
+      "tbl_authorization_codes",
+      "tbl_sessions"
     ],
     "relationshipIds": [
-      "eiQBxShrsROfyvboYNA7r",
-      "D4HikRXg9FXHU_phCLZIl",
-      "cK9echvGHTWDTgzHuV-cd",
-      "V6E_kuyiRyjza_LPaXapf",
-      "of1cZ1Ty6LzXmoibaVcus",
-      "pE3Hxm8mdUNxWXjICby8x"
+      "rel_inactivity_discord_user",
+      "rel_link_codes_discord_user",
+      "rel_linked_roles_role",
+      "rel_linked_roles_player",
+      "rel_medias_player",
+      "rel_player_discord_user",
+      "rel_webhook_tokens_discord_user",
+      "rel_posts_discord_user",
+      "rel_posts_player",
+      "rel_post_blocks_author",
+      "rel_post_blocks_post",
+      "rel_users_player",
+      "rel_users_discord_user",
+      "rel_authorization_codes_user",
+      "rel_authorization_codes_client",
+      "rel_sessions_user",
+      "rel_sessions_client"
     ],
     "indexIds": [],
     "memoIds": []
   },
   "collections": {
     "tableEntities": {
-      "b8nl1d9q1L_OVrVyFu5Ep": {
-        "id": "b8nl1d9q1L_OVrVyFu5Ep",
-        "name": "minecraft_users",
-        "comment": "",
-        "columnIds": [
-          "-BJV0uOld_8HZt9w8zPOd",
-          "lt0_uZCC3BZBmw9_BSqVH",
-          "WACI1derDfi1hPPAfF_tb",
-          "WJav6Xez5pGjuX4UquVnX",
-          "bgUkrLbKPT5dymHDOaLSv"
-        ],
-        "seqColumnIds": [
-          "-BJV0uOld_8HZt9w8zPOd",
-          "lt0_uZCC3BZBmw9_BSqVH",
-          "WACI1derDfi1hPPAfF_tb",
-          "WJav6Xez5pGjuX4UquVnX",
-          "54djxzshkvmOHdJa5mvhh",
-          "bgUkrLbKPT5dymHDOaLSv"
-        ],
-        "ui": {
-          "x": 672,
-          "y": 518,
-          "zIndex": 2,
-          "widthName": 84,
-          "widthComment": 60,
-          "color": ""
-        },
-        "meta": {
-          "updateAt": 1767139216794,
-          "createAt": 1767137352135
-        }
-      },
-      "n9NjBRzd61itcrapIFLdG": {
-        "id": "n9NjBRzd61itcrapIFLdG",
-        "name": "discord_users",
-        "comment": "",
-        "columnIds": [
-          "bAdyL9_ezfWdFJLmp8jCO",
-          "rM3je-3Wc5X89te384cj1"
-        ],
-        "seqColumnIds": [
-          "bAdyL9_ezfWdFJLmp8jCO",
-          "X2I-k6dOU4FbKU3N-dzDZ",
-          "rM3je-3Wc5X89te384cj1"
-        ],
-        "ui": {
-          "x": 571,
-          "y": 340,
-          "zIndex": 14,
-          "widthName": 73,
-          "widthComment": 60,
-          "color": ""
-        },
-        "meta": {
-          "updateAt": 1768957711215,
-          "createAt": 1767137449769
-        }
-      },
-      "pECNhZMNZeVe28wxGPj1Q": {
-        "id": "pECNhZMNZeVe28wxGPj1Q",
-        "name": "medias",
-        "comment": "",
-        "columnIds": [
-          "F83h9cDgTJNFwPvW6rC_n",
-          "FOllJdUixUCosKvDYWEdV",
-          "lDw1pB_f2ObHHLF8se_QI",
-          "1TLnO2uHEQni_nV0dWJcz"
-        ],
-        "seqColumnIds": [
-          "F83h9cDgTJNFwPvW6rC_n",
-          "t6faPlYpfmwypDObpi_ZE",
-          "FOllJdUixUCosKvDYWEdV",
-          "lDw1pB_f2ObHHLF8se_QI",
-          "1TLnO2uHEQni_nV0dWJcz"
-        ],
-        "ui": {
-          "x": 46,
-          "y": 337,
-          "zIndex": 21,
-          "widthName": 60,
-          "widthComment": 60,
-          "color": ""
-        },
-        "meta": {
-          "updateAt": 1767138944935,
-          "createAt": 1767137500424
-        }
-      },
-      "UGhWVLlojdQeC5QLHkbwZ": {
-        "id": "UGhWVLlojdQeC5QLHkbwZ",
-        "name": "roles",
-        "comment": "",
-        "columnIds": [
-          "m8JV99-cnhEqf4sUQyB5s",
-          "CbzKBwOGry8UgEYn7b01o"
-        ],
-        "seqColumnIds": [
-          "m8JV99-cnhEqf4sUQyB5s",
-          "CbzKBwOGry8UgEYn7b01o"
-        ],
-        "ui": {
-          "x": 76.2691,
-          "y": 920.7896,
-          "zIndex": 56,
-          "widthName": 60,
-          "widthComment": 60,
-          "color": ""
-        },
-        "meta": {
-          "updateAt": 1767138024544,
-          "createAt": 1767137677710
-        }
-      },
-      "zqLzFlMfEfTSYFAHoKV-p": {
-        "id": "zqLzFlMfEfTSYFAHoKV-p",
-        "name": "linked_roles",
-        "comment": "",
-        "columnIds": [
-          "IvrQCRfUxfhGb-aVJjXS-",
-          "_GXQZrFym0YOUBp52caKp"
-        ],
-        "seqColumnIds": [
-          "rXO18qH1foUW0_qN6VTB5",
-          "IvrQCRfUxfhGb-aVJjXS-",
-          "_GXQZrFym0YOUBp52caKp"
-        ],
-        "ui": {
-          "x": 71.2691,
-          "y": 663.7896,
-          "zIndex": 69,
-          "widthName": 64,
-          "widthComment": 60,
-          "color": ""
-        },
-        "meta": {
-          "updateAt": 1767138024544,
-          "createAt": 1767137722010
-        }
-      },
-      "hosHFkkJm_RzAUmJnWa0R": {
-        "id": "hosHFkkJm_RzAUmJnWa0R",
-        "name": "link_codes",
-        "comment": "",
-        "columnIds": [
-          "lfwpEgOxezbyyN5F8_Y82",
-          "IqieScUqN_PR0VFGaDDZw",
-          "FxUNIZ0c9zT4IAP77Eh50",
-          "U1ZLFoZG_J0TD0YJFgIIo"
-        ],
-        "seqColumnIds": [
-          "lfwpEgOxezbyyN5F8_Y82",
-          "IqieScUqN_PR0VFGaDDZw",
-          "FxUNIZ0c9zT4IAP77Eh50",
-          "U1ZLFoZG_J0TD0YJFgIIo"
-        ],
-        "ui": {
-          "x": 69.2691,
-          "y": 45.7896,
-          "zIndex": 81,
-          "widthName": 60,
-          "widthComment": 60,
-          "color": ""
-        },
-        "meta": {
-          "updateAt": 1767139178856,
-          "createAt": 1767137792345
-        }
-      },
-      "8M0iaeBZJGmInhPC2TgAp": {
-        "id": "8M0iaeBZJGmInhPC2TgAp",
-        "name": "tracked_roles",
-        "comment": "",
-        "columnIds": [
-          "LQYbZL1pkrNYgxjMNoSMP",
-          "DURl41_l80oZLyouDCwPD",
-          "Cwch3_8KcHayjd2ZuY2F_"
-        ],
-        "seqColumnIds": [
-          "LQYbZL1pkrNYgxjMNoSMP",
-          "DURl41_l80oZLyouDCwPD",
-          "Cwch3_8KcHayjd2ZuY2F_"
-        ],
-        "ui": {
-          "x": 652.2691,
-          "y": 1045.7896,
-          "zIndex": 126,
-          "widthName": 72,
-          "widthComment": 60,
-          "color": ""
-        },
-        "meta": {
-          "updateAt": 1767138941582,
-          "createAt": 1767138738072
-        }
-      },
-      "awFsLieJv3UqMDztul_Yc": {
-        "id": "awFsLieJv3UqMDztul_Yc",
-        "name": "role_statistics",
-        "comment": "",
-        "columnIds": [
-          "C2dendjTE5RYAtKmVp_3E",
-          "JBEeYtztWHavGJueUvk8r",
-          "0Folm2MYXg3lfOjTpdcF0",
-          "hTfMtdY7--GVA7T0KK_m7",
-          "iBCltc_AEGtGhvkYN4dD3",
-          "nDKlmERmdbil5dxLnfwjZ"
-        ],
-        "seqColumnIds": [
-          "C2dendjTE5RYAtKmVp_3E",
-          "JBEeYtztWHavGJueUvk8r",
-          "0Folm2MYXg3lfOjTpdcF0",
-          "hTfMtdY7--GVA7T0KK_m7",
-          "iBCltc_AEGtGhvkYN4dD3",
-          "nDKlmERmdbil5dxLnfwjZ"
-        ],
-        "ui": {
-          "x": 642.2691,
-          "y": 788.7896,
-          "zIndex": 150,
-          "widthName": 72,
-          "widthComment": 60,
-          "color": ""
-        },
-        "meta": {
-          "updateAt": 1767138921980,
-          "createAt": 1767138800050
-        }
-      },
-      "3_9V8n4eraYwE5RkJdFhU": {
-        "id": "3_9V8n4eraYwE5RkJdFhU",
+      "tbl_inactivity_periods": {
+        "id": "tbl_inactivity_periods",
         "name": "inactivity_periods",
         "comment": "",
         "columnIds": [
-          "NiLZV0OKzNna4sM1hXXmL",
-          "UbZsBH8MtHlIV7u0qG7u8",
-          "43Mi1_wFB75gQNu4ggqWM",
-          "oXWLYZltldatqiV5rpqNs",
-          "pcnA95P_YKPr0VhlNiAii",
-          "fiz6bECWrOAi9ydcvcnEu",
-          "1tUVmA07rNOyXYrj5owsU"
+          "col_inactivity_user_id",
+          "col_inactivity_guild_id",
+          "col_inactivity_role_snapshot",
+          "col_inactivity_started_at",
+          "col_inactivity_ends_at",
+          "col_inactivity_source",
+          "col_inactivity_notified"
         ],
         "seqColumnIds": [
-          "Z4inzBrV_0oL9LFVhEgSW",
-          "NiLZV0OKzNna4sM1hXXmL",
-          "UbZsBH8MtHlIV7u0qG7u8",
-          "rx21Y93ASz3cJUgEEfIha",
-          "43Mi1_wFB75gQNu4ggqWM",
-          "oXWLYZltldatqiV5rpqNs",
-          "pcnA95P_YKPr0VhlNiAii",
-          "fiz6bECWrOAi9ydcvcnEu",
-          "1tUVmA07rNOyXYrj5owsU"
+          "col_inactivity_user_id",
+          "col_inactivity_guild_id",
+          "col_inactivity_role_snapshot",
+          "col_inactivity_started_at",
+          "col_inactivity_ends_at",
+          "col_inactivity_source",
+          "col_inactivity_notified"
         ],
         "ui": {
-          "x": 606.2691,
-          "y": 35.7896,
-          "zIndex": 192,
+          "x": 225.7936,
+          "y": 1159.7889,
+          "zIndex": 1,
           "widthName": 93,
           "widthComment": 60,
           "color": ""
         },
         "meta": {
-          "updateAt": 1767139212847,
-          "createAt": 1767138954865
+          "updateAt": 1780469989375,
+          "createAt": 1780469686502
+        }
+      },
+      "tbl_tracked_roles": {
+        "id": "tbl_tracked_roles",
+        "name": "tracked_roles",
+        "comment": "",
+        "columnIds": [
+          "col_tracked_roles_guild_id",
+          "col_tracked_roles_role_id",
+          "col_tracked_roles_created_at"
+        ],
+        "seqColumnIds": [
+          "col_tracked_roles_guild_id",
+          "col_tracked_roles_role_id",
+          "col_tracked_roles_created_at"
+        ],
+        "ui": {
+          "x": 1665.767,
+          "y": 501.2097,
+          "zIndex": 1,
+          "widthName": 72,
+          "widthComment": 60,
+          "color": ""
+        },
+        "meta": {
+          "updateAt": 1780469989375,
+          "createAt": 1780469686502
+        }
+      },
+      "tbl_role_statistics": {
+        "id": "tbl_role_statistics",
+        "name": "role_statistics",
+        "comment": "",
+        "columnIds": [
+          "col_role_statistics_id",
+          "col_role_statistics_guild_id",
+          "col_role_statistics_role_id",
+          "col_role_statistics_inactive_count",
+          "col_role_statistics_active_count",
+          "col_role_statistics_captured_at"
+        ],
+        "seqColumnIds": [
+          "col_role_statistics_id",
+          "col_role_statistics_guild_id",
+          "col_role_statistics_role_id",
+          "col_role_statistics_inactive_count",
+          "col_role_statistics_active_count",
+          "col_role_statistics_captured_at"
+        ],
+        "ui": {
+          "x": 1662.2538,
+          "y": 720.5749,
+          "zIndex": 1,
+          "widthName": 72,
+          "widthComment": 60,
+          "color": ""
+        },
+        "meta": {
+          "updateAt": 1780469989375,
+          "createAt": 1780469686502
+        }
+      },
+      "tbl_link_codes": {
+        "id": "tbl_link_codes",
+        "name": "link_codes",
+        "comment": "",
+        "columnIds": [
+          "col_link_codes_id",
+          "col_link_codes_discord_id",
+          "col_link_codes_discord_nickname",
+          "col_link_codes_code"
+        ],
+        "seqColumnIds": [
+          "col_link_codes_id",
+          "col_link_codes_discord_id",
+          "col_link_codes_discord_nickname",
+          "col_link_codes_code"
+        ],
+        "ui": {
+          "x": 705.7057,
+          "y": 1210.5703,
+          "zIndex": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "color": ""
+        },
+        "meta": {
+          "updateAt": 1780469989375,
+          "createAt": 1780469686502
+        }
+      },
+      "tbl_roles": {
+        "id": "tbl_roles",
+        "name": "roles",
+        "comment": "",
+        "columnIds": [
+          "col_roles_id",
+          "col_roles_name"
+        ],
+        "seqColumnIds": [
+          "col_roles_id",
+          "col_roles_name"
+        ],
+        "ui": {
+          "x": 1272.5811,
+          "y": 64.726,
+          "zIndex": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "color": ""
+        },
+        "meta": {
+          "updateAt": 1780469989375,
+          "createAt": 1780469686502
+        }
+      },
+      "tbl_linked_roles": {
+        "id": "tbl_linked_roles",
+        "name": "linked_roles",
+        "comment": "",
+        "columnIds": [
+          "col_linked_roles_mc_user_uuid",
+          "col_linked_roles_role_id"
+        ],
+        "seqColumnIds": [
+          "col_linked_roles_mc_user_uuid",
+          "col_linked_roles_role_id"
+        ],
+        "ui": {
+          "x": 731.6355,
+          "y": 71.0749,
+          "zIndex": 1,
+          "widthName": 64,
+          "widthComment": 60,
+          "color": ""
+        },
+        "meta": {
+          "updateAt": 1780469989375,
+          "createAt": 1780469686502
+        }
+      },
+      "tbl_medias": {
+        "id": "tbl_medias",
+        "name": "medias",
+        "comment": "",
+        "columnIds": [
+          "col_medias_id",
+          "col_medias_mc_user_uuid",
+          "col_medias_type",
+          "col_medias_url"
+        ],
+        "seqColumnIds": [
+          "col_medias_id",
+          "col_medias_mc_user_uuid",
+          "col_medias_type",
+          "col_medias_url"
+        ],
+        "ui": {
+          "x": 217.2881,
+          "y": 285.1608,
+          "zIndex": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "color": ""
+        },
+        "meta": {
+          "updateAt": 1780469989375,
+          "createAt": 1780469686502
+        }
+      },
+      "tbl_minecraft_users": {
+        "id": "tbl_minecraft_users",
+        "name": "minecraft_users",
+        "comment": "",
+        "columnIds": [
+          "col_minecraft_users_uuid",
+          "col_minecraft_users_nickname",
+          "col_minecraft_users_digs",
+          "col_minecraft_users_description",
+          "col_minecraft_users_discord_user_id",
+          "col_minecraft_users_rank",
+          "col_minecraft_users_status",
+          "col_minecraft_users_last_seen"
+        ],
+        "seqColumnIds": [
+          "col_minecraft_users_uuid",
+          "col_minecraft_users_nickname",
+          "col_minecraft_users_digs",
+          "col_minecraft_users_description",
+          "col_minecraft_users_discord_user_id",
+          "col_minecraft_users_rank",
+          "col_minecraft_users_status",
+          "col_minecraft_users_last_seen"
+        ],
+        "ui": {
+          "x": 685.4367,
+          "y": 429.3502,
+          "zIndex": 1,
+          "widthName": 84,
+          "widthComment": 60,
+          "color": ""
+        },
+        "meta": {
+          "updateAt": 1780469989375,
+          "createAt": 1780469686502
+        }
+      },
+      "tbl_discord_users": {
+        "id": "tbl_discord_users",
+        "name": "discord_users",
+        "comment": "",
+        "columnIds": [
+          "col_discord_users_id",
+          "col_discord_users_username"
+        ],
+        "seqColumnIds": [
+          "col_discord_users_id",
+          "col_discord_users_username"
+        ],
+        "ui": {
+          "x": 590.1255,
+          "y": 954.3817,
+          "zIndex": 1,
+          "widthName": 73,
+          "widthComment": 60,
+          "color": ""
+        },
+        "meta": {
+          "updateAt": 1780469989375,
+          "createAt": 1780469686502
+        }
+      },
+      "tbl_webhook_tokens": {
+        "id": "tbl_webhook_tokens",
+        "name": "webhook_tokens",
+        "comment": "",
+        "columnIds": [
+          "col_webhook_tokens_id",
+          "col_webhook_tokens_name",
+          "col_webhook_tokens_discord_user_id",
+          "col_webhook_tokens_secret",
+          "col_webhook_tokens_permissions",
+          "col_webhook_tokens_created_at"
+        ],
+        "seqColumnIds": [
+          "col_webhook_tokens_id",
+          "col_webhook_tokens_name",
+          "col_webhook_tokens_discord_user_id",
+          "col_webhook_tokens_secret",
+          "col_webhook_tokens_permissions",
+          "col_webhook_tokens_created_at"
+        ],
+        "ui": {
+          "x": 1206.6065,
+          "y": 1148.1812,
+          "zIndex": 1,
+          "widthName": 91,
+          "widthComment": 60,
+          "color": ""
+        },
+        "meta": {
+          "updateAt": 1780469989375,
+          "createAt": 1780469686502
+        }
+      },
+      "tbl_states": {
+        "id": "tbl_states",
+        "name": "states",
+        "comment": "",
+        "columnIds": [
+          "col_states_id",
+          "col_states_key",
+          "col_states_value",
+          "col_states_updated_at"
+        ],
+        "seqColumnIds": [
+          "col_states_id",
+          "col_states_key",
+          "col_states_value",
+          "col_states_updated_at"
+        ],
+        "ui": {
+          "x": 221.0103,
+          "y": 65.8567,
+          "zIndex": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "color": ""
+        },
+        "meta": {
+          "updateAt": 1780469989375,
+          "createAt": 1780469686502
+        }
+      },
+      "tbl_posts": {
+        "id": "tbl_posts",
+        "name": "posts",
+        "comment": "",
+        "columnIds": [
+          "col_posts_id",
+          "col_posts_title",
+          "col_posts_discord_user_id",
+          "col_posts_minecraft_player_uuid",
+          "col_posts_thread_id",
+          "col_posts_status",
+          "col_posts_created_at",
+          "col_posts_updated_at"
+        ],
+        "seqColumnIds": [
+          "col_posts_id",
+          "col_posts_title",
+          "col_posts_discord_user_id",
+          "col_posts_minecraft_player_uuid",
+          "col_posts_thread_id",
+          "col_posts_status",
+          "col_posts_created_at",
+          "col_posts_updated_at"
+        ],
+        "ui": {
+          "x": 146.753,
+          "y": 514.3631,
+          "zIndex": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "color": ""
+        },
+        "meta": {
+          "updateAt": 1780469989375,
+          "createAt": 1780469686502
+        }
+      },
+      "tbl_post_blocks": {
+        "id": "tbl_post_blocks",
+        "name": "post_blocks",
+        "comment": "",
+        "columnIds": [
+          "col_post_blocks_message_id",
+          "col_post_blocks_post_id",
+          "col_post_blocks_timestamp",
+          "col_post_blocks_content",
+          "col_post_blocks_components",
+          "col_post_blocks_embeds",
+          "col_post_blocks_attachments",
+          "col_post_blocks_author_id"
+        ],
+        "seqColumnIds": [
+          "col_post_blocks_message_id",
+          "col_post_blocks_post_id",
+          "col_post_blocks_timestamp",
+          "col_post_blocks_content",
+          "col_post_blocks_components",
+          "col_post_blocks_embeds",
+          "col_post_blocks_attachments",
+          "col_post_blocks_author_id"
+        ],
+        "ui": {
+          "x": 62.7683,
+          "y": 834.6504,
+          "zIndex": 1,
+          "widthName": 64,
+          "widthComment": 60,
+          "color": ""
+        },
+        "meta": {
+          "updateAt": 1780469989375,
+          "createAt": 1780469686502
+        }
+      },
+      "tbl_users": {
+        "id": "tbl_users",
+        "name": "users",
+        "comment": "",
+        "columnIds": [
+          "col_users_id",
+          "col_users_rank",
+          "col_users_mc_player_uuid",
+          "col_users_discord_user_id",
+          "col_users_created_at",
+          "col_users_updated_at"
+        ],
+        "seqColumnIds": [
+          "col_users_id",
+          "col_users_rank",
+          "col_users_mc_player_uuid",
+          "col_users_discord_user_id",
+          "col_users_created_at",
+          "col_users_updated_at"
+        ],
+        "ui": {
+          "x": 1201.8646,
+          "y": 562.1676,
+          "zIndex": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "color": ""
+        },
+        "meta": {
+          "updateAt": 1780469989375,
+          "createAt": 1780469686502
+        }
+      },
+      "tbl_clients": {
+        "id": "tbl_clients",
+        "name": "clients",
+        "comment": "",
+        "columnIds": [
+          "col_clients_id",
+          "col_clients_client_secret",
+          "col_clients_redirect_uris",
+          "col_clients_created_at",
+          "col_clients_updated_at",
+          "col_clients_scopes"
+        ],
+        "seqColumnIds": [
+          "col_clients_id",
+          "col_clients_client_secret",
+          "col_clients_redirect_uris",
+          "col_clients_created_at",
+          "col_clients_updated_at",
+          "col_clients_scopes"
+        ],
+        "ui": {
+          "x": 1638.4039,
+          "y": 253.9996,
+          "zIndex": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "color": ""
+        },
+        "meta": {
+          "updateAt": 1780469989375,
+          "createAt": 1780469686502
+        }
+      },
+      "tbl_authorization_codes": {
+        "id": "tbl_authorization_codes",
+        "name": "authorization_codes",
+        "comment": "",
+        "columnIds": [
+          "col_authorization_codes_id",
+          "col_authorization_codes_code",
+          "col_authorization_codes_user_id",
+          "col_authorization_codes_client_id",
+          "col_authorization_codes_redirect_uri",
+          "col_authorization_codes_code_challenge",
+          "col_authorization_codes_expires_at",
+          "col_authorization_codes_created_at",
+          "col_authorization_codes_scope"
+        ],
+        "seqColumnIds": [
+          "col_authorization_codes_id",
+          "col_authorization_codes_code",
+          "col_authorization_codes_user_id",
+          "col_authorization_codes_client_id",
+          "col_authorization_codes_redirect_uri",
+          "col_authorization_codes_code_challenge",
+          "col_authorization_codes_expires_at",
+          "col_authorization_codes_created_at",
+          "col_authorization_codes_scope"
+        ],
+        "ui": {
+          "x": 1212.4555,
+          "y": 830.833,
+          "zIndex": 1,
+          "widthName": 108,
+          "widthComment": 60,
+          "color": ""
+        },
+        "meta": {
+          "updateAt": 1780469989375,
+          "createAt": 1780469686502
+        }
+      },
+      "tbl_sessions": {
+        "id": "tbl_sessions",
+        "name": "sessions",
+        "comment": "",
+        "columnIds": [
+          "col_sessions_id",
+          "col_sessions_user_id",
+          "col_sessions_refresh_token",
+          "col_sessions_client_id",
+          "col_sessions_scope",
+          "col_sessions_expires_at",
+          "col_sessions_created_at"
+        ],
+        "seqColumnIds": [
+          "col_sessions_id",
+          "col_sessions_user_id",
+          "col_sessions_refresh_token",
+          "col_sessions_client_id",
+          "col_sessions_scope",
+          "col_sessions_expires_at",
+          "col_sessions_created_at"
+        ],
+        "ui": {
+          "x": 1135.8656,
+          "y": 213.6437,
+          "zIndex": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "color": ""
+        },
+        "meta": {
+          "updateAt": 1780469989375,
+          "createAt": 1780469686502
         }
       }
     },
     "tableColumnEntities": {
-      "-BJV0uOld_8HZt9w8zPOd": {
-        "id": "-BJV0uOld_8HZt9w8zPOd",
-        "tableId": "b8nl1d9q1L_OVrVyFu5Ep",
-        "name": "uuid",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 14,
-        "ui": {
-          "keys": 1,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767137409476,
-          "createAt": 1767137361366
-        }
-      },
-      "lt0_uZCC3BZBmw9_BSqVH": {
-        "id": "lt0_uZCC3BZBmw9_BSqVH",
-        "tableId": "b8nl1d9q1L_OVrVyFu5Ep",
-        "name": "nickname",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 8,
-        "ui": {
-          "keys": 0,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767137414651,
-          "createAt": 1767137393105
-        }
-      },
-      "WACI1derDfi1hPPAfF_tb": {
-        "id": "WACI1derDfi1hPPAfF_tb",
-        "tableId": "b8nl1d9q1L_OVrVyFu5Ep",
-        "name": "digs",
-        "comment": "",
-        "dataType": "int",
-        "default": "0",
-        "options": 8,
-        "ui": {
-          "keys": 0,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767137428559,
-          "createAt": 1767137418951
-        }
-      },
-      "WJav6Xez5pGjuX4UquVnX": {
-        "id": "WJav6Xez5pGjuX4UquVnX",
-        "tableId": "b8nl1d9q1L_OVrVyFu5Ep",
-        "name": "description",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 8,
-        "ui": {
-          "keys": 0,
-          "widthName": 61,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767137437159,
-          "createAt": 1767137430210
-        }
-      },
-      "bAdyL9_ezfWdFJLmp8jCO": {
-        "id": "bAdyL9_ezfWdFJLmp8jCO",
-        "tableId": "n9NjBRzd61itcrapIFLdG",
-        "name": "id",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 14,
-        "ui": {
-          "keys": 1,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767137548887,
-          "createAt": 1767137456973
-        }
-      },
-      "F83h9cDgTJNFwPvW6rC_n": {
-        "id": "F83h9cDgTJNFwPvW6rC_n",
-        "tableId": "pECNhZMNZeVe28wxGPj1Q",
-        "name": "id",
-        "comment": "",
-        "dataType": "text",
-        "default": "snowflake()",
-        "options": 14,
-        "ui": {
-          "keys": 1,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 62
-        },
-        "meta": {
-          "updateAt": 1767137565750,
-          "createAt": 1767137531716
-        }
-      },
-      "t6faPlYpfmwypDObpi_ZE": {
-        "id": "t6faPlYpfmwypDObpi_ZE",
-        "tableId": "pECNhZMNZeVe28wxGPj1Q",
-        "name": "mc_user_uuid",
-        "comment": "",
-        "dataType": "",
-        "default": "",
-        "options": 0,
-        "ui": {
-          "keys": 0,
-          "widthName": 74,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767137576359,
-          "createAt": 1767137563296
-        }
-      },
-      "FOllJdUixUCosKvDYWEdV": {
-        "id": "FOllJdUixUCosKvDYWEdV",
-        "tableId": "pECNhZMNZeVe28wxGPj1Q",
-        "name": "mc_user_uuid",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 8,
-        "ui": {
-          "keys": 2,
-          "widthName": 74,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767137615266,
-          "createAt": 1767137606121
-        }
-      },
-      "lDw1pB_f2ObHHLF8se_QI": {
-        "id": "lDw1pB_f2ObHHLF8se_QI",
-        "tableId": "pECNhZMNZeVe28wxGPj1Q",
-        "name": "type",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 8,
-        "ui": {
-          "keys": 0,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767137639211,
-          "createAt": 1767137628282
-        }
-      },
-      "1TLnO2uHEQni_nV0dWJcz": {
-        "id": "1TLnO2uHEQni_nV0dWJcz",
-        "tableId": "pECNhZMNZeVe28wxGPj1Q",
-        "name": "url",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 8,
-        "ui": {
-          "keys": 0,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767137669077,
-          "createAt": 1767137660315
-        }
-      },
-      "m8JV99-cnhEqf4sUQyB5s": {
-        "id": "m8JV99-cnhEqf4sUQyB5s",
-        "tableId": "UGhWVLlojdQeC5QLHkbwZ",
-        "name": "id",
-        "comment": "",
-        "dataType": "text",
-        "default": "snowflake()",
-        "options": 14,
-        "ui": {
-          "keys": 1,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 62
-        },
-        "meta": {
-          "updateAt": 1767137694681,
-          "createAt": 1767137685087
-        }
-      },
-      "CbzKBwOGry8UgEYn7b01o": {
-        "id": "CbzKBwOGry8UgEYn7b01o",
-        "tableId": "UGhWVLlojdQeC5QLHkbwZ",
-        "name": "name",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 12,
-        "ui": {
-          "keys": 0,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767137706982,
-          "createAt": 1767137698159
-        }
-      },
-      "rXO18qH1foUW0_qN6VTB5": {
-        "id": "rXO18qH1foUW0_qN6VTB5",
-        "tableId": "zqLzFlMfEfTSYFAHoKV-p",
-        "name": "",
-        "comment": "",
-        "dataType": "",
-        "default": "",
-        "options": 0,
-        "ui": {
-          "keys": 0,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767137728652,
-          "createAt": 1767137728652
-        }
-      },
-      "IvrQCRfUxfhGb-aVJjXS-": {
-        "id": "IvrQCRfUxfhGb-aVJjXS-",
-        "tableId": "zqLzFlMfEfTSYFAHoKV-p",
-        "name": "id",
-        "comment": "",
-        "dataType": "text",
-        "default": "snowflake()",
-        "options": 10,
-        "ui": {
-          "keys": 3,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 62
-        },
-        "meta": {
-          "updateAt": 1767138031567,
-          "createAt": 1767137745009
-        }
-      },
-      "_GXQZrFym0YOUBp52caKp": {
-        "id": "_GXQZrFym0YOUBp52caKp",
-        "tableId": "zqLzFlMfEfTSYFAHoKV-p",
-        "name": "uuid",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 10,
-        "ui": {
-          "keys": 3,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767138034328,
-          "createAt": 1767137749926
-        }
-      },
-      "lfwpEgOxezbyyN5F8_Y82": {
-        "id": "lfwpEgOxezbyyN5F8_Y82",
-        "tableId": "hosHFkkJm_RzAUmJnWa0R",
-        "name": "id",
-        "comment": "",
-        "dataType": "text",
-        "default": "snowflake()",
-        "options": 14,
-        "ui": {
-          "keys": 1,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 62
-        },
-        "meta": {
-          "updateAt": 1767137809580,
-          "createAt": 1767137806476
-        }
-      },
-      "IqieScUqN_PR0VFGaDDZw": {
-        "id": "IqieScUqN_PR0VFGaDDZw",
-        "tableId": "hosHFkkJm_RzAUmJnWa0R",
-        "name": "discord_nickname",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 8,
-        "ui": {
-          "keys": 0,
-          "widthName": 97,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767137828951,
-          "createAt": 1767137814874
-        }
-      },
-      "FxUNIZ0c9zT4IAP77Eh50": {
-        "id": "FxUNIZ0c9zT4IAP77Eh50",
-        "tableId": "hosHFkkJm_RzAUmJnWa0R",
-        "name": "discord_id",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 8,
-        "ui": {
-          "keys": 2,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767137846066,
-          "createAt": 1767137840933
-        }
-      },
-      "U1ZLFoZG_J0TD0YJFgIIo": {
-        "id": "U1ZLFoZG_J0TD0YJFgIIo",
-        "tableId": "hosHFkkJm_RzAUmJnWa0R",
-        "name": "code",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 12,
-        "ui": {
-          "keys": 0,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767137863274,
-          "createAt": 1767137856276
-        }
-      },
-      "54djxzshkvmOHdJa5mvhh": {
-        "id": "54djxzshkvmOHdJa5mvhh",
-        "tableId": "b8nl1d9q1L_OVrVyFu5Ep",
-        "name": "discord_user_id",
-        "comment": "",
-        "dataType": "",
-        "default": "",
-        "options": 0,
-        "ui": {
-          "keys": 0,
-          "widthName": 83,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767138630141,
-          "createAt": 1767138625181
-        }
-      },
-      "X2I-k6dOU4FbKU3N-dzDZ": {
-        "id": "X2I-k6dOU4FbKU3N-dzDZ",
-        "tableId": "n9NjBRzd61itcrapIFLdG",
-        "name": "uuid",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 8,
-        "ui": {
-          "keys": 0,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767138653322,
-          "createAt": 1767138653322
-        }
-      },
-      "bgUkrLbKPT5dymHDOaLSv": {
-        "id": "bgUkrLbKPT5dymHDOaLSv",
-        "tableId": "b8nl1d9q1L_OVrVyFu5Ep",
-        "name": "discord_user_id",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 8,
-        "ui": {
-          "keys": 2,
-          "widthName": 83,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767138669529,
-          "createAt": 1767138660060
-        }
-      },
-      "LQYbZL1pkrNYgxjMNoSMP": {
-        "id": "LQYbZL1pkrNYgxjMNoSMP",
-        "tableId": "8M0iaeBZJGmInhPC2TgAp",
-        "name": "guild_id",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 10,
-        "ui": {
-          "keys": 1,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767138849455,
-          "createAt": 1767138745373
-        }
-      },
-      "DURl41_l80oZLyouDCwPD": {
-        "id": "DURl41_l80oZLyouDCwPD",
-        "tableId": "8M0iaeBZJGmInhPC2TgAp",
-        "name": "role_id",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 10,
-        "ui": {
-          "keys": 1,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767138851188,
-          "createAt": 1767138756920
-        }
-      },
-      "Cwch3_8KcHayjd2ZuY2F_": {
-        "id": "Cwch3_8KcHayjd2ZuY2F_",
-        "tableId": "8M0iaeBZJGmInhPC2TgAp",
-        "name": "created_at",
-        "comment": "",
-        "dataType": "date",
-        "default": "now()",
-        "options": 8,
-        "ui": {
-          "keys": 0,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767138785192,
-          "createAt": 1767138771080
-        }
-      },
-      "C2dendjTE5RYAtKmVp_3E": {
-        "id": "C2dendjTE5RYAtKmVp_3E",
-        "tableId": "awFsLieJv3UqMDztul_Yc",
-        "name": "id",
-        "comment": "",
-        "dataType": "text",
-        "default": "snowflake()",
-        "options": 14,
-        "ui": {
-          "keys": 1,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 62
-        },
-        "meta": {
-          "updateAt": 1767138816996,
-          "createAt": 1767138806131
-        }
-      },
-      "JBEeYtztWHavGJueUvk8r": {
-        "id": "JBEeYtztWHavGJueUvk8r",
-        "tableId": "awFsLieJv3UqMDztul_Yc",
-        "name": "guild_id",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 8,
-        "ui": {
-          "keys": 0,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767138828882,
-          "createAt": 1767138826314
-        }
-      },
-      "0Folm2MYXg3lfOjTpdcF0": {
-        "id": "0Folm2MYXg3lfOjTpdcF0",
-        "tableId": "awFsLieJv3UqMDztul_Yc",
-        "name": "role_id",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 8,
-        "ui": {
-          "keys": 0,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767138841141,
-          "createAt": 1767138837499
-        }
-      },
-      "hTfMtdY7--GVA7T0KK_m7": {
-        "id": "hTfMtdY7--GVA7T0KK_m7",
-        "tableId": "awFsLieJv3UqMDztul_Yc",
-        "name": "inactive_count",
-        "comment": "",
-        "dataType": "int",
-        "default": "0",
-        "options": 8,
-        "ui": {
-          "keys": 0,
-          "widthName": 78,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767138879817,
-          "createAt": 1767138860444
-        }
-      },
-      "iBCltc_AEGtGhvkYN4dD3": {
-        "id": "iBCltc_AEGtGhvkYN4dD3",
-        "tableId": "awFsLieJv3UqMDztul_Yc",
-        "name": "active_count",
-        "comment": "",
-        "dataType": "int",
-        "default": "0",
-        "options": 8,
-        "ui": {
-          "keys": 0,
-          "widthName": 68,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767138906245,
-          "createAt": 1767138902096
-        }
-      },
-      "nDKlmERmdbil5dxLnfwjZ": {
-        "id": "nDKlmERmdbil5dxLnfwjZ",
-        "tableId": "awFsLieJv3UqMDztul_Yc",
-        "name": "captured_at",
-        "comment": "",
-        "dataType": "date",
-        "default": "now()",
-        "options": 8,
-        "ui": {
-          "keys": 0,
-          "widthName": 64,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767138919180,
-          "createAt": 1767138913888
-        }
-      },
-      "UbZsBH8MtHlIV7u0qG7u8": {
-        "id": "UbZsBH8MtHlIV7u0qG7u8",
-        "tableId": "3_9V8n4eraYwE5RkJdFhU",
-        "name": "guild_id",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 8,
-        "ui": {
-          "keys": 0,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767138966370,
-          "createAt": 1767138958339
-        }
-      },
-      "rx21Y93ASz3cJUgEEfIha": {
-        "id": "rx21Y93ASz3cJUgEEfIha",
-        "tableId": "3_9V8n4eraYwE5RkJdFhU",
-        "name": "role_id",
-        "comment": "",
-        "dataType": "text",
-        "default": "",
-        "options": 8,
-        "ui": {
-          "keys": 0,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1767138987416,
-          "createAt": 1767138982760
-        }
-      },
-      "Z4inzBrV_0oL9LFVhEgSW": {
-        "id": "Z4inzBrV_0oL9LFVhEgSW",
-        "tableId": "3_9V8n4eraYwE5RkJdFhU",
+      "col_inactivity_user_id": {
+        "id": "col_inactivity_user_id",
+        "tableId": "tbl_inactivity_periods",
         "name": "user_id",
         "comment": "",
         "dataType": "text",
-        "default": "snowflake()",
+        "default": "",
         "options": 14,
         "ui": {
-          "keys": 1,
+          "keys": 3,
           "widthName": 60,
           "widthComment": 60,
           "widthDataType": 60,
-          "widthDefault": 62
+          "widthDefault": 60
         },
         "meta": {
-          "updateAt": 1767139024430,
-          "createAt": 1767139015008
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
         }
       },
-      "43Mi1_wFB75gQNu4ggqWM": {
-        "id": "43Mi1_wFB75gQNu4ggqWM",
-        "tableId": "3_9V8n4eraYwE5RkJdFhU",
+      "col_inactivity_guild_id": {
+        "id": "col_inactivity_guild_id",
+        "tableId": "tbl_inactivity_periods",
+        "name": "guild_id",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_inactivity_role_snapshot": {
+        "id": "col_inactivity_role_snapshot",
+        "tableId": "tbl_inactivity_periods",
         "name": "role_snapshot",
         "comment": "",
         "dataType": "text",
@@ -1017,16 +672,16 @@
           "widthDefault": 60
         },
         "meta": {
-          "updateAt": 1767139052300,
-          "createAt": 1767139040349
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
         }
       },
-      "oXWLYZltldatqiV5rpqNs": {
-        "id": "oXWLYZltldatqiV5rpqNs",
-        "tableId": "3_9V8n4eraYwE5RkJdFhU",
+      "col_inactivity_started_at": {
+        "id": "col_inactivity_started_at",
+        "tableId": "tbl_inactivity_periods",
         "name": "started_at",
         "comment": "",
-        "dataType": "date",
+        "dataType": "timestamp",
         "default": "now()",
         "options": 8,
         "ui": {
@@ -1037,17 +692,17 @@
           "widthDefault": 60
         },
         "meta": {
-          "updateAt": 1767139066848,
-          "createAt": 1767139061248
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
         }
       },
-      "pcnA95P_YKPr0VhlNiAii": {
-        "id": "pcnA95P_YKPr0VhlNiAii",
-        "tableId": "3_9V8n4eraYwE5RkJdFhU",
+      "col_inactivity_ends_at": {
+        "id": "col_inactivity_ends_at",
+        "tableId": "tbl_inactivity_periods",
         "name": "ends_at",
         "comment": "",
-        "dataType": "date",
-        "default": "now()",
+        "dataType": "timestamp",
+        "default": "",
         "options": 8,
         "ui": {
           "keys": 0,
@@ -1057,13 +712,13 @@
           "widthDefault": 60
         },
         "meta": {
-          "updateAt": 1767139079695,
-          "createAt": 1767139073185
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
         }
       },
-      "fiz6bECWrOAi9ydcvcnEu": {
-        "id": "fiz6bECWrOAi9ydcvcnEu",
-        "tableId": "3_9V8n4eraYwE5RkJdFhU",
+      "col_inactivity_source": {
+        "id": "col_inactivity_source",
+        "tableId": "tbl_inactivity_periods",
         "name": "source",
         "comment": "",
         "dataType": "text",
@@ -1077,13 +732,13 @@
           "widthDefault": 60
         },
         "meta": {
-          "updateAt": 1767139090878,
-          "createAt": 1767139083764
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
         }
       },
-      "1tUVmA07rNOyXYrj5owsU": {
-        "id": "1tUVmA07rNOyXYrj5owsU",
-        "tableId": "3_9V8n4eraYwE5RkJdFhU",
+      "col_inactivity_notified": {
+        "id": "col_inactivity_notified",
+        "tableId": "tbl_inactivity_periods",
         "name": "notified",
         "comment": "",
         "dataType": "boolean",
@@ -1097,37 +752,57 @@
           "widthDefault": 60
         },
         "meta": {
-          "updateAt": 1767139145221,
-          "createAt": 1767139093758
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
         }
       },
-      "NiLZV0OKzNna4sM1hXXmL": {
-        "id": "NiLZV0OKzNna4sM1hXXmL",
-        "tableId": "3_9V8n4eraYwE5RkJdFhU",
-        "name": "discord_user_id",
+      "col_tracked_roles_guild_id": {
+        "id": "col_tracked_roles_guild_id",
+        "tableId": "tbl_tracked_roles",
+        "name": "guild_id",
         "comment": "",
         "dataType": "text",
         "default": "",
         "options": 10,
         "ui": {
-          "keys": 3,
-          "widthName": 83,
+          "keys": 1,
+          "widthName": 60,
           "widthComment": 60,
           "widthDataType": 60,
           "widthDefault": 60
         },
         "meta": {
-          "updateAt": 1767139210681,
-          "createAt": 1767139196253
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
         }
       },
-      "rM3je-3Wc5X89te384cj1": {
-        "id": "rM3je-3Wc5X89te384cj1",
-        "tableId": "n9NjBRzd61itcrapIFLdG",
-        "name": "rank",
+      "col_tracked_roles_role_id": {
+        "id": "col_tracked_roles_role_id",
+        "tableId": "tbl_tracked_roles",
+        "name": "role_id",
         "comment": "",
         "dataType": "text",
-        "default": "Miembro",
+        "default": "",
+        "options": 10,
+        "ui": {
+          "keys": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_tracked_roles_created_at": {
+        "id": "col_tracked_roles_created_at",
+        "tableId": "tbl_tracked_roles",
+        "name": "created_at",
+        "comment": "",
+        "dataType": "timestamp",
+        "default": "now()",
         "options": 8,
         "ui": {
           "keys": 0,
@@ -1137,178 +812,2126 @@
           "widthDefault": 60
         },
         "meta": {
-          "updateAt": 1768957732790,
-          "createAt": 1768957711215
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_role_statistics_id": {
+        "id": "col_role_statistics_id",
+        "tableId": "tbl_role_statistics",
+        "name": "id",
+        "comment": "",
+        "dataType": "text",
+        "default": "snowflake()",
+        "options": 14,
+        "ui": {
+          "keys": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 62
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_role_statistics_guild_id": {
+        "id": "col_role_statistics_guild_id",
+        "tableId": "tbl_role_statistics",
+        "name": "guild_id",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_role_statistics_role_id": {
+        "id": "col_role_statistics_role_id",
+        "tableId": "tbl_role_statistics",
+        "name": "role_id",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_role_statistics_inactive_count": {
+        "id": "col_role_statistics_inactive_count",
+        "tableId": "tbl_role_statistics",
+        "name": "inactive_count",
+        "comment": "",
+        "dataType": "int",
+        "default": "0",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 78,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_role_statistics_active_count": {
+        "id": "col_role_statistics_active_count",
+        "tableId": "tbl_role_statistics",
+        "name": "active_count",
+        "comment": "",
+        "dataType": "int",
+        "default": "0",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 68,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_role_statistics_captured_at": {
+        "id": "col_role_statistics_captured_at",
+        "tableId": "tbl_role_statistics",
+        "name": "captured_at",
+        "comment": "",
+        "dataType": "timestamp",
+        "default": "now()",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 64,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_link_codes_id": {
+        "id": "col_link_codes_id",
+        "tableId": "tbl_link_codes",
+        "name": "id",
+        "comment": "",
+        "dataType": "text",
+        "default": "snowflake()",
+        "options": 14,
+        "ui": {
+          "keys": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 62
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_link_codes_discord_id": {
+        "id": "col_link_codes_discord_id",
+        "tableId": "tbl_link_codes",
+        "name": "discord_id",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 10,
+        "ui": {
+          "keys": 2,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_link_codes_discord_nickname": {
+        "id": "col_link_codes_discord_nickname",
+        "tableId": "tbl_link_codes",
+        "name": "discord_nickname",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 97,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_link_codes_code": {
+        "id": "col_link_codes_code",
+        "tableId": "tbl_link_codes",
+        "name": "code",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 12,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_roles_id": {
+        "id": "col_roles_id",
+        "tableId": "tbl_roles",
+        "name": "id",
+        "comment": "",
+        "dataType": "text",
+        "default": "snowflake()",
+        "options": 14,
+        "ui": {
+          "keys": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 62
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_roles_name": {
+        "id": "col_roles_name",
+        "tableId": "tbl_roles",
+        "name": "name",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 12,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_linked_roles_mc_user_uuid": {
+        "id": "col_linked_roles_mc_user_uuid",
+        "tableId": "tbl_linked_roles",
+        "name": "mc_user_uuid",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 10,
+        "ui": {
+          "keys": 3,
+          "widthName": 74,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_linked_roles_role_id": {
+        "id": "col_linked_roles_role_id",
+        "tableId": "tbl_linked_roles",
+        "name": "role_id",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 10,
+        "ui": {
+          "keys": 3,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_medias_id": {
+        "id": "col_medias_id",
+        "tableId": "tbl_medias",
+        "name": "id",
+        "comment": "",
+        "dataType": "text",
+        "default": "snowflake()",
+        "options": 14,
+        "ui": {
+          "keys": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 62
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_medias_mc_user_uuid": {
+        "id": "col_medias_mc_user_uuid",
+        "tableId": "tbl_medias",
+        "name": "mc_user_uuid",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 10,
+        "ui": {
+          "keys": 2,
+          "widthName": 74,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_medias_type": {
+        "id": "col_medias_type",
+        "tableId": "tbl_medias",
+        "name": "type",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_medias_url": {
+        "id": "col_medias_url",
+        "tableId": "tbl_medias",
+        "name": "url",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_minecraft_users_uuid": {
+        "id": "col_minecraft_users_uuid",
+        "tableId": "tbl_minecraft_users",
+        "name": "uuid",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 14,
+        "ui": {
+          "keys": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_minecraft_users_nickname": {
+        "id": "col_minecraft_users_nickname",
+        "tableId": "tbl_minecraft_users",
+        "name": "nickname",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 12,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_minecraft_users_digs": {
+        "id": "col_minecraft_users_digs",
+        "tableId": "tbl_minecraft_users",
+        "name": "digs",
+        "comment": "",
+        "dataType": "int",
+        "default": "0",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_minecraft_users_description": {
+        "id": "col_minecraft_users_description",
+        "tableId": "tbl_minecraft_users",
+        "name": "description",
+        "comment": "",
+        "dataType": "text",
+        "default": "''",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 61,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_minecraft_users_discord_user_id": {
+        "id": "col_minecraft_users_discord_user_id",
+        "tableId": "tbl_minecraft_users",
+        "name": "discord_user_id",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 10,
+        "ui": {
+          "keys": 2,
+          "widthName": 83,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_minecraft_users_rank": {
+        "id": "col_minecraft_users_rank",
+        "tableId": "tbl_minecraft_users",
+        "name": "rank",
+        "comment": "",
+        "dataType": "text",
+        "default": "'Miembro'",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_minecraft_users_status": {
+        "id": "col_minecraft_users_status",
+        "tableId": "tbl_minecraft_users",
+        "name": "status",
+        "comment": "",
+        "dataType": "PLAYER_STATUS",
+        "default": "ACTIVE",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 86,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_minecraft_users_last_seen": {
+        "id": "col_minecraft_users_last_seen",
+        "tableId": "tbl_minecraft_users",
+        "name": "last_seen",
+        "comment": "",
+        "dataType": "timestamp?",
+        "default": "",
+        "options": 0,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 64,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_discord_users_id": {
+        "id": "col_discord_users_id",
+        "tableId": "tbl_discord_users",
+        "name": "id",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 14,
+        "ui": {
+          "keys": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_discord_users_username": {
+        "id": "col_discord_users_username",
+        "tableId": "tbl_discord_users",
+        "name": "username",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 12,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_webhook_tokens_id": {
+        "id": "col_webhook_tokens_id",
+        "tableId": "tbl_webhook_tokens",
+        "name": "id",
+        "comment": "",
+        "dataType": "text",
+        "default": "snowflake()",
+        "options": 14,
+        "ui": {
+          "keys": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 62
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_webhook_tokens_name": {
+        "id": "col_webhook_tokens_name",
+        "tableId": "tbl_webhook_tokens",
+        "name": "name",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 12,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_webhook_tokens_discord_user_id": {
+        "id": "col_webhook_tokens_discord_user_id",
+        "tableId": "tbl_webhook_tokens",
+        "name": "discord_user_id",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 10,
+        "ui": {
+          "keys": 2,
+          "widthName": 83,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_webhook_tokens_secret": {
+        "id": "col_webhook_tokens_secret",
+        "tableId": "tbl_webhook_tokens",
+        "name": "secret",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_webhook_tokens_permissions": {
+        "id": "col_webhook_tokens_permissions",
+        "tableId": "tbl_webhook_tokens",
+        "name": "permissions",
+        "comment": "",
+        "dataType": "text[]",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 65,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_webhook_tokens_created_at": {
+        "id": "col_webhook_tokens_created_at",
+        "tableId": "tbl_webhook_tokens",
+        "name": "created_at",
+        "comment": "",
+        "dataType": "timestamp",
+        "default": "now()",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_states_id": {
+        "id": "col_states_id",
+        "tableId": "tbl_states",
+        "name": "id",
+        "comment": "",
+        "dataType": "text",
+        "default": "snowflake()",
+        "options": 14,
+        "ui": {
+          "keys": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 62
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_states_key": {
+        "id": "col_states_key",
+        "tableId": "tbl_states",
+        "name": "key",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 12,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_states_value": {
+        "id": "col_states_value",
+        "tableId": "tbl_states",
+        "name": "value",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_states_updated_at": {
+        "id": "col_states_updated_at",
+        "tableId": "tbl_states",
+        "name": "updated_at",
+        "comment": "",
+        "dataType": "timestamp",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 62,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_posts_id": {
+        "id": "col_posts_id",
+        "tableId": "tbl_posts",
+        "name": "id",
+        "comment": "",
+        "dataType": "text",
+        "default": "snowflake()",
+        "options": 14,
+        "ui": {
+          "keys": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 62
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_posts_title": {
+        "id": "col_posts_title",
+        "tableId": "tbl_posts",
+        "name": "title",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 12,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_posts_discord_user_id": {
+        "id": "col_posts_discord_user_id",
+        "tableId": "tbl_posts",
+        "name": "discord_user_id",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 10,
+        "ui": {
+          "keys": 2,
+          "widthName": 83,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_posts_minecraft_player_uuid": {
+        "id": "col_posts_minecraft_player_uuid",
+        "tableId": "tbl_posts",
+        "name": "minecraft_player_uuid",
+        "comment": "",
+        "dataType": "text?",
+        "default": "",
+        "options": 2,
+        "ui": {
+          "keys": 2,
+          "widthName": 118,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_posts_thread_id": {
+        "id": "col_posts_thread_id",
+        "tableId": "tbl_posts",
+        "name": "thread_id",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_posts_status": {
+        "id": "col_posts_status",
+        "tableId": "tbl_posts",
+        "name": "status",
+        "comment": "",
+        "dataType": "POST_STATUS",
+        "default": "DRAFT",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 75,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_posts_created_at": {
+        "id": "col_posts_created_at",
+        "tableId": "tbl_posts",
+        "name": "created_at",
+        "comment": "",
+        "dataType": "timestamp",
+        "default": "now()",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_posts_updated_at": {
+        "id": "col_posts_updated_at",
+        "tableId": "tbl_posts",
+        "name": "updated_at",
+        "comment": "",
+        "dataType": "timestamp",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 62,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_post_blocks_message_id": {
+        "id": "col_post_blocks_message_id",
+        "tableId": "tbl_post_blocks",
+        "name": "message_id",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 14,
+        "ui": {
+          "keys": 1,
+          "widthName": 63,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_post_blocks_post_id": {
+        "id": "col_post_blocks_post_id",
+        "tableId": "tbl_post_blocks",
+        "name": "post_id",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 10,
+        "ui": {
+          "keys": 2,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_post_blocks_timestamp": {
+        "id": "col_post_blocks_timestamp",
+        "tableId": "tbl_post_blocks",
+        "name": "timestamp",
+        "comment": "",
+        "dataType": "timestamp",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_post_blocks_content": {
+        "id": "col_post_blocks_content",
+        "tableId": "tbl_post_blocks",
+        "name": "content",
+        "comment": "",
+        "dataType": "text?",
+        "default": "",
+        "options": 0,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_post_blocks_components": {
+        "id": "col_post_blocks_components",
+        "tableId": "tbl_post_blocks",
+        "name": "components",
+        "comment": "",
+        "dataType": "json[]",
+        "default": "[]",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 68,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_post_blocks_embeds": {
+        "id": "col_post_blocks_embeds",
+        "tableId": "tbl_post_blocks",
+        "name": "embeds",
+        "comment": "",
+        "dataType": "json[]",
+        "default": "[]",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_post_blocks_attachments": {
+        "id": "col_post_blocks_attachments",
+        "tableId": "tbl_post_blocks",
+        "name": "attachments",
+        "comment": "",
+        "dataType": "json[]",
+        "default": "[]",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 67,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_post_blocks_author_id": {
+        "id": "col_post_blocks_author_id",
+        "tableId": "tbl_post_blocks",
+        "name": "author_id",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 10,
+        "ui": {
+          "keys": 2,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_users_id": {
+        "id": "col_users_id",
+        "tableId": "tbl_users",
+        "name": "id",
+        "comment": "",
+        "dataType": "text",
+        "default": "snowflake()",
+        "options": 14,
+        "ui": {
+          "keys": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 62
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_users_rank": {
+        "id": "col_users_rank",
+        "tableId": "tbl_users",
+        "name": "rank",
+        "comment": "",
+        "dataType": "text",
+        "default": "'User'",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_users_mc_player_uuid": {
+        "id": "col_users_mc_player_uuid",
+        "tableId": "tbl_users",
+        "name": "mc_player_uuid",
+        "comment": "",
+        "dataType": "text?",
+        "default": "",
+        "options": 2,
+        "ui": {
+          "keys": 2,
+          "widthName": 84,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_users_discord_user_id": {
+        "id": "col_users_discord_user_id",
+        "tableId": "tbl_users",
+        "name": "discord_user_id",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 10,
+        "ui": {
+          "keys": 2,
+          "widthName": 83,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_users_created_at": {
+        "id": "col_users_created_at",
+        "tableId": "tbl_users",
+        "name": "created_at",
+        "comment": "",
+        "dataType": "timestamp",
+        "default": "now()",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_users_updated_at": {
+        "id": "col_users_updated_at",
+        "tableId": "tbl_users",
+        "name": "updated_at",
+        "comment": "",
+        "dataType": "timestamp",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 62,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_clients_id": {
+        "id": "col_clients_id",
+        "tableId": "tbl_clients",
+        "name": "id",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 14,
+        "ui": {
+          "keys": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_clients_client_secret": {
+        "id": "col_clients_client_secret",
+        "tableId": "tbl_clients",
+        "name": "client_secret",
+        "comment": "",
+        "dataType": "text?",
+        "default": "",
+        "options": 0,
+        "ui": {
+          "keys": 0,
+          "widthName": 67,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_clients_redirect_uris": {
+        "id": "col_clients_redirect_uris",
+        "tableId": "tbl_clients",
+        "name": "redirect_uris",
+        "comment": "",
+        "dataType": "text[]",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 66,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_clients_created_at": {
+        "id": "col_clients_created_at",
+        "tableId": "tbl_clients",
+        "name": "created_at",
+        "comment": "",
+        "dataType": "timestamp",
+        "default": "now()",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_clients_updated_at": {
+        "id": "col_clients_updated_at",
+        "tableId": "tbl_clients",
+        "name": "updated_at",
+        "comment": "",
+        "dataType": "timestamp",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 62,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_clients_scopes": {
+        "id": "col_clients_scopes",
+        "tableId": "tbl_clients",
+        "name": "scopes",
+        "comment": "",
+        "dataType": "text[]",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_authorization_codes_id": {
+        "id": "col_authorization_codes_id",
+        "tableId": "tbl_authorization_codes",
+        "name": "id",
+        "comment": "",
+        "dataType": "text",
+        "default": "snowflake()",
+        "options": 14,
+        "ui": {
+          "keys": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 62
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_authorization_codes_code": {
+        "id": "col_authorization_codes_code",
+        "tableId": "tbl_authorization_codes",
+        "name": "code",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 12,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_authorization_codes_user_id": {
+        "id": "col_authorization_codes_user_id",
+        "tableId": "tbl_authorization_codes",
+        "name": "user_id",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 10,
+        "ui": {
+          "keys": 2,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_authorization_codes_client_id": {
+        "id": "col_authorization_codes_client_id",
+        "tableId": "tbl_authorization_codes",
+        "name": "client_id",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 10,
+        "ui": {
+          "keys": 2,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_authorization_codes_redirect_uri": {
+        "id": "col_authorization_codes_redirect_uri",
+        "tableId": "tbl_authorization_codes",
+        "name": "redirect_uri",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 61,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_authorization_codes_code_challenge": {
+        "id": "col_authorization_codes_code_challenge",
+        "tableId": "tbl_authorization_codes",
+        "name": "code_challenge",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 84,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_authorization_codes_expires_at": {
+        "id": "col_authorization_codes_expires_at",
+        "tableId": "tbl_authorization_codes",
+        "name": "expires_at",
+        "comment": "",
+        "dataType": "timestamp",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_authorization_codes_created_at": {
+        "id": "col_authorization_codes_created_at",
+        "tableId": "tbl_authorization_codes",
+        "name": "created_at",
+        "comment": "",
+        "dataType": "timestamp",
+        "default": "now()",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_authorization_codes_scope": {
+        "id": "col_authorization_codes_scope",
+        "tableId": "tbl_authorization_codes",
+        "name": "scope",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_sessions_id": {
+        "id": "col_sessions_id",
+        "tableId": "tbl_sessions",
+        "name": "id",
+        "comment": "",
+        "dataType": "text",
+        "default": "snowflake()",
+        "options": 14,
+        "ui": {
+          "keys": 1,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 62
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_sessions_user_id": {
+        "id": "col_sessions_user_id",
+        "tableId": "tbl_sessions",
+        "name": "user_id",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 10,
+        "ui": {
+          "keys": 2,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_sessions_refresh_token": {
+        "id": "col_sessions_refresh_token",
+        "tableId": "tbl_sessions",
+        "name": "refresh_token",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 12,
+        "ui": {
+          "keys": 0,
+          "widthName": 74,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_sessions_client_id": {
+        "id": "col_sessions_client_id",
+        "tableId": "tbl_sessions",
+        "name": "client_id",
+        "comment": "",
+        "dataType": "text",
+        "default": "",
+        "options": 10,
+        "ui": {
+          "keys": 2,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_sessions_scope": {
+        "id": "col_sessions_scope",
+        "tableId": "tbl_sessions",
+        "name": "scope",
+        "comment": "",
+        "dataType": "text",
+        "default": "''",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_sessions_expires_at": {
+        "id": "col_sessions_expires_at",
+        "tableId": "tbl_sessions",
+        "name": "expires_at",
+        "comment": "",
+        "dataType": "timestamp",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "col_sessions_created_at": {
+        "id": "col_sessions_created_at",
+        "tableId": "tbl_sessions",
+        "name": "created_at",
+        "comment": "",
+        "dataType": "timestamp",
+        "default": "now()",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
         }
       }
     },
     "relationshipEntities": {
-      "eiQBxShrsROfyvboYNA7r": {
-        "id": "eiQBxShrsROfyvboYNA7r",
-        "identification": false,
-        "relationshipType": 16,
-        "startRelationshipType": 2,
-        "start": {
-          "tableId": "b8nl1d9q1L_OVrVyFu5Ep",
-          "columnIds": [
-            "-BJV0uOld_8HZt9w8zPOd"
-          ],
-          "x": 672,
-          "y": 562,
-          "direction": 1
-        },
-        "end": {
-          "tableId": "pECNhZMNZeVe28wxGPj1Q",
-          "columnIds": [
-            "FOllJdUixUCosKvDYWEdV"
-          ],
-          "x": 457,
-          "y": 413,
-          "direction": 2
-        },
-        "meta": {
-          "updateAt": 1767137606121,
-          "createAt": 1767137606121
-        }
-      },
-      "D4HikRXg9FXHU_phCLZIl": {
-        "id": "D4HikRXg9FXHU_phCLZIl",
+      "rel_inactivity_discord_user": {
+        "id": "rel_inactivity_discord_user",
         "identification": true,
         "relationshipType": 16,
         "startRelationshipType": 2,
         "start": {
-          "tableId": "UGhWVLlojdQeC5QLHkbwZ",
+          "tableId": "tbl_discord_users",
           "columnIds": [
-            "m8JV99-cnhEqf4sUQyB5s"
+            "col_discord_users_id"
           ],
-          "x": 274.7691,
-          "y": 920.7896,
+          "x": 590.1255,
+          "y": 1041.0483666666667,
+          "direction": 1
+        },
+        "end": {
+          "tableId": "tbl_inactivity_periods",
+          "columnIds": [
+            "col_inactivity_user_id"
+          ],
+          "x": 430.79359999999997,
+          "y": 1159.7889,
           "direction": 4
         },
-        "end": {
-          "tableId": "zqLzFlMfEfTSYFAHoKV-p",
-          "columnIds": [
-            "IvrQCRfUxfhGb-aVJjXS-"
-          ],
-          "x": 269.7691,
-          "y": 767.7896,
-          "direction": 8
-        },
         "meta": {
-          "updateAt": 1767137745009,
-          "createAt": 1767137745009
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
         }
       },
-      "cK9echvGHTWDTgzHuV-cd": {
-        "id": "cK9echvGHTWDTgzHuV-cd",
+      "rel_link_codes_discord_user": {
+        "id": "rel_link_codes_discord_user",
         "identification": true,
-        "relationshipType": 16,
-        "startRelationshipType": 2,
-        "start": {
-          "tableId": "b8nl1d9q1L_OVrVyFu5Ep",
-          "columnIds": [
-            "-BJV0uOld_8HZt9w8zPOd"
-          ],
-          "x": 672,
-          "y": 650,
-          "direction": 1
-        },
-        "end": {
-          "tableId": "zqLzFlMfEfTSYFAHoKV-p",
-          "columnIds": [
-            "_GXQZrFym0YOUBp52caKp"
-          ],
-          "x": 468.2691,
-          "y": 715.7896,
-          "direction": 2
-        },
-        "meta": {
-          "updateAt": 1767137749926,
-          "createAt": 1767137749926
-        }
-      },
-      "V6E_kuyiRyjza_LPaXapf": {
-        "id": "V6E_kuyiRyjza_LPaXapf",
-        "identification": false,
-        "relationshipType": 16,
-        "startRelationshipType": 2,
-        "start": {
-          "tableId": "n9NjBRzd61itcrapIFLdG",
-          "columnIds": [
-            "bAdyL9_ezfWdFJLmp8jCO"
-          ],
-          "x": 571,
-          "y": 392,
-          "direction": 1
-        },
-        "end": {
-          "tableId": "hosHFkkJm_RzAUmJnWa0R",
-          "columnIds": [
-            "FxUNIZ0c9zT4IAP77Eh50"
-          ],
-          "x": 503.2691,
-          "y": 121.78960000000001,
-          "direction": 2
-        },
-        "meta": {
-          "updateAt": 1767137840933,
-          "createAt": 1767137840933
-        }
-      },
-      "of1cZ1Ty6LzXmoibaVcus": {
-        "id": "of1cZ1Ty6LzXmoibaVcus",
-        "identification": false,
         "relationshipType": 8,
         "startRelationshipType": 2,
         "start": {
-          "tableId": "n9NjBRzd61itcrapIFLdG",
+          "tableId": "tbl_discord_users",
           "columnIds": [
-            "bAdyL9_ezfWdFJLmp8jCO"
+            "col_discord_users_id"
           ],
-          "x": 768.5,
-          "y": 444,
+          "x": 787.6255,
+          "y": 1058.3817,
           "direction": 8
         },
         "end": {
-          "tableId": "b8nl1d9q1L_OVrVyFu5Ep",
+          "tableId": "tbl_link_codes",
           "columnIds": [
-            "bgUkrLbKPT5dymHDOaLSv"
+            "col_link_codes_discord_id"
           ],
-          "x": 881,
-          "y": 518,
+          "x": 922.7057,
+          "y": 1210.5703,
           "direction": 4
         },
         "meta": {
-          "updateAt": 1767138660060,
-          "createAt": 1767138660060
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
         }
       },
-      "pE3Hxm8mdUNxWXjICby8x": {
-        "id": "pE3Hxm8mdUNxWXjICby8x",
+      "rel_linked_roles_role": {
+        "id": "rel_linked_roles_role",
         "identification": true,
         "relationshipType": 16,
         "startRelationshipType": 2,
         "start": {
-          "tableId": "n9NjBRzd61itcrapIFLdG",
+          "tableId": "tbl_roles",
           "columnIds": [
-            "bAdyL9_ezfWdFJLmp8jCO"
+            "col_roles_id"
           ],
-          "x": 768.5,
-          "y": 340,
+          "x": 1272.5811,
+          "y": 116.726,
+          "direction": 1
+        },
+        "end": {
+          "tableId": "tbl_linked_roles",
+          "columnIds": [
+            "col_linked_roles_role_id"
+          ],
+          "x": 1140.6354999999999,
+          "y": 123.0749,
+          "direction": 2
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "rel_linked_roles_player": {
+        "id": "rel_linked_roles_player",
+        "identification": true,
+        "relationshipType": 16,
+        "startRelationshipType": 2,
+        "start": {
+          "tableId": "tbl_minecraft_users",
+          "columnIds": [
+            "col_minecraft_users_uuid"
+          ],
+          "x": 907.4367,
+          "y": 429.3502,
           "direction": 4
         },
         "end": {
-          "tableId": "3_9V8n4eraYwE5RkJdFhU",
+          "tableId": "tbl_linked_roles",
           "columnIds": [
-            "NiLZV0OKzNna4sM1hXXmL"
+            "col_linked_roles_mc_user_uuid"
           ],
-          "x": 815.2691,
-          "y": 259.7896,
+          "x": 936.1355,
+          "y": 175.0749,
           "direction": 8
         },
         "meta": {
-          "updateAt": 1767139196253,
-          "createAt": 1767139196253
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "rel_medias_player": {
+        "id": "rel_medias_player",
+        "identification": true,
+        "relationshipType": 16,
+        "startRelationshipType": 2,
+        "start": {
+          "tableId": "tbl_minecraft_users",
+          "columnIds": [
+            "col_minecraft_users_uuid"
+          ],
+          "x": 685.4367,
+          "y": 491.3502,
+          "direction": 1
+        },
+        "end": {
+          "tableId": "tbl_medias",
+          "columnIds": [
+            "col_medias_mc_user_uuid"
+          ],
+          "x": 628.2881,
+          "y": 361.1608,
+          "direction": 2
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "rel_player_discord_user": {
+        "id": "rel_player_discord_user",
+        "identification": true,
+        "relationshipType": 8,
+        "startRelationshipType": 2,
+        "start": {
+          "tableId": "tbl_discord_users",
+          "columnIds": [
+            "col_discord_users_id"
+          ],
+          "x": 787.6255,
+          "y": 954.3817,
+          "direction": 4
+        },
+        "end": {
+          "tableId": "tbl_minecraft_users",
+          "columnIds": [
+            "col_minecraft_users_discord_user_id"
+          ],
+          "x": 907.4367,
+          "y": 677.3502,
+          "direction": 8
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "rel_webhook_tokens_discord_user": {
+        "id": "rel_webhook_tokens_discord_user",
+        "identification": true,
+        "relationshipType": 16,
+        "startRelationshipType": 2,
+        "start": {
+          "tableId": "tbl_discord_users",
+          "columnIds": [
+            "col_discord_users_id"
+          ],
+          "x": 985.1255,
+          "y": 1032.3817,
+          "direction": 2
+        },
+        "end": {
+          "tableId": "tbl_webhook_tokens",
+          "columnIds": [
+            "col_webhook_tokens_discord_user_id"
+          ],
+          "x": 1206.6065,
+          "y": 1248.1812,
+          "direction": 1
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "rel_posts_discord_user": {
+        "id": "rel_posts_discord_user",
+        "identification": true,
+        "relationshipType": 16,
+        "startRelationshipType": 2,
+        "start": {
+          "tableId": "tbl_discord_users",
+          "columnIds": [
+            "col_discord_users_id"
+          ],
+          "x": 590.1255,
+          "y": 971.7150333333333,
+          "direction": 1
+        },
+        "end": {
+          "tableId": "tbl_posts",
+          "columnIds": [
+            "col_posts_discord_user_id"
+          ],
+          "x": 499.253,
+          "y": 762.3631,
+          "direction": 8
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "rel_posts_player": {
+        "id": "rel_posts_player",
+        "identification": true,
+        "relationshipType": 16,
+        "startRelationshipType": 1,
+        "start": {
+          "tableId": "tbl_minecraft_users",
+          "columnIds": [
+            "col_minecraft_users_uuid"
+          ],
+          "x": 685.4367,
+          "y": 615.3502,
+          "direction": 1
+        },
+        "end": {
+          "tableId": "tbl_posts",
+          "columnIds": [
+            "col_posts_minecraft_player_uuid"
+          ],
+          "x": 616.7529999999999,
+          "y": 638.3631,
+          "direction": 2
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "rel_post_blocks_author": {
+        "id": "rel_post_blocks_author",
+        "identification": true,
+        "relationshipType": 16,
+        "startRelationshipType": 2,
+        "start": {
+          "tableId": "tbl_discord_users",
+          "columnIds": [
+            "col_discord_users_id"
+          ],
+          "x": 590.1255,
+          "y": 1006.3816999999999,
+          "direction": 1
+        },
+        "end": {
+          "tableId": "tbl_post_blocks",
+          "columnIds": [
+            "col_post_blocks_author_id"
+          ],
+          "x": 465.7683,
+          "y": 958.6504,
+          "direction": 2
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "rel_post_blocks_post": {
+        "id": "rel_post_blocks_post",
+        "identification": true,
+        "relationshipType": 16,
+        "startRelationshipType": 2,
+        "start": {
+          "tableId": "tbl_posts",
+          "columnIds": [
+            "col_posts_id"
+          ],
+          "x": 264.253,
+          "y": 762.3631,
+          "direction": 8
+        },
+        "end": {
+          "tableId": "tbl_post_blocks",
+          "columnIds": [
+            "col_post_blocks_post_id"
+          ],
+          "x": 264.2683,
+          "y": 834.6504,
+          "direction": 4
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "rel_users_player": {
+        "id": "rel_users_player",
+        "identification": true,
+        "relationshipType": 8,
+        "startRelationshipType": 1,
+        "start": {
+          "tableId": "tbl_minecraft_users",
+          "columnIds": [
+            "col_minecraft_users_uuid"
+          ],
+          "x": 1129.4367,
+          "y": 553.3502,
+          "direction": 2
+        },
+        "end": {
+          "tableId": "tbl_users",
+          "columnIds": [
+            "col_users_mc_player_uuid"
+          ],
+          "x": 1201.8646,
+          "y": 612.1676,
+          "direction": 1
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "rel_users_discord_user": {
+        "id": "rel_users_discord_user",
+        "identification": true,
+        "relationshipType": 8,
+        "startRelationshipType": 2,
+        "start": {
+          "tableId": "tbl_discord_users",
+          "columnIds": [
+            "col_discord_users_id"
+          ],
+          "x": 985.1255,
+          "y": 980.3817,
+          "direction": 2
+        },
+        "end": {
+          "tableId": "tbl_users",
+          "columnIds": [
+            "col_users_discord_user_id"
+          ],
+          "x": 1201.8646,
+          "y": 712.1676,
+          "direction": 1
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "rel_authorization_codes_user": {
+        "id": "rel_authorization_codes_user",
+        "identification": true,
+        "relationshipType": 16,
+        "startRelationshipType": 2,
+        "start": {
+          "tableId": "tbl_users",
+          "columnIds": [
+            "col_users_id"
+          ],
+          "x": 1412.3646,
+          "y": 762.1676,
+          "direction": 8
+        },
+        "end": {
+          "tableId": "tbl_authorization_codes",
+          "columnIds": [
+            "col_authorization_codes_user_id"
+          ],
+          "x": 1317.7055,
+          "y": 830.833,
+          "direction": 4
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "rel_authorization_codes_client": {
+        "id": "rel_authorization_codes_client",
+        "identification": true,
+        "relationshipType": 16,
+        "startRelationshipType": 2,
+        "start": {
+          "tableId": "tbl_clients",
+          "columnIds": [
+            "col_clients_id"
+          ],
+          "x": 1638.4039,
+          "y": 403.9996,
+          "direction": 1
+        },
+        "end": {
+          "tableId": "tbl_authorization_codes",
+          "columnIds": [
+            "col_authorization_codes_client_id"
+          ],
+          "x": 1528.2055,
+          "y": 830.833,
+          "direction": 4
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "rel_sessions_user": {
+        "id": "rel_sessions_user",
+        "identification": true,
+        "relationshipType": 16,
+        "startRelationshipType": 2,
+        "start": {
+          "tableId": "tbl_users",
+          "columnIds": [
+            "col_users_id"
+          ],
+          "x": 1412.3646,
+          "y": 562.1676,
+          "direction": 4
+        },
+        "end": {
+          "tableId": "tbl_sessions",
+          "columnIds": [
+            "col_sessions_user_id"
+          ],
+          "x": 1341.3656,
+          "y": 437.64369999999997,
+          "direction": 8
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
+        }
+      },
+      "rel_sessions_client": {
+        "id": "rel_sessions_client",
+        "identification": true,
+        "relationshipType": 16,
+        "startRelationshipType": 2,
+        "start": {
+          "tableId": "tbl_clients",
+          "columnIds": [
+            "col_clients_id"
+          ],
+          "x": 1638.4039,
+          "y": 303.9996,
+          "direction": 1
+        },
+        "end": {
+          "tableId": "tbl_sessions",
+          "columnIds": [
+            "col_sessions_client_id"
+          ],
+          "x": 1546.8656,
+          "y": 325.64369999999997,
+          "direction": 2
+        },
+        "meta": {
+          "updateAt": 1780469686502,
+          "createAt": 1780469686502
         }
       }
     },
