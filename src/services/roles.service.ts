@@ -75,7 +75,7 @@ class RoleService {
         })
         for (const { uuid, nickname } of usersWithoutRoles) {
             try {
-                await db.linkedRole.create({
+                await db.linkedMinecraftRole.create({
                     data: {
                         role: {
                             connect: {
@@ -207,7 +207,8 @@ class RoleService {
                     new Player({
                         discord_user_id: user.discord_user_id,
                         nickname: user.nickname,
-                        rank: user.rank,
+                        role:
+                            user.linked_roles[0]?.role.id ?? envs.DEFAULT_RANK,
                         uuid: user.uuid,
                     }),
                 )

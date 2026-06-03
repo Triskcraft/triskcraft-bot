@@ -58,12 +58,13 @@ export class MinecraftRole {
                 linked_roles: {
                     select: {
                         player: true,
+                        role_id: true,
                     },
                 },
             },
         })
         logger.info(`[ROLE SERVICE] Rol ${this.#name} renombrado a ${name}`)
-        for (const { player } of linked_roles.filter(
+        for (const { player, role_id } of linked_roles.filter(
             l => l.player.status === PLAYER_STATUS.ACTIVE,
         )) {
             this.#players.getOrInsert(
@@ -75,7 +76,7 @@ export class MinecraftRole {
                             discord_user_id: player.discord_user_id,
                             nickname: player.nickname,
                             uuid: player.uuid,
-                            rank: player.rank,
+                            role: role_id,
                         })
                     },
                 ),
@@ -90,7 +91,7 @@ export class MinecraftRole {
 
     async removePlayer(uuid: string) {
         try {
-            const response = await db.linkedRole.delete({
+            const response = await db.linkedMinecraftRole.delete({
                 where: {
                     mc_user_uuid_role_id: {
                         mc_user_uuid: uuid,
@@ -118,7 +119,7 @@ export class MinecraftRole {
         try {
             const {
                 player: { nickname },
-            } = await db.linkedRole.create({
+            } = await db.linkedMinecraftRole.create({
                 data: {
                     role: {
                         connect: {
@@ -183,16 +184,16 @@ export class MinecraftRole {
             discord_user_id,
             nickname,
             uuid,
-            rank,
+            role: role_id,
         } of role.linked_roles
-            .map(l => l.player)
+            .map(l => ({ ...l.player, role: l.role_id }))
             .filter(p => p.status === PLAYER_STATUS.ACTIVE)) {
             this.#players.getOrInsertComputed(uuid, () => {
                 return new Player({
                     discord_user_id,
                     nickname,
                     uuid,
-                    rank,
+                    role: role_id,
                 })
             })
         }

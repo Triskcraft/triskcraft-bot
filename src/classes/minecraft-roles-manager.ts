@@ -39,7 +39,7 @@ export class MinecraftRolesManager {
                                                     l.player.discord_user_id,
                                                 nickname: l.player.nickname,
                                                 uuid: l.mc_user_uuid,
-                                                rank: l.player.rank,
+                                                role: r.id,
                                             })
                                         },
                                     ),
