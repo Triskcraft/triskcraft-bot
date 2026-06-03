@@ -7,7 +7,7 @@ import { PLAYER_STATUS } from '#/db/generated/enums.ts'
 
 export class MinecraftRolesManager {
     async fetch() {
-        const roles = await db.role.findMany({
+        const roles = await db.minecraftRole.findMany({
             include: {
                 linked_roles: {
                     include: {

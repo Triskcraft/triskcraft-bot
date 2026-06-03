@@ -51,7 +51,7 @@ export class MinecraftRole {
     }
 
     async editName(name: string) {
-        const { linked_roles } = await db.role.update({
+        const { linked_roles } = await db.minecraftRole.update({
             data: { name },
             where: { id: this.#id },
             select: {
@@ -165,7 +165,7 @@ export class MinecraftRole {
     }
 
     async fetch() {
-        const role = await db.role.findUnique({
+        const role = await db.minecraftRole.findUnique({
             where: { id: this.#id },
             include: {
                 linked_roles: {

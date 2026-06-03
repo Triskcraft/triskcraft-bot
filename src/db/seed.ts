@@ -14,7 +14,7 @@ try {
 } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-            const defaultRole = await db.role.findUnique({
+            const defaultRole = await db.minecraftRole.findUnique({
                 where: {
                     name: envs.DEFAULT_ROLE_NAME,
                 },
@@ -35,6 +35,19 @@ if (!clientCount) {
                 'https://api.triskcraft.com/oauth/callback',
             ],
             scopes: ['openid', 'identify', 'minecraft'],
+        },
+    })
+}
+
+const superRole = await db.role.findUnique({
+    where: { name: 'super' },
+})
+
+if (!superRole) {
+    await db.role.create({
+        data: {
+            name: 'super',
+            permissions: 1,
         },
     })
 }
