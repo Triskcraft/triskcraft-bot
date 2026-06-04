@@ -37,6 +37,7 @@ export function loadConfig() {
         'S3_SECRET_ACCESS_KEY',
         'DISCORD_CLIENT_SECRET',
         'DISCORD_REDIRECT_URI',
+        'CONSOLE_LOGIN_REDIRECT',
         'API_URL',
         'SUPER_USER_DISCORD_ID',
     ]
@@ -71,6 +72,7 @@ export function loadConfig() {
         DISCORD_CLIENT_SECRET = '',
         DISCORD_REDIRECT_URI = '',
         DISCORD_CLIENT_ID = '',
+        CONSOLE_LOGIN_REDIRECT = '',
         API_URL = '',
         SUPER_USER_DISCORD_ID = '',
     } = process.env
@@ -127,6 +129,7 @@ export function loadConfig() {
         S3_SECRET_ACCESS_KEY,
         DISCORD_CLIENT_SECRET,
         DISCORD_REDIRECT_URI,
+        CONSOLE_LOGIN_REDIRECT,
         API_URL,
         SUPER_USER_DISCORD_ID,
     }

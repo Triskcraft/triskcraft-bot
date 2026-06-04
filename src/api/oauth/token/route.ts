@@ -41,8 +41,10 @@ router.post<'/', null, OAuthTokenResponse, OAuthTokenRequest>(
         const authCode = await db.authorizationCode.findUnique({
             where: { code },
             select: {
+                client_id: true,
                 expires_at: true,
                 code_challenge: true,
+                redirect_uri: true,
                 scope: true,
                 user_id: true,
             },
@@ -59,6 +61,15 @@ router.post<'/', null, OAuthTokenResponse, OAuthTokenRequest>(
             })
             throw new BadRequestError(
                 'The authorization code has expired. Please request a new one.',
+            )
+        }
+
+        if (
+            authCode.client_id !== client_id ||
+            authCode.redirect_uri !== redirect_uri
+        ) {
+            throw new BadRequestError(
+                'The authorization code was not issued for this client_id and redirect_uri.',
             )
         }
 

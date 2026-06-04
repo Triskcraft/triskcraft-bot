@@ -10,3 +10,7 @@ export const s3 = new S3Client({
     },
     forcePathStyle: true,
 })
+
+export const BUCKETS = {
+    WEB: 'public-web',
+} as const

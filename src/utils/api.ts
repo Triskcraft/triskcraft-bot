@@ -72,7 +72,7 @@ export async function getSessionCookie(req: Request) {
     }
 }
 
-export async function refreshToken(refresh_token: string) {
+export async function refreshDiscordToken(refresh_token: string) {
     const params = new URLSearchParams({
         client_id: envs.DISCORD_CLIENT_ID,
         client_secret: envs.DISCORD_CLIENT_SECRET,

@@ -325,7 +325,7 @@ Cuando un usuario se autentica vía OAuth:
 
 ✅ Tablas y migraciones completadas  
 ✅ Endpoints OAuth implementados  
-✅ Scopes `openid`, `identify` y `minecraft` implementados  
+✅ Scopes `openid`, `identify` y `minecraft` implementados
 ⏳ UI de consentimiento (desarrollo en progreso)
 ✅ Refresh token rotation
 

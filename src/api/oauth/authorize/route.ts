@@ -1,10 +1,11 @@
 import { envs, PRIVATE_KEY } from '#/config.ts'
+import { Permissions } from '#/classes/permissions.ts'
 import { db } from '#/db/prisma.ts'
 import {
     OAUTH_SCOPES,
     getSession,
     parseScopes,
-    refreshToken,
+    refreshDiscordToken,
     serializeScopes,
 } from '#/utils/api.ts'
 import { render } from '#/utils/html.ts'
@@ -220,7 +221,9 @@ router.get('/', cookieParser(), async (req, res) => {
     const expires_at = Date.now() + session.discord.expires_in * 1000
 
     if (Date.now() > expires_at - buffer) {
-        const newDiscord = await refreshToken(session.discord.refresh_token)
+        const newDiscord = await refreshDiscordToken(
+            session.discord.refresh_token,
+        )
         if (!newDiscord) {
             return discordLogin(req, res)
         }
@@ -234,7 +237,8 @@ router.get('/', cookieParser(), async (req, res) => {
     const discordUser = (await request.json()) as APIUser
     const roleName =
         discordUser.id === envs.SUPER_USER_DISCORD_ID ? 'super' : 'user'
-    const rolePermissions = roleName === 'super' ? 1n : 0n
+    const rolePermissions =
+        roleName === 'super' ? Permissions.Flags.ADMIN : 0n
 
     const user = await db.user.upsert({
         create: {

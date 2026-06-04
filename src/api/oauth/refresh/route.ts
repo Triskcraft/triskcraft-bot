@@ -30,6 +30,7 @@ router.post('/', async (req, res) => {
     const session = await db.session.findUnique({
         where: { refresh_token: weakHash(refresh_token) },
         select: {
+            expires_at: true,
             id: true,
             client_id: true,
             scope: true,
@@ -41,6 +42,12 @@ router.post('/', async (req, res) => {
         throw new UnauthorizedError()
     }
     if (session.client_id !== client_id) {
+        throw new UnauthorizedError()
+    }
+    if (session.expires_at < new Date()) {
+        await db.session.delete({
+            where: { id: session.id },
+        })
         throw new UnauthorizedError()
     }
 

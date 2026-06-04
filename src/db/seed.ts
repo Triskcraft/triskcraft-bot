@@ -1,7 +1,8 @@
 import { envs } from '#/config.ts'
+import { Permissions } from '#/classes/permissions.ts'
 import { db } from '#/db/prisma.ts'
 import { logger } from '#/logger.ts'
-import { PrismaClientKnownRequestError } from '#/db/generated/internal/prismaNamespace.ts'
+import { PrismaClientKnownRequestError } from './generated/internal/prismaNamespace.ts'
 
 try {
     const defaultRole = await db.minecraftRole.create({
@@ -47,7 +48,7 @@ if (!superRole) {
     await db.role.create({
         data: {
             name: 'super',
-            permissions: 1,
+            permissions: Permissions.Flags.ADMIN,
         },
     })
 }
