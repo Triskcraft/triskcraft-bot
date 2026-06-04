@@ -39,6 +39,7 @@ export function loadConfig() {
         'DISCORD_REDIRECT_URI',
         'CONSOLE_LOGIN_REDIRECT',
         'API_URL',
+        'SUPER_USER_DISCORD_ID',
     ]
 
     const recomended = [
@@ -73,6 +74,7 @@ export function loadConfig() {
         DISCORD_CLIENT_ID = '',
         CONSOLE_LOGIN_REDIRECT = '',
         API_URL = '',
+        SUPER_USER_DISCORD_ID = '',
     } = process.env
 
     const recommendedMissing = recomended.filter(key => !process.env[key])
@@ -129,6 +131,7 @@ export function loadConfig() {
         DISCORD_REDIRECT_URI,
         CONSOLE_LOGIN_REDIRECT,
         API_URL,
+        SUPER_USER_DISCORD_ID,
     }
 }
 

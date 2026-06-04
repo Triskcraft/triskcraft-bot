@@ -33,7 +33,7 @@ export class PlayersManager {
                         discord_user_id: m.discord_user_id,
                         nickname: m.nickname,
                         uuid: m.uuid,
-                        rank: m.rank,
+                        role: m.rank,
                     }),
                 )
             }
@@ -58,7 +58,7 @@ export class PlayersManager {
                     discord_user_id: memberData.discord_user_id,
                     nickname: memberData.nickname,
                     uuid: memberData.uuid,
-                    rank: memberData.rank,
+                    role: memberData.rank,
                 })
                 this.#cache.set(member.uuid, member)
             }

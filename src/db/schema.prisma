@@ -65,22 +65,22 @@ model LinkCode {
 }
 
 /// Catálogo de roles disponibles para usuarios de Minecraft.
-model Role {
+model MinecraftRole {
     id   String @id @default(dbgenerated("snowflake()"))
     name String @unique
 
-    linked_roles LinkedRole[]
+    linked_roles LinkedMinecraftRole[]
 
     @@map("roles")
 }
 
 /// Relación N:M entre usuarios de Minecraft y los roles asignados.
-model LinkedRole {
+model LinkedMinecraftRole {
     mc_user_uuid String
     role_id      String
 
-    role   Role   @relation(fields: [role_id], references: [id])
-    player Player @relation(fields: [mc_user_uuid], references: [uuid])
+    role   MinecraftRole @relation(fields: [role_id], references: [id])
+    player Player        @relation(fields: [mc_user_uuid], references: [uuid])
 
     @@id([mc_user_uuid, role_id])
     @@map("linked_roles")
@@ -112,13 +112,12 @@ model Player {
     digs            Int           @default(0)
     description     String        @default("")
     discord_user_id String        @unique
-    rank            String        @default("Miembro")
     status          PLAYER_STATUS @default(ACTIVE)
     /// La ultima vez que entró
     last_seen       DateTime?
 
-    discord_user DiscordUser  @relation(fields: [discord_user_id], references: [id])
-    linked_roles LinkedRole[]
+    discord_user DiscordUser           @relation(fields: [discord_user_id], references: [id])
+    linked_roles LinkedMinecraftRole[]
     medias       Media[]
     posts        Post[]
     user         User?
@@ -205,7 +204,6 @@ model PostBlocks {
 
 model User {
     id              String   @id @default(dbgenerated("snowflake()"))
-    rank            String   @default("User")
     mc_player_uuid  String?  @unique
     discord_user_id String   @unique
     created_at      DateTime @default(now())
@@ -216,6 +214,7 @@ model User {
 
     authorization_codes AuthorizationCode[]
     sessions            Session[]
+    linked_roles        LinkedRole[]
 
     @@map("users")
 }
@@ -226,6 +225,7 @@ model Client {
     redirect_uris String[]
     created_at    DateTime @default(now())
     updated_at    DateTime @updatedAt
+    scopes        String[]
 
     authorization_codes AuthorizationCode[]
     sessions            Session[]
@@ -242,6 +242,7 @@ model AuthorizationCode {
     code_challenge String
     expires_at     DateTime
     created_at     DateTime @default(now())
+    scope          String
 
     user   User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
     client Client @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -255,6 +256,7 @@ model Session {
     /// Hashed
     refresh_token String   @unique
     client_id     String
+    scope         String   @default("")
     expires_at    DateTime
     created_at    DateTime @default(now())
 
@@ -262,4 +264,26 @@ model Session {
     client Client @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
     @@map("sessions")
+}
+
+model Role {
+    id          String @id @default(dbgenerated("snowflake()"))
+    name        String @unique
+    /// permisos como Bit Flags
+    permissions BigInt @default(0)
+
+    linked_roles LinkedRole[]
+
+    @@map("user_roles")
+}
+
+model LinkedRole {
+    user_id String
+    role_id String
+
+    user User @relation(fields: [user_id], references: [id])
+    role Role @relation(fields: [role_id], references: [id])
+
+    @@id([user_id, role_id])
+    @@map("linked_user_roles")
 }

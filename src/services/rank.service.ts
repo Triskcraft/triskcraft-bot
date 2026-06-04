@@ -8,8 +8,8 @@ import { playersService } from './players.service.ts'
 
 async function checkRanks(member: GuildMember, cached: Player) {
     const currentRank = getRank([...member.roles.cache.values()])
-    if (cached.rank !== currentRank) {
-        await cached.setRank(currentRank)
+    if (cached.role !== currentRank) {
+        await cached.setRole(currentRank)
         logger.info(
             `[RANK SERVICE] Updated rank for ${cached.nickname} to ${currentRank}`,
         )

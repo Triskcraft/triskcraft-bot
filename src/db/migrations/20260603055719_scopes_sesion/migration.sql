@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "sessions" ADD COLUMN     "scope" TEXT NOT NULL DEFAULT '';

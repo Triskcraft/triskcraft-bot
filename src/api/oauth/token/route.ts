@@ -43,6 +43,7 @@ router.post<'/', null, OAuthTokenResponse, OAuthTokenRequest>(
             select: {
                 expires_at: true,
                 code_challenge: true,
+                scope: true,
                 user_id: true,
             },
         })
@@ -83,6 +84,7 @@ router.post<'/', null, OAuthTokenResponse, OAuthTokenRequest>(
                 expires_at,
                 client_id,
                 user_id,
+                scope: authCode.scope,
                 refresh_token: weakHash(refresh_token),
             },
         })
@@ -92,6 +94,7 @@ router.post<'/', null, OAuthTokenResponse, OAuthTokenRequest>(
             sub: authCode.user_id,
             client_id,
             aud: client_id,
+            scope: authCode.scope,
         })
 
         return res.json({

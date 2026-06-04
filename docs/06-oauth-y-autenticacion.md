@@ -32,6 +32,7 @@ model OAuthClient {
   id             String   @id @default(cuid())
   client_secret  String   @unique
   redirect_uris  String[] // URIs permitidas para redirección post-auth
+  scopes         String[] // Scopes que la aplicación puede solicitar
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt
 }
@@ -50,6 +51,7 @@ model AuthorizationCode {
   redirect_uri    String
   code_challenge  String   // PKCE: hash del code_verifier
   expires_at      DateTime
+  scope           String   // Scopes concedidos, separados por espacio
   created_at      DateTime @default(now())
 }
 ```
@@ -64,6 +66,7 @@ model Session {
   user_id        String
   refresh_token  String   @unique
   client_id      String
+  scope          String   // Scopes de la sesión, separados por espacio
   expires_at     DateTime
   created_at     DateTime @default(now())
 }
@@ -80,7 +83,7 @@ sequenceDiagram
 
     %% ===== PKCE + STATE =====
     Client->>Client: Genera code_verifier, code_challenge y state
-    Client->>Auth: GET /authorize?client_id&redirect_uri&state&code_challenge
+    Client->>Auth: GET /authorize?client_id&redirect_uri&state&code_challenge&scope
 
     %% ===== LOGIN FLOW =====
     Auth->>Auth: Valida parámetros
@@ -91,7 +94,7 @@ sequenceDiagram
     %% ===== SESIÓN =====
     Auth->>DB: Crear/obtener usuario
     Auth->>DB: Crear sesión
-    Auth->>DB: Guardar authorization_code + code_challenge
+    Auth->>DB: Guardar authorization_code + code_challenge + scopes
 
     %% ===== REDIRECT FINAL =====
     Auth->>Client: Redirect redirect_uri?code=auth_code&state=state
@@ -107,7 +110,7 @@ sequenceDiagram
 
     %% ===== TOKENS =====
     Auth->>Auth: Generar access_token (JWT)
-    Auth->>DB: Crear refresh_token
+    Auth->>DB: Crear refresh_token con scopes
 
     Auth-->>Client: access_token + refresh_token
 
@@ -118,9 +121,27 @@ sequenceDiagram
     Auth-->>Client: Datos del usuario
 ```
 
+## Scopes disponibles
+
+Los scopes se solicitan en `GET /auth/authorize` usando el parámetro `scope` con valores separados por espacio. El servidor valida que todos los scopes pedidos existan y estén permitidos por `Client.scopes`.
+
+| Scope | Qué habilita en `/auth/me` |
+| --- | --- |
+| `openid` | Claims de identidad del access token: `sub`, `iss`, `aud`, `exp`. |
+| `identify` | Información general del usuario del sistema: `id`, `rank`, `created_at` y `discord_user`. |
+| `minecraft` | Información del jugador vinculado: `mc_player` con `digs`, `nickname`, `uuid`, `rank`, `user_id`, `medias` y `roles`. |
+
+Ejemplo:
+
+```http
+GET /auth/authorize?response_type=code&client_id=api-panel&redirect_uri=https%3A%2F%2Fapp.example.com%2Fcallback&code_challenge=...&code_challenge_method=S256&scope=openid%20identify%20minecraft
+```
+
+Si no se solicita ningún scope, el token no obtiene permisos para leer datos en `/auth/me`.
+
 ## Endpoints
 
-### `GET /auth/oauth/authorize`
+### `GET /auth/authorize`
 
 **Propósito:** Iniciar flujo de autorización y presentar consentimiento.
 
@@ -131,6 +152,7 @@ sequenceDiagram
 - `response_type` (requerido): debe ser `"code"`
 - `code_challenge` (requerido): SHA256 del code_verifier (PKCE)
 - `code_challenge_method` (requerido): debe ser `"S256"`
+- `scope` (opcional): lista de scopes separados por espacio (`openid`, `identify`, `minecraft`)
 - `state` (recomendado): nonce para evitar CSRF
 
 **Respuesta:**
@@ -141,9 +163,9 @@ sequenceDiagram
 **Respuesta:**
 
 - Redirección a `redirect_uri?code=...&state=...`
-- Code válido por 10 minutos
+- Code válido por 5 minutos
 
-### `POST /auth/oauth/token`
+### `POST /auth/token`
 
 **Propósito:** Intercambiar authorization_code por access_token y refresh_token.
 
@@ -165,20 +187,23 @@ sequenceDiagram
 {
     "access_token": "eyJ...",
     "token_type": "Bearer",
-    "expires_in": 3600,
-    "refresh_token": "ref_...",
-    "scope": "openid profile email"
+    "expires_in": 86400,
+    "refresh_token": "ref_..."
 }
 ```
 
-### `GET /auth/oauth/refresh`
+El `access_token` es un JWT firmado que incluye `sub`, `iss`, `aud`, `exp`, `session_id`, `client_id` y `scope`.
+
+### `POST /auth/refresh`
 
 **Propósito:** Renovar access_token usando refresh_token.
 
-**Parámetros query:**
+**Body:**
 
 - `refresh_token` (requerido): refresh token de sesión anterior
 - `client_id` (requerido): ID de la aplicación
+- `grant_type` (requerido): debe ser `"refresh_token"`
+- `redirect_uri` (requerido): URI usada por el cliente
 
 **Respuesta:**
 
@@ -186,12 +211,13 @@ sequenceDiagram
 {
     "access_token": "eyJ...",
     "token_type": "Bearer",
-    "expires_in": 3600,
-    "refresh_token": "ref_..."
+    "expires_in": 86400,
+    "refresh_token": "ref_...",
+    "scope": "openid identify minecraft"
 }
 ```
 
-### `GET /auth/oauth/me`
+### `POST /auth/me`
 
 **Propósito:** Obtener información del usuario autenticado.
 
@@ -199,25 +225,50 @@ sequenceDiagram
 
 - `Authorization: Bearer <access_token>`
 
-**Respuesta:**
+**Respuesta con `openid`:**
 
 ```json
 {
-  "id": "123",
-  "rank": "Admin",
-  "created_at": "2026-04-30T10:00:00Z",
-  "discord_user": {
-    "id": "123",
-    "username: "user_123"
-  },
-  "mc_player": {
-    "uuid": "123",
-    "nickname": "user123"
-  }
+    "sub": "123456789",
+    "iss": "https://api.example.com",
+    "aud": "api-panel",
+    "exp": 1234567890
 }
 ```
 
-### `GET /auth/oauth/discord`
+**Respuesta con `identify`:**
+
+```json
+{
+    "id": "123",
+    "rank": "Admin",
+    "created_at": 1780000000000,
+    "discord_user": {
+        "id": "123",
+        "username": "user_123"
+    }
+}
+```
+
+**Respuesta con `minecraft`:**
+
+```json
+{
+    "mc_player": {
+        "digs": 123,
+        "nickname": "user123",
+        "uuid": "00000000-0000-0000-0000-000000000000",
+        "rank": "Miembro",
+        "user_id": "123",
+        "medias": [{ "type": "youtube", "url": "https://..." }],
+        "roles": ["Builder", "Streamer"]
+    }
+}
+```
+
+Cuando se combinan scopes, `/auth/me` combina las secciones correspondientes en el mismo objeto JSON.
+
+### `GET /auth/discord`
 
 **Propósito:** Callback de autenticación con Discord OAuth integrada.
 
@@ -241,7 +292,8 @@ sequenceDiagram
 2. **Redirect URI whitelist:** solo acepta URIs registradas
 3. **Code expiration:** codes válidos 5 minutos
 4. **JWT firma:** access tokens firmados con clave privada en el servidor
-5. **Refresh token rotation (futuro):** revocar refresh tokens antiguos
+5. **Scopes por cliente:** cada scope solicitado debe existir y estar permitido para el `Client`
+6. **Refresh token rotation:** cada refresh exitoso emite un nuevo refresh token y reemplaza el hash anterior
 
 ### Almacenamiento de secretos
 
@@ -254,10 +306,10 @@ Con el nuevo sistema OAuth, la vinculación funciona así:
 
 1. Usuario accede a webapp externa
 2. Hace clic "iniciar sesion"
-3. Se redirige a `/auth/oauth/authorize?client_id=xxx&...`
+3. Se redirige a `/auth/authorize?client_id=xxx&...`
 4. Confirma y recibe `code`
 5. Cliente intercambia por `access_token`
-6. Con el token, puede acceder a `/v1/users/me` para obtener su usuario
+6. Con el token, puede acceder a `/auth/me` para obtener su usuario según scopes
 7. El usuario queda creado/actualizado en tabla `users`
 
 ## Integración con Discord
@@ -273,7 +325,8 @@ Cuando un usuario se autentica vía OAuth:
 
 ✅ Tablas y migraciones completadas  
 ✅ Endpoints OAuth implementados  
+✅ Scopes `openid`, `identify` y `minecraft` implementados
 ⏳ UI de consentimiento (desarrollo en progreso)
-⏳ Refresh token rotation (futuro)
+✅ Refresh token rotation
 
 > Vease https://github.com/Triskcraft/triskcraft-bot/issues/41

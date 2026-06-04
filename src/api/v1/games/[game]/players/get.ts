@@ -37,13 +37,26 @@ export const getPlayers: RequestHandler<
         },
     } as const
 
+    const includeRankJoin = {
+        select: {
+            role: {
+                select: {
+                    name: true,
+                },
+            },
+        },
+    }
+
     const members = await db.player.findMany({
         where: { status: PLAYER_STATUS.ACTIVE, user: { is: {} } },
         include: {
             user: {
                 select: {
                     id: true,
-                    rank: includeRank,
+                    linked_roles:
+                        includeRank ? includeRankJoin : (
+                            ({} as typeof includeRankJoin)
+                        ),
                 },
             },
             medias:
@@ -60,12 +73,11 @@ export const getPlayers: RequestHandler<
         },
     })
     const pobled = members.map(
-        ({ digs, rank, linked_roles, medias, nickname, uuid, user }) => {
+        ({ digs, linked_roles, medias, nickname, uuid, user }) => {
             const member: MinecraftPlayer = {
                 digs,
                 nickname,
                 uuid,
-                rank,
                 user_id: user!.id,
             }
             if (includeMedias) {
@@ -75,7 +87,7 @@ export const getPlayers: RequestHandler<
                 member.roles = linked_roles.map(lr => lr.role.name)
             }
             if (includeRank) {
-                member.rank = rank
+                member.rank = user?.linked_roles[0]?.role.name ?? 'User'
             }
             return member
         },
