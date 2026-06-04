@@ -3,12 +3,12 @@ import { Router } from 'express'
 import mods from './mods/route.ts'
 import login from './login/route.ts'
 import { Layout } from '#/web/components/layout.ts'
-import { checkAuthToken } from './auth-middleware.ts'
+import { requireModpackPermission } from './auth-middleware.ts'
 
 const router = Router()
 
 router.use('/login', login)
-router.use(checkAuthToken)
+router.use(requireModpackPermission)
 router.use('/mods', mods)
 
 router.get('/', async (req, res) => {

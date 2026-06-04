@@ -39,12 +39,12 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
     })
 }
 
-app.use(errorHandler)
-
 app.use('/v1', Express.json({ type: 'application/json' }), v1)
-app.use('/auth', Express.json({ type: 'application/json' }), auth)
+app.use('/oauth', Express.json({ type: 'application/json' }), auth)
 app.use('/webhooks', Express.raw({ type: 'application/json' }), webhooks)
 app.use('/console', console)
 app.use('/files', files)
+
+app.use(errorHandler)
 
 export { app }

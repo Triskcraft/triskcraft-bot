@@ -4,16 +4,11 @@ import { BUCKETS, s3 } from '#/db/s3.ts'
 import { Upload } from '@aws-sdk/lib-storage'
 import Busboy from 'busboy'
 import type { CompleteMultipartUploadCommandOutput } from '@aws-sdk/client-s3'
-import { getConsoleSession } from '#/utils/api.ts'
 import { Layout } from '#/web/components/layout.ts'
 
 const router = Router()
 
 router.get('/', async (req, res) => {
-    const session = await getConsoleSession(req)
-    if (!session) {
-        return res.redirect('/console/login')
-    }
     render(
         res,
         Layout({
@@ -23,11 +18,6 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-    const session = await getConsoleSession(req)
-    if (!session) {
-        return res.status(401).json({ error: 'Permision Denied' })
-    }
-
     const busboy = Busboy({ headers: req.headers })
 
     let uploadPromise: Promise<CompleteMultipartUploadCommandOutput> | null =
@@ -194,7 +184,13 @@ function Form() {
 
             <form id="uploadForm">
                 <div class="file-input-group">
-                    <input type="file" name="mods" accept=".rar" required />
+                    <input
+                        id="modFile"
+                        type="file"
+                        name="mods"
+                        accept=".rar"
+                        required
+                    />
                 </div>
 
                 <button type="submit" class="btn-submit" id="uploadBtn">

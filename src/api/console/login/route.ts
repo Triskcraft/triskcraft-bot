@@ -5,6 +5,7 @@ import { randomUUID } from 'node:crypto'
 
 const router = Router()
 const states = new Map<string, string>()
+const CONSOLE_CLIENT_ID = 'api-panel'
 
 router.get('/', async (req, res) => {
     const { code, state } = req.query
@@ -14,8 +15,12 @@ router.get('/', async (req, res) => {
     }
 
     const code_verifier = states.get(state)
+    if (!code_verifier || typeof code !== 'string') {
+        return login(res)
+    }
+    states.delete(state)
 
-    const request = await fetch('/auth/token', {
+    const request = await fetch(new URL('/oauth/token', envs.API_URL), {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -23,7 +28,7 @@ router.get('/', async (req, res) => {
         body: JSON.stringify({
             redirect_uri: envs.CONSOLE_LOGIN_REDIRECT,
             grant_type: 'authorization_code',
-            client_id: 'api-panel',
+            client_id: CONSOLE_CLIENT_ID,
             code_verifier,
             code,
         }),
@@ -35,7 +40,12 @@ router.get('/', async (req, res) => {
 
     const response = await request.json()
 
-    res.cookie('console-session', JSON.stringify(response))
+    res.cookie('console-session', JSON.stringify(response), {
+        httpOnly: true,
+        secure: envs.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/console',
+    })
 
     res.redirect('/console')
 })
@@ -47,12 +57,13 @@ function login(res: Response) {
     states.set(state, verifier)
 
     return res.redirect(
-        `/auth/authorize?${new URLSearchParams({
+        `/oauth/authorize?${new URLSearchParams({
             response_type: 'code',
-            client_id: 'api-panel',
-            code_challenge, // TODO: dynamic
+            client_id: CONSOLE_CLIENT_ID,
+            code_challenge,
             code_challenge_method: 'S256',
-            redirect_uri: 'http://localhost:8080/console/login',
+            redirect_uri: envs.CONSOLE_LOGIN_REDIRECT,
+            scope: 'openid identify',
             state,
         })}`,
     )
