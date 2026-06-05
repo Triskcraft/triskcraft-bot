@@ -33,9 +33,21 @@ export async function getPosts(req: Request, res: Response) {
             player: {
                 select: {
                     digs: true,
-                    rank: true,
                     uuid: true,
                     nickname: true,
+                    user: {
+                        select: {
+                            linked_roles: {
+                                select: {
+                                    role: {
+                                        select: {
+                                            name: true,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
                     linked_roles: {
                         select: {
                             role: {
@@ -71,7 +83,7 @@ export async function getPosts(req: Request, res: Response) {
                         uuid: player.uuid,
                         nickname: player.nickname,
                         digs: player.digs,
-                        rank: player.rank,
+                        rank: player.user?.linked_roles[0]?.role.name,
                         roles: player.linked_roles.map(l => l.role.name),
                     }
                 :   null,

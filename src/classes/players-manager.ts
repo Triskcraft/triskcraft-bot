@@ -23,7 +23,15 @@ export class PlayersManager {
                     uuid: true,
                     nickname: true,
                     discord_user_id: true,
-                    rank: true,
+                    user: {
+                        select: {
+                            linked_roles: {
+                                select: {
+                                    role_id: true,
+                                },
+                            },
+                        },
+                    },
                 },
             })
             for (const m of members) {
@@ -33,7 +41,7 @@ export class PlayersManager {
                         discord_user_id: m.discord_user_id,
                         nickname: m.nickname,
                         uuid: m.uuid,
-                        role: m.rank,
+                        role: m.user?.linked_roles[0]?.role_id ?? '',
                     }),
                 )
             }
@@ -50,7 +58,15 @@ export class PlayersManager {
                     uuid: true,
                     nickname: true,
                     discord_user_id: true,
-                    rank: true,
+                    user: {
+                        select: {
+                            linked_roles: {
+                                select: {
+                                    role_id: true,
+                                },
+                            },
+                        },
+                    },
                 },
             })
             if (memberData) {
@@ -58,7 +74,7 @@ export class PlayersManager {
                     discord_user_id: memberData.discord_user_id,
                     nickname: memberData.nickname,
                     uuid: memberData.uuid,
-                    role: memberData.rank,
+                    role: memberData.user?.linked_roles[0]?.role_id ?? '',
                 })
                 this.#cache.set(member.uuid, member)
             }
