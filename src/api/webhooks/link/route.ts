@@ -78,14 +78,6 @@ router.post('/', async (req, res) => {
                 },
                 select: {
                     uuid: true,
-                    nickname: true,
-                    rank: true,
-                    discord_user: {
-                        select: {
-                            id: true,
-                            username: true,
-                        },
-                    },
                 },
             }),
             db.linkCode.delete({
