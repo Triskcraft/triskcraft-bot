@@ -18,7 +18,7 @@ export default class extends ModalInteractionHandler<'id'> {
             .setTitle('Renombrar ' + title)
             .addLabelComponents(
                 new LabelBuilder()
-                    .setLabel('Nuvo nombre del post')
+                    .setLabel('Nuevo nombre del post')
                     .setDescription(
                         'Máximo 100 caracteres. Se puede editar después',
                     )
@@ -34,8 +34,6 @@ export default class extends ModalInteractionHandler<'id'> {
     }
 
     override async run(interaction: ModalSubmitInteraction<'cached'>) {
-        console.log(interaction.customId)
-
         if (!blogService.role) {
             return await interaction.reply({
                 flags:
@@ -60,11 +58,19 @@ export default class extends ModalInteractionHandler<'id'> {
             return await interaction.reply({
                 flags:
                     MessageFlags.Ephemeral | MessageFlags.SuppressNotifications,
-                content: `Este post ya no está dispoible`,
+                content: `Este post ya no está disponible`,
             })
         }
 
-        await blogService.changueTitle(post, title)
+        if (post.discord_user_id !== interaction.user.id) {
+            return await interaction.reply({
+                flags:
+                    MessageFlags.Ephemeral | MessageFlags.SuppressNotifications,
+                content: `Este post no te pertenece`,
+            })
+        }
+
+        await blogService.changeTitle(post, title)
 
         return await interaction.deferUpdate()
     }

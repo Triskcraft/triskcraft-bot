@@ -32,7 +32,7 @@ export default class extends ButtonInteractionHandler<'id'> {
             return await interaction.reply({
                 flags:
                     MessageFlags.Ephemeral | MessageFlags.SuppressNotifications,
-                content: `Este post ya no está dispoible`,
+                content: `Este post ya no está disponible`,
             })
         }
         if (post.discord_user_id !== interaction.user.id) {

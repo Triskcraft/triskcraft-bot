@@ -25,7 +25,7 @@ import type { Post } from '#/classes/post.ts'
 import blogState from '#/interactions/buttons/blog/blog-post.ts'
 import blogTitle from '#/interactions/buttons/blog/blog-title.ts'
 
-const PANNEL_NAME = '# 📰 **Panel de Publicaciones**'
+const PANEL_NAME = '# 📰 **Panel de Publicaciones**'
 
 class BlogService {
     #message: Message | null = null
@@ -53,7 +53,7 @@ class BlogService {
         await this.#checkChannel()
         if (!this.#channel) return
         await this.#posts.fetch()
-        await this.#renderPannel()
+        await this.#renderPanel()
         await this.#installEventListener()
     }
 
@@ -81,13 +81,13 @@ class BlogService {
         }
         if (!channel.isSendable()) {
             return logger.warn(
-                '[BLOG SERVICE] El canal de pannel no está disponible, se omitirá la inicialización',
+                '[BLOG SERVICE] El canal de panel no está disponible, se omitirá la inicialización',
             )
         }
         this.#channel = channel
     }
 
-    async #buildMessagePannel({
+    async #buildMessagePanel({
         user,
         title,
         status = POST_STATUS.DRAFT,
@@ -130,7 +130,7 @@ class BlogService {
         const message = await this.#channel.send({
             flags: MessageFlags.IsComponentsV2,
             components: [
-                await this.#buildMessagePannel({
+                await this.#buildMessagePanel({
                     title,
                     user: member.user,
                 }),
@@ -148,7 +148,7 @@ class BlogService {
         await message.edit({
             flags: MessageFlags.IsComponentsV2,
             components: [
-                await this.#buildMessagePannel({
+                await this.#buildMessagePanel({
                     title,
                     user: member.user,
                     id: post.id,
@@ -158,7 +158,7 @@ class BlogService {
         await thread.members.add(member)
     }
 
-    async #renderPannel() {
+    async #renderPanel() {
         const channel =
             client.channels.cache.get(envs.BLOG_CHANNEL_ID) ??
             (await client.channels.fetch(envs.BLOG_CHANNEL_ID))
@@ -167,14 +167,14 @@ class BlogService {
         }
         if (!channel.isSendable()) {
             return logger.warn(
-                '[BLOG SERVICE] El canal de pannel no está disponible',
+                '[BLOG SERVICE] El canal de panel no está disponible',
             )
         }
 
         const container = await this.#buildPanel()
 
         if (this.#message) {
-            this.#message.edit({
+            await this.#message.edit({
                 components: [container],
             })
         } else {
@@ -203,7 +203,7 @@ class BlogService {
         const container = new ContainerBuilder()
             .addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(
-                    PANNEL_NAME +
+                    PANEL_NAME +
                         '\nCrea y administra borradores de entradas para el blog.',
                 ),
             )
@@ -229,7 +229,7 @@ class BlogService {
             if (textDisplay.type !== ComponentType.TextDisplay) return false
             return (
                 msg.message.author.id === client.user.id &&
-                textDisplay.content.includes(PANNEL_NAME)
+                textDisplay.content.includes(PANEL_NAME)
             )
         })
         let nid: string
@@ -263,7 +263,7 @@ class BlogService {
         await message.edit({
             flags: MessageFlags.IsComponentsV2,
             components: [
-                await this.#buildMessagePannel({
+                await this.#buildMessagePanel({
                     user,
                     title: post.title,
                     id: post.id,
@@ -341,7 +341,9 @@ class BlogService {
 
         if (messages.length === 0) return
 
-        await post.publish(messages)
+        await post.publish(
+            messages.sort((a, b) => a.createdTimestamp - b.createdTimestamp),
+        )
 
         const user = await client.users.fetch(post.discord_user_id, {
             cache: true,
@@ -350,7 +352,7 @@ class BlogService {
         await original.edit({
             flags: MessageFlags.IsComponentsV2,
             components: [
-                await this.#buildMessagePannel({
+                await this.#buildMessagePanel({
                     user,
                     title: post.title,
                     id: post.id,
@@ -360,8 +362,8 @@ class BlogService {
         })
     }
 
-    async changueTitle(post: Post, title: string) {
-        await post.changueTitle(title)
+    async changeTitle(post: Post, title: string) {
+        await post.changeTitle(title)
         const user =
             client.users.cache.get(post.discord_user_id) ??
             (await client.users.fetch(post.discord_user_id))
@@ -372,7 +374,7 @@ class BlogService {
             await message.edit({
                 flags: MessageFlags.IsComponentsV2,
                 components: [
-                    await this.#buildMessagePannel({
+                    await this.#buildMessagePanel({
                         user,
                         title,
                         id: post.id,

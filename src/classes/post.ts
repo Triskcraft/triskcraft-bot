@@ -119,7 +119,7 @@ export class Post {
         return this
     }
 
-    async changueTitle(title: string) {
+    async changeTitle(title: string) {
         await db.post.update({
             where: {
                 id: this.#id,
