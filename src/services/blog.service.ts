@@ -9,6 +9,8 @@ import {
     ContainerBuilder,
     Events,
     GuildMember,
+    MediaGalleryBuilder,
+    MediaGalleryItemBuilder,
     Message,
     MessageFlags,
     Role,
@@ -112,14 +114,20 @@ class BlogService {
                     `# ${title}`,
                     `Autor: ${user}`,
                     `Estado: ${statusText[status]}`,
-                    id && this.#posts.cache.get(id)?.cover_image_url
-                        ? `Portada: ${this.#posts.cache.get(id)!.cover_image_url}`
-                        : null,
                 ]
                     .filter(Boolean)
                     .join('\n'),
             ),
         )
+        if (id && this.#posts.cache.get(id)!.cover_image_url) {
+            container.addMediaGalleryComponents(
+                new MediaGalleryBuilder().addItems(
+                    new MediaGalleryItemBuilder().setURL(
+                        this.#posts.cache.get(id)!.cover_image_url!,
+                    ),
+                ),
+            )
+        }
         if (id) {
             container.addActionRowComponents(
                 new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -155,6 +163,7 @@ class BlogService {
         })
         const post = await this.#posts.create({
             discord_user_id: member.id,
+            discord_username: member.user.username,
             thread_id: thread.id,
             title,
         })

@@ -1,8 +1,7 @@
 import type { Request, Response } from 'express'
 import { db } from '#/db/prisma.ts'
-import { POST_STATUS } from '#/db/generated/enums.ts'
-import { type BlogPost } from '@triskcraft/api-types'
-
+import { POST_BLOCK_MEDIA_TYPE, POST_STATUS } from '#/db/generated/enums.ts'
+import type { BlogPost } from '@triskcraft/api-types'
 /**
  * Endpoint que entrega el listado de post disponibles para el blog
  * Se aplica caching HTTP para evitar recalcular resultados en llamadas
@@ -21,16 +20,21 @@ export async function getPosts(req: Request, res: Response<BlogPost[]>) {
             discord_user_id: true,
             player_uuid: true,
             status: true,
+            cover_media_id: true,
         },
         include: {
+            cover_media: true,
             post_blocks: {
                 orderBy: {
                     timestamp: 'asc',
                 },
                 include: {
                     media: {
-                        omit: {
-                            post_block_message_id: true,
+                        orderBy: {
+                            position: 'asc',
+                        },
+                        include: {
+                            media: true,
                         },
                     },
                 },
@@ -60,16 +64,13 @@ export async function getPosts(req: Request, res: Response<BlogPost[]>) {
             },
         },
     })
-    const post_mapped = posts.map(
+    const post_mapped: BlogPost[] = posts.map(
         ({
             created_at,
+            cover_media,
             discord_user,
             id,
             title,
-            cover_image_content_type,
-            cover_image_hash,
-            cover_image_size,
-            cover_image_url,
             player,
             post_blocks,
             updated_at,
@@ -77,13 +78,8 @@ export async function getPosts(req: Request, res: Response<BlogPost[]>) {
             id,
             title,
             cover_image:
-                cover_image_url ?
-                    {
-                        url: cover_image_url,
-                        hash: cover_image_hash,
-                        content_type: cover_image_content_type,
-                        size: cover_image_size,
-                    }
+                cover_media?.media_type === POST_BLOCK_MEDIA_TYPE.IMAGE ?
+                    cover_media
                 :   null,
             user: discord_user,
             created_at: created_at.getTime(),
@@ -101,6 +97,7 @@ export async function getPosts(req: Request, res: Response<BlogPost[]>) {
                 :   null,
             post_blocks: post_blocks.map(p => ({
                 ...p,
+                media: p.media.map(({ media }) => media),
                 timestamp: p.timestamp.getTime(),
             })),
         }),

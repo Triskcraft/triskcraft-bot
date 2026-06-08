@@ -1,5 +1,5 @@
-import { inspect } from 'node:util'
 import { createHash } from 'node:crypto'
+import { inspect } from 'node:util'
 import {
     POST_BLOCK_MEDIA_TYPE,
     POST_STATUS,
@@ -9,6 +9,30 @@ import { envs } from '#/config.ts'
 import { BUCKETS, s3 } from '#/db/s3.ts'
 import { Upload } from '@aws-sdk/lib-storage'
 import type { Message } from 'discord.js'
+
+type PostMediaData = {
+    id: string
+    filename: string
+    url: string
+    content_type: string | null
+    media_type: POST_BLOCK_MEDIA_TYPE
+    size: number
+    width: number | null
+    height: number | null
+    description: string | null
+    hash: string | null
+}
+
+type BlogMediaInput = {
+    buffer: Buffer
+    contentType: string | null
+    description: string | null
+    filename: string
+    height: number | null
+    mediaType: POST_BLOCK_MEDIA_TYPE
+    size: number
+    width: number | null
+}
 
 function getMediaType(contentType: string | null) {
     if (contentType?.startsWith('image/')) return POST_BLOCK_MEDIA_TYPE.IMAGE
@@ -57,6 +81,47 @@ function sanitizeFilename(filename: string) {
     return filename.replaceAll(/[^\w.-]/g, '_')
 }
 
+async function findOrCreateBlogMedia({
+    buffer,
+    contentType,
+    description,
+    filename,
+    height,
+    mediaType,
+    size,
+    width,
+}: BlogMediaInput) {
+    const hash = createHash('sha256').update(buffer).digest('hex')
+    const existing = await db.postMedia.findFirst({
+        where: {
+            hash,
+        },
+    })
+
+    if (existing) return existing
+
+    const key = ['blog-media', hash, sanitizeFilename(filename)].join('-')
+    const url = await uploadBlogFile({
+        buffer,
+        contentType,
+        key,
+    })
+
+    return await db.postMedia.create({
+        data: {
+            content_type: contentType,
+            description,
+            filename,
+            hash,
+            height,
+            media_type: mediaType,
+            size,
+            url,
+            width,
+        },
+    })
+}
+
 export class Post {
     #id: string
 
@@ -88,73 +153,47 @@ export class Post {
         return this.#status
     }
 
-    #cover_image_url: string | null
+    #cover_media: PostMediaData | null
+
+    get cover_media() {
+        return this.#cover_media
+    }
 
     get cover_image_url() {
-        return this.#cover_image_url
-    }
-
-    #cover_image_hash: string | null
-
-    get cover_image_hash() {
-        return this.#cover_image_hash
-    }
-
-    #cover_image_content_type: string | null
-
-    get cover_image_content_type() {
-        return this.#cover_image_content_type
-    }
-
-    #cover_image_size: number | null
-
-    get cover_image_size() {
-        return this.#cover_image_size
+        return this.#cover_media?.url ?? null
     }
 
     constructor({
+        cover_media = null,
         discord_user_id,
         id,
         status = POST_STATUS.DRAFT,
         thread_id,
         title,
-        cover_image_content_type = null,
-        cover_image_hash = null,
-        cover_image_size = null,
-        cover_image_url = null,
     }: {
         id: string
         title: string
         discord_user_id: string
         thread_id: string
         status?: POST_STATUS
-        cover_image_content_type?: string | null
-        cover_image_hash?: string | null
-        cover_image_size?: number | null
-        cover_image_url?: string | null
+        cover_media?: PostMediaData | null
     }) {
+        this.#cover_media = cover_media
         this.#discord_user_id = discord_user_id
         this.#id = id
         this.#status = status
         this.#thread_id = thread_id
         this.#title = title
-        this.#cover_image_content_type = cover_image_content_type
-        this.#cover_image_hash = cover_image_hash
-        this.#cover_image_size = cover_image_size
-        this.#cover_image_url = cover_image_url
     }
 
     toJSON() {
         return {
+            cover_media: this.#cover_media,
             discord_user_id: this.#discord_user_id,
             id: this.#id,
             status: this.#status,
             thread_id: this.#thread_id,
             title: this.#title,
-            cover_image_content_type: this.#cover_image_content_type,
-            cover_image_hash: this.#cover_image_hash,
-            cover_image_size: this.#cover_image_size,
-            cover_image_url: this.#cover_image_url,
         }
     }
 
@@ -180,72 +219,29 @@ export class Post {
     async publish(messages: Message<true>[]) {
         if (this.status === POST_STATUS.PUBLISHED) return
 
-        const existingMediaUrlsByHash = new Map(
-            (
-                await db.postBlockMedia.findMany({
-                    where: {
-                        hash: {
-                            not: null,
-                        },
-                        post_block: {
-                            is: {
-                                post_id: this.#id,
-                            },
-                        },
-                    },
-                    select: {
-                        hash: true,
-                        url: true,
-                    },
-                })
-            ).map(image => [image.hash!, image.url]),
+        const media = await Promise.all(
+            messages.flatMap(m =>
+                [...m.attachments.values()].map(async (a, position) => {
+                    const { buffer } = await fetchBuffer(a.url)
+                    const storedMedia = await findOrCreateBlogMedia({
+                        buffer,
+                        contentType: a.contentType,
+                        description: a.description,
+                        filename: a.name,
+                        height: a.height,
+                        mediaType: getMediaType(a.contentType),
+                        size: a.size,
+                        width: a.width,
+                    })
+
+                    return {
+                        media_id: storedMedia.id,
+                        position,
+                        post_block_message_id: m.id,
+                    }
+                }),
+            ),
         )
-        const uploadedMediaUrlsByHash = new Map<string, string>()
-
-        const media = (
-            await Promise.all(
-                messages.flatMap(m =>
-                    m.attachments.map(async a => {
-                            const { buffer } = await fetchBuffer(a.url)
-                            const hash = createHash('sha256')
-                                .update(buffer)
-                                .digest('hex')
-                        let url =
-                            existingMediaUrlsByHash.get(hash) ??
-                            uploadedMediaUrlsByHash.get(hash)
-
-                        if (!url) {
-                            const key = [
-                                    'blog-media',
-                                    this.#id,
-                                    hash,
-                                    sanitizeFilename(a.name),
-                                ].join('-')
-
-                                url = await uploadBlogFile({
-                                    buffer,
-                                    contentType: a.contentType,
-                                    key,
-                                })
-                                uploadedMediaUrlsByHash.set(hash, url)
-                            }
-
-                        return {
-                            post_block_message_id: m.id,
-                            filename: a.name,
-                            url,
-                            content_type: a.contentType,
-                            media_type: getMediaType(a.contentType),
-                            size: a.size,
-                            width: a.width,
-                            height: a.height,
-                            description: a.description,
-                            hash,
-                        }
-                    }),
-                ),
-            )
-        ).filter(item => item !== null)
 
         await db.postBlocks.deleteMany({
             where: {
@@ -300,42 +296,46 @@ export class Post {
 
     async changeCoverImage(imageUrl: string) {
         const { buffer, contentType } = await fetchBuffer(imageUrl)
-        if (!contentType?.startsWith('image/')) {
+        if (getMediaType(contentType) !== POST_BLOCK_MEDIA_TYPE.IMAGE) {
             throw new Error('La URL de portada no apunta a una imagen')
         }
 
         const hash = createHash('sha256').update(buffer).digest('hex')
-        let url = this.#cover_image_hash === hash ? this.#cover_image_url : null
+        let coverMedia = await db.postMedia.findFirst({
+            where: {
+                hash,
+                media_type: POST_BLOCK_MEDIA_TYPE.IMAGE,
+            },
+        })
 
-        if (!url) {
-            const parsed = new URL(imageUrl)
-            const filename = sanitizeFilename(
-                parsed.pathname.split('/').at(-1) || 'cover',
-            )
-            const key = ['blog-cover', this.#id, hash, filename].join('-')
-            url = await uploadBlogFile({
+        if (!coverMedia) {
+            coverMedia = await findOrCreateBlogMedia({
                 buffer,
                 contentType,
-                key,
+                description: null,
+                filename: sanitizeFilename(
+                    new URL(imageUrl).pathname.split('/').at(-1) || 'cover',
+                ),
+                height: null,
+                mediaType: POST_BLOCK_MEDIA_TYPE.IMAGE,
+                size: buffer.byteLength,
+                width: null,
             })
         }
 
-        await db.post.update({
+        const post = await db.post.update({
             where: {
                 id: this.#id,
             },
             data: {
-                cover_image_content_type: contentType,
-                cover_image_hash: hash,
-                cover_image_size: buffer.byteLength,
-                cover_image_url: url,
+                cover_media_id: coverMedia.id,
+            },
+            select: {
+                cover_media: true,
             },
         })
 
-        this.#cover_image_content_type = contentType
-        this.#cover_image_hash = hash
-        this.#cover_image_size = buffer.byteLength
-        this.#cover_image_url = url
+        this.#cover_media = post.cover_media
 
         return this
     }
