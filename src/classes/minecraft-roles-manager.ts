@@ -60,7 +60,7 @@ export class MinecraftRolesManager {
 
     async create(name: string) {
         const role = new MinecraftRole(
-            await db.role.create({
+            await db.minecraftRole.create({
                 data: { name },
             }),
         )
@@ -69,7 +69,7 @@ export class MinecraftRolesManager {
     }
 
     async delete(id: string) {
-        await db.role.delete({
+        await db.minecraftRole.delete({
             where: { id },
         })
         this.#cache.delete(id)
