@@ -103,7 +103,9 @@ export async function getPosts(req: Request, res: Response<BlogPost[]>) {
                         uuid: player.uuid,
                         nickname: player.nickname,
                         digs: player.digs,
-                        rank: player.user?.linked_roles[0]?.role.name,
+                        rank:
+                            player.user?.linked_roles[0]?.role.name ??
+                            'Miembro',
                         roles: player.linked_roles.map(l => l.role.name),
                     }
                 :   null,
