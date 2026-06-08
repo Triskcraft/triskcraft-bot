@@ -57,7 +57,17 @@ export class Player {
         return this.toJSON()
     }
 
-    async setRole(role: string) {
+    async setRole(roleName: string) {
+        const role = await db.minecraftRole.upsert({
+            where: {
+                name: roleName,
+            },
+            update: {},
+            create: {
+                name: roleName,
+            },
+        })
+
         await db.linkedMinecraftRole.deleteMany({
             where: {
                 mc_user_uuid: this.#uuid,
@@ -66,10 +76,10 @@ export class Player {
         await db.linkedMinecraftRole.create({
             data: {
                 mc_user_uuid: this.#uuid,
-                role_id: role,
+                role_id: role.id,
             },
         })
-        this.#role = role
+        this.#role = role.id
         return this
     }
 }
