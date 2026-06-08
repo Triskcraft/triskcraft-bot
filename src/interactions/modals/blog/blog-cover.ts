@@ -10,26 +10,35 @@ import { ModalInteractionHandler } from '#/services/interactions.service.ts'
 import { blogService } from '#/services/blog.service.ts'
 
 export default class extends ModalInteractionHandler<'id'> {
-    override regex = /^blog:title:(?<id>\d+)$/
+    override regex = /^blog:cover:(?<id>\d+)$/
 
-    static override async build({ title, id }: { title: string; id: string }) {
+    static override async build({
+        cover_image_url,
+        id,
+        title,
+    }: {
+        cover_image_url?: string | null
+        id: string
+        title: string
+    }) {
+        const input = new TextInputBuilder()
+            .setCustomId('url')
+            .setRequired(true)
+            .setStyle(TextInputStyle.Short)
+            .setPlaceholder('https://...')
+
+        if (cover_image_url) {
+            input.setValue(cover_image_url)
+        }
+
         return new ModalBuilder()
-            .setCustomId(`blog:title:${id}`)
-            .setTitle('Renombrar ' + title)
+            .setCustomId(`blog:cover:${id}`)
+            .setTitle('Portada de ' + title)
             .addLabelComponents(
                 new LabelBuilder()
-                    .setLabel('Nuevo nombre del post')
-                    .setDescription(
-                        'Máximo 100 caracteres. Se puede editar después',
-                    )
-                    .setTextInputComponent(
-                        new TextInputBuilder()
-                            .setCustomId('name')
-                            .setRequired(true)
-                            .setStyle(TextInputStyle.Short)
-                            .setMaxLength(100)
-                            .setValue(title),
-                    ),
+                    .setLabel('URL de imagen')
+                    .setDescription('La imagen se descargará y subirá a S3')
+                    .setTextInputComponent(input),
             )
     }
 
@@ -51,7 +60,7 @@ export default class extends ModalInteractionHandler<'id'> {
         }
 
         const id = this.parser(interaction.customId).get('id')
-        const title = interaction.fields.getTextInputValue('name')!
+        const imageUrl = interaction.fields.getTextInputValue('url')!
         const post = blogService.posts.cache.get(id)
 
         if (!post) {
@@ -70,8 +79,14 @@ export default class extends ModalInteractionHandler<'id'> {
             })
         }
 
-        await blogService.changeTitle(post, title)
+        await interaction.deferReply({
+            flags: MessageFlags.Ephemeral | MessageFlags.SuppressNotifications,
+        })
 
-        return await interaction.deferUpdate()
+        await blogService.changeCoverImage(post, imageUrl)
+
+        await interaction.editReply({
+            content: 'Portada actualizada',
+        })
     }
 }

@@ -5,9 +5,20 @@ import { Readable } from 'node:stream'
 
 const router = Router()
 
-router.get('/web/:filename', async (req, res) => {
+const FILE_BUCKETS = {
+    web: BUCKETS.WEB,
+    blog: BUCKETS.BLOG,
+} as const
+
+router.get('/:bucket/:filename', async (req, res) => {
+    const bucket = FILE_BUCKETS[req.params.bucket as keyof typeof FILE_BUCKETS]
+    if (!bucket) {
+        res.status(404).json({ error: 'Bucket no encontrado' })
+        return
+    }
+
     const command = new GetObjectCommand({
-        Bucket: BUCKETS.WEB,
+        Bucket: bucket,
         Key: req.params.filename,
     })
 
