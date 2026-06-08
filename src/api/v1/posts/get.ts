@@ -1,14 +1,14 @@
 import type { Request, Response } from 'express'
 import { db } from '#/db/prisma.ts'
-import { POST_STATUS } from '#/db/generated/enums.ts'
-
+import { POST_BLOCK_MEDIA_TYPE, POST_STATUS } from '#/db/generated/enums.ts'
+import type { BlogPost } from '@triskcraft/api-types'
 /**
  * Endpoint que entrega el listado de post disponibles para el blog
  * Se aplica caching HTTP para evitar recalcular resultados en llamadas
  * repetidas.
  */
 
-export async function getPosts(req: Request, res: Response) {
+export async function getPosts(req: Request, res: Response<BlogPost[]>) {
     const posts = await db.post.findMany({
         where: {
             status: {
@@ -20,9 +20,24 @@ export async function getPosts(req: Request, res: Response) {
             discord_user_id: true,
             player_uuid: true,
             status: true,
+            cover_media_id: true,
         },
         include: {
+            cover_media: true,
             post_blocks: {
+                orderBy: {
+                    timestamp: 'asc',
+                },
+                include: {
+                    media: {
+                        orderBy: {
+                            position: 'asc',
+                        },
+                        include: {
+                            media: true,
+                        },
+                    },
+                },
                 omit: {
                     post_id: true,
                     message_id: true,
@@ -61,9 +76,10 @@ export async function getPosts(req: Request, res: Response) {
             },
         },
     })
-    const post_mapped = posts.map(
+    const post_mapped: BlogPost[] = posts.map(
         ({
             created_at,
+            cover_media,
             discord_user,
             id,
             title,
@@ -73,6 +89,10 @@ export async function getPosts(req: Request, res: Response) {
         }) => ({
             id,
             title,
+            cover_image:
+                cover_media?.media_type === POST_BLOCK_MEDIA_TYPE.IMAGE ?
+                    cover_media
+                :   null,
             user: discord_user,
             created_at: created_at.getTime(),
             updated_at: updated_at.getTime(),
@@ -89,6 +109,7 @@ export async function getPosts(req: Request, res: Response) {
                 :   null,
             post_blocks: post_blocks.map(p => ({
                 ...p,
+                media: p.media.map(({ media }) => media),
                 timestamp: p.timestamp.getTime(),
             })),
         }),

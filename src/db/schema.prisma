@@ -176,30 +176,72 @@ model Post {
     player_uuid     String?     @map("minecraft_player_uuid")
     thread_id       String
     status          POST_STATUS @default(DRAFT)
+    cover_media_id  String?     @unique
     created_at      DateTime    @default(now())
     updated_at      DateTime    @updatedAt
 
     discord_user DiscordUser  @relation(fields: [discord_user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
     player       Player?      @relation(fields: [player_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
     post_blocks  PostBlocks[]
+    cover_media  PostMedia?   @relation("PostCoverMedia", fields: [cover_media_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
     @@map("posts")
 }
 
 model PostBlocks {
-    message_id  String   @id
-    post_id     String
-    timestamp   DateTime
-    content     String?
-    components  Json[]   @default([])
-    embeds      Json[]   @default([])
-    attachments Json[]   @default([])
-    author_id   String
+    message_id String   @id
+    post_id    String
+    timestamp  DateTime
+    content    String?
+    components Json[]   @default([])
+    embeds     Json[]   @default([])
+    author_id  String
 
-    author DiscordUser @relation(fields: [author_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    post   Post        @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    author DiscordUser      @relation(fields: [author_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    post   Post             @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    media  PostBlockMedia[]
 
     @@map("post_blocks")
+}
+
+enum POST_BLOCK_MEDIA_TYPE {
+    IMAGE
+    VIDEO
+    AUDIO
+    FILE
+}
+
+model PostMedia {
+    id           String                @id @default(dbgenerated("snowflake()"))
+    filename     String
+    url          String
+    content_type String?
+    media_type   POST_BLOCK_MEDIA_TYPE
+    size         Int
+    width        Int?
+    height       Int?
+    description  String?
+    hash         String?
+
+    post_blocks    PostBlockMedia[]
+    cover_for_post Post?            @relation("PostCoverMedia")
+
+    @@index([hash])
+    @@index([media_type])
+    @@map("post_media")
+}
+
+model PostBlockMedia {
+    post_block_message_id String
+    media_id              String
+    position              Int    @default(0)
+
+    post_block PostBlocks @relation(fields: [post_block_message_id], references: [message_id], onDelete: Cascade, onUpdate: Cascade)
+    media      PostMedia  @relation(fields: [media_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@id([post_block_message_id, media_id, position])
+    @@index([media_id])
+    @@map("post_block_media")
 }
 
 model User {
