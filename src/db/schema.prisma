@@ -193,13 +193,41 @@ model PostBlocks {
     content     String?
     components  Json[]   @default([])
     embeds      Json[]   @default([])
-    attachments Json[]   @default([])
     author_id   String
 
     author DiscordUser @relation(fields: [author_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
     post   Post        @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    media  PostBlockMedia[]
 
     @@map("post_blocks")
+}
+
+enum POST_BLOCK_MEDIA_TYPE {
+    IMAGE
+    VIDEO
+    AUDIO
+    FILE
+}
+
+model PostBlockMedia {
+    id                    String  @id @default(dbgenerated("snowflake()"))
+    post_block_message_id String
+    filename              String
+    url                   String
+    content_type          String?
+    media_type            POST_BLOCK_MEDIA_TYPE
+    size                  Int
+    width                 Int?
+    height                Int?
+    description           String?
+    hash                  String?
+
+    post_block PostBlocks @relation(fields: [post_block_message_id], references: [message_id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@index([post_block_message_id])
+    @@index([hash])
+    @@index([media_type])
+    @@map("post_block_media")
 }
 
 model User {

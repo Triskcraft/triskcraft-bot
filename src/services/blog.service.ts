@@ -24,6 +24,7 @@ import { POST_STATUS } from '#/db/generated/enums.ts'
 import type { Post } from '#/classes/post.ts'
 import blogState from '#/interactions/buttons/blog/blog-post.ts'
 import blogTitle from '#/interactions/buttons/blog/blog-title.ts'
+import { BUCKETS, ensureBucket } from '#/db/s3.ts'
 
 const PANEL_NAME = '# 📰 **Panel de Publicaciones**'
 
@@ -52,6 +53,7 @@ class BlogService {
         if (!this.#role) return
         await this.#checkChannel()
         if (!this.#channel) return
+        await ensureBucket(BUCKETS.BLOG)
         await this.#posts.fetch()
         await this.#renderPanel()
         await this.#installEventListener()

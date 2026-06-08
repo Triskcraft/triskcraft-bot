@@ -1,7 +1,21 @@
 import { inspect } from 'node:util'
-import { POST_STATUS } from '#/db/generated/enums.ts'
+import { createHash } from 'node:crypto'
+import {
+    POST_BLOCK_MEDIA_TYPE,
+    POST_STATUS,
+} from '#/db/generated/enums.ts'
 import { db } from '#/db/prisma.ts'
+import { envs } from '#/config.ts'
+import { BUCKETS, s3 } from '#/db/s3.ts'
+import { Upload } from '@aws-sdk/lib-storage'
 import type { Message } from 'discord.js'
+
+function getMediaType(contentType: string | null) {
+    if (contentType?.startsWith('image/')) return POST_BLOCK_MEDIA_TYPE.IMAGE
+    if (contentType?.startsWith('video/')) return POST_BLOCK_MEDIA_TYPE.VIDEO
+    if (contentType?.startsWith('audio/')) return POST_BLOCK_MEDIA_TYPE.AUDIO
+    return POST_BLOCK_MEDIA_TYPE.FILE
+}
 
 export class Post {
     #id: string
@@ -86,6 +100,90 @@ export class Post {
     async publish(messages: Message<true>[]) {
         if (this.status === POST_STATUS.PUBLISHED) return
 
+        const existingMediaUrlsByHash = new Map(
+            (
+                await db.postBlockMedia.findMany({
+                    where: {
+                        hash: {
+                            not: null,
+                        },
+                        post_block: {
+                            is: {
+                                post_id: this.#id,
+                            },
+                        },
+                    },
+                    select: {
+                        hash: true,
+                        url: true,
+                    },
+                })
+            ).map(image => [image.hash!, image.url]),
+        )
+        const uploadedMediaUrlsByHash = new Map<string, string>()
+
+        const media = (
+            await Promise.all(
+                messages.flatMap(m =>
+                    m.attachments.map(async a => {
+                        const response = await fetch(a.url)
+                        if (!response.ok) {
+                            throw new Error(
+                                `No se pudo descargar el attachment ${a.id}: ${response.status} ${response.statusText}`,
+                            )
+                        }
+
+                        const buffer = Buffer.from(
+                            await response.arrayBuffer(),
+                        )
+                        const hash = createHash('sha256')
+                            .update(buffer)
+                            .digest('hex')
+                        let url =
+                            existingMediaUrlsByHash.get(hash) ??
+                            uploadedMediaUrlsByHash.get(hash)
+
+                        if (!url) {
+                            const key = [
+                                'blog-media',
+                                this.#id,
+                                hash,
+                                a.name.replaceAll(/[^\w.-]/g, '_'),
+                            ].join('-')
+
+                            await new Upload({
+                                client: s3,
+                                params: {
+                                    Bucket: BUCKETS.BLOG,
+                                    Key: key,
+                                    Body: buffer,
+                                    ContentType:
+                                        a.contentType ??
+                                        'application/octet-stream',
+                                },
+                            }).done()
+
+                            url = `${envs.API_URL}/files/blog/${key}`
+                            uploadedMediaUrlsByHash.set(hash, url)
+                        }
+
+                        return {
+                            post_block_message_id: m.id,
+                            filename: a.name,
+                            url,
+                            content_type: a.contentType,
+                            media_type: getMediaType(a.contentType),
+                            size: a.size,
+                            width: a.width,
+                            height: a.height,
+                            description: a.description,
+                            hash,
+                        }
+                    }),
+                ),
+            )
+        ).filter(item => item !== null)
+
         await db.postBlocks.deleteMany({
             where: {
                 post_id: this.#id,
@@ -101,9 +199,14 @@ export class Post {
                 content: m.content,
                 embeds: m.embeds,
                 components: m.components,
-                // attachments: m.attachments,
             })),
         })
+
+        if (media.length > 0) {
+            await db.postBlockMedia.createMany({
+                data: media,
+            })
+        }
 
         await db.post.update({
             where: {

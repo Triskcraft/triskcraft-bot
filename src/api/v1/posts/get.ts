@@ -26,6 +26,13 @@ export async function getPosts(req: Request, res: Response) {
                 orderBy: {
                     timestamp: 'asc',
                 },
+                include: {
+                    media: {
+                        omit: {
+                            post_block_message_id: true,
+                        },
+                    },
+                },
                 omit: {
                     post_id: true,
                     message_id: true,
