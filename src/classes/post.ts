@@ -17,6 +17,46 @@ function getMediaType(contentType: string | null) {
     return POST_BLOCK_MEDIA_TYPE.FILE
 }
 
+async function fetchBuffer(url: string) {
+    const response = await fetch(url)
+    if (!response.ok) {
+        throw new Error(
+            `No se pudo descargar ${url}: ${response.status} ${response.statusText}`,
+        )
+    }
+
+    return {
+        buffer: Buffer.from(await response.arrayBuffer()),
+        contentType: response.headers.get('content-type'),
+    }
+}
+
+async function uploadBlogFile({
+    buffer,
+    contentType,
+    key,
+}: {
+    buffer: Buffer
+    contentType: string | null
+    key: string
+}) {
+    await new Upload({
+        client: s3,
+        params: {
+            Bucket: BUCKETS.BLOG,
+            Key: key,
+            Body: buffer,
+            ContentType: contentType ?? 'application/octet-stream',
+        },
+    }).done()
+
+    return `${envs.API_URL}/files/blog/${key}`
+}
+
+function sanitizeFilename(filename: string) {
+    return filename.replaceAll(/[^\w.-]/g, '_')
+}
+
 export class Post {
     #id: string
 
@@ -48,24 +88,60 @@ export class Post {
         return this.#status
     }
 
+    #cover_image_url: string | null
+
+    get cover_image_url() {
+        return this.#cover_image_url
+    }
+
+    #cover_image_hash: string | null
+
+    get cover_image_hash() {
+        return this.#cover_image_hash
+    }
+
+    #cover_image_content_type: string | null
+
+    get cover_image_content_type() {
+        return this.#cover_image_content_type
+    }
+
+    #cover_image_size: number | null
+
+    get cover_image_size() {
+        return this.#cover_image_size
+    }
+
     constructor({
         discord_user_id,
         id,
         status = POST_STATUS.DRAFT,
         thread_id,
         title,
+        cover_image_content_type = null,
+        cover_image_hash = null,
+        cover_image_size = null,
+        cover_image_url = null,
     }: {
         id: string
         title: string
         discord_user_id: string
         thread_id: string
         status?: POST_STATUS
+        cover_image_content_type?: string | null
+        cover_image_hash?: string | null
+        cover_image_size?: number | null
+        cover_image_url?: string | null
     }) {
         this.#discord_user_id = discord_user_id
         this.#id = id
         this.#status = status
         this.#thread_id = thread_id
         this.#title = title
+        this.#cover_image_content_type = cover_image_content_type
+        this.#cover_image_hash = cover_image_hash
+        this.#cover_image_size = cover_image_size
+        this.#cover_image_url = cover_image_url
     }
 
     toJSON() {
@@ -75,6 +151,10 @@ export class Post {
             status: this.#status,
             thread_id: this.#thread_id,
             title: this.#title,
+            cover_image_content_type: this.#cover_image_content_type,
+            cover_image_hash: this.#cover_image_hash,
+            cover_image_size: this.#cover_image_size,
+            cover_image_url: this.#cover_image_url,
         }
     }
 
@@ -126,46 +206,29 @@ export class Post {
             await Promise.all(
                 messages.flatMap(m =>
                     m.attachments.map(async a => {
-                        const response = await fetch(a.url)
-                        if (!response.ok) {
-                            throw new Error(
-                                `No se pudo descargar el attachment ${a.id}: ${response.status} ${response.statusText}`,
-                            )
-                        }
-
-                        const buffer = Buffer.from(
-                            await response.arrayBuffer(),
-                        )
-                        const hash = createHash('sha256')
-                            .update(buffer)
-                            .digest('hex')
+                            const { buffer } = await fetchBuffer(a.url)
+                            const hash = createHash('sha256')
+                                .update(buffer)
+                                .digest('hex')
                         let url =
                             existingMediaUrlsByHash.get(hash) ??
                             uploadedMediaUrlsByHash.get(hash)
 
                         if (!url) {
                             const key = [
-                                'blog-media',
-                                this.#id,
-                                hash,
-                                a.name.replaceAll(/[^\w.-]/g, '_'),
-                            ].join('-')
+                                    'blog-media',
+                                    this.#id,
+                                    hash,
+                                    sanitizeFilename(a.name),
+                                ].join('-')
 
-                            await new Upload({
-                                client: s3,
-                                params: {
-                                    Bucket: BUCKETS.BLOG,
-                                    Key: key,
-                                    Body: buffer,
-                                    ContentType:
-                                        a.contentType ??
-                                        'application/octet-stream',
-                                },
-                            }).done()
-
-                            url = `${envs.API_URL}/files/blog/${key}`
-                            uploadedMediaUrlsByHash.set(hash, url)
-                        }
+                                url = await uploadBlogFile({
+                                    buffer,
+                                    contentType: a.contentType,
+                                    key,
+                                })
+                                uploadedMediaUrlsByHash.set(hash, url)
+                            }
 
                         return {
                             post_block_message_id: m.id,
@@ -232,6 +295,48 @@ export class Post {
             },
         })
         this.#title = title
+        return this
+    }
+
+    async changeCoverImage(imageUrl: string) {
+        const { buffer, contentType } = await fetchBuffer(imageUrl)
+        if (!contentType?.startsWith('image/')) {
+            throw new Error('La URL de portada no apunta a una imagen')
+        }
+
+        const hash = createHash('sha256').update(buffer).digest('hex')
+        let url = this.#cover_image_hash === hash ? this.#cover_image_url : null
+
+        if (!url) {
+            const parsed = new URL(imageUrl)
+            const filename = sanitizeFilename(
+                parsed.pathname.split('/').at(-1) || 'cover',
+            )
+            const key = ['blog-cover', this.#id, hash, filename].join('-')
+            url = await uploadBlogFile({
+                buffer,
+                contentType,
+                key,
+            })
+        }
+
+        await db.post.update({
+            where: {
+                id: this.#id,
+            },
+            data: {
+                cover_image_content_type: contentType,
+                cover_image_hash: hash,
+                cover_image_size: buffer.byteLength,
+                cover_image_url: url,
+            },
+        })
+
+        this.#cover_image_content_type = contentType
+        this.#cover_image_hash = hash
+        this.#cover_image_size = buffer.byteLength
+        this.#cover_image_url = url
+
         return this
     }
 }

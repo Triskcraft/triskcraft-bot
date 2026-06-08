@@ -25,6 +25,7 @@ import type { Post } from '#/classes/post.ts'
 import blogState from '#/interactions/buttons/blog/blog-post.ts'
 import blogTitle from '#/interactions/buttons/blog/blog-title.ts'
 import { BUCKETS, ensureBucket } from '#/db/s3.ts'
+import blogCover from '#/interactions/buttons/blog/blog-cover.ts'
 
 const PANEL_NAME = '# 📰 **Panel de Publicaciones**'
 
@@ -107,7 +108,16 @@ class BlogService {
         }
         const container = new ContainerBuilder().addTextDisplayComponents(
             new TextDisplayBuilder().setContent(
-                `# ${title}\nAutor: ${user}\nEstado: ${statusText[status]}`,
+                [
+                    `# ${title}`,
+                    `Autor: ${user}`,
+                    `Estado: ${statusText[status]}`,
+                    id && this.#posts.cache.get(id)?.cover_image_url
+                        ? `Portada: ${this.#posts.cache.get(id)!.cover_image_url}`
+                        : null,
+                ]
+                    .filter(Boolean)
+                    .join('\n'),
             ),
         )
         if (id) {
@@ -115,6 +125,7 @@ class BlogService {
                 new ActionRowBuilder<ButtonBuilder>().addComponents(
                     await blogState.build({ id, status }),
                     await blogTitle.build({ id }),
+                    await blogCover.build({ id }),
                 ),
             )
         }
@@ -391,6 +402,29 @@ class BlogService {
         if (thread && thread.isThread()) {
             await thread.edit({
                 name: title,
+            })
+        }
+    }
+
+    async changeCoverImage(post: Post, imageUrl: string) {
+        await post.changeCoverImage(imageUrl)
+        const user =
+            client.users.cache.get(post.discord_user_id) ??
+            (await client.users.fetch(post.discord_user_id))
+        const message =
+            this.#channel?.messages.cache.get(post.thread_id) ??
+            (await this.#channel?.messages.fetch(post.thread_id))
+        if (message) {
+            await message.edit({
+                flags: MessageFlags.IsComponentsV2,
+                components: [
+                    await this.#buildMessagePanel({
+                        user,
+                        title: post.title,
+                        id: post.id,
+                        status: post.status,
+                    }),
+                ],
             })
         }
     }

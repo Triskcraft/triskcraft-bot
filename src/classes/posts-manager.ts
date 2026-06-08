@@ -11,17 +11,17 @@ export class PostsManager {
                 id: true,
                 title: true,
                 thread_id: true,
+                cover_image_content_type: true,
+                cover_image_hash: true,
+                cover_image_size: true,
+                cover_image_url: true,
             },
         })
-        for (const { discord_user_id, status, id, title, thread_id } of roles) {
+        for (const post of roles) {
             this.#cache.set(
-                id,
+                post.id,
                 new Post({
-                    discord_user_id,
-                    status,
-                    id,
-                    title,
-                    thread_id,
+                    ...post,
                 }),
             )
         }

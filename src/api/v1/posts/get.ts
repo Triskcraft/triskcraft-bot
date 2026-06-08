@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express'
 import { db } from '#/db/prisma.ts'
 import { POST_STATUS } from '#/db/generated/enums.ts'
+import { type BlogPost } from '@triskcraft/api-types'
 
 /**
  * Endpoint que entrega el listado de post disponibles para el blog
@@ -8,7 +9,7 @@ import { POST_STATUS } from '#/db/generated/enums.ts'
  * repetidas.
  */
 
-export async function getPosts(req: Request, res: Response) {
+export async function getPosts(req: Request, res: Response<BlogPost[]>) {
     const posts = await db.post.findMany({
         where: {
             status: {
@@ -65,12 +66,25 @@ export async function getPosts(req: Request, res: Response) {
             discord_user,
             id,
             title,
+            cover_image_content_type,
+            cover_image_hash,
+            cover_image_size,
+            cover_image_url,
             player,
             post_blocks,
             updated_at,
         }) => ({
             id,
             title,
+            cover_image:
+                cover_image_url ?
+                    {
+                        url: cover_image_url,
+                        hash: cover_image_hash,
+                        content_type: cover_image_content_type,
+                        size: cover_image_size,
+                    }
+                :   null,
             user: discord_user,
             created_at: created_at.getTime(),
             updated_at: updated_at.getTime(),

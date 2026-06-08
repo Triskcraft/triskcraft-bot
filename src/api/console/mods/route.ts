@@ -1,12 +1,14 @@
 import { html, render } from '#/utils/html.ts'
 import { Router } from 'express'
-import { BUCKETS, s3 } from '#/db/s3.ts'
+import { BUCKETS, ensureBucket, s3 } from '#/db/s3.ts'
 import { Upload } from '@aws-sdk/lib-storage'
 import Busboy from 'busboy'
 import type { CompleteMultipartUploadCommandOutput } from '@aws-sdk/client-s3'
 import { Layout } from '#/web/components/layout.ts'
 
 const router = Router()
+
+await ensureBucket(BUCKETS.WEB)
 
 router.get('/', async (req, res) => {
     render(

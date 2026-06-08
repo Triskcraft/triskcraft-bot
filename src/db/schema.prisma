@@ -176,6 +176,10 @@ model Post {
     player_uuid     String?     @map("minecraft_player_uuid")
     thread_id       String
     status          POST_STATUS @default(DRAFT)
+    cover_image_url String?
+    cover_image_hash String?
+    cover_image_content_type String?
+    cover_image_size Int?
     created_at      DateTime    @default(now())
     updated_at      DateTime    @updatedAt
 
