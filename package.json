@@ -10,7 +10,8 @@
         "lint": "eslint .",
         "build": "prisma generate && tsc",
         "dev": "node --watch src/index.ts",
-        "db:copy-prod": "prisma migrate reset && prisma generate && node scripts/copydb.ts"
+        "db:copy-prod": "prisma migrate reset && prisma generate && node scripts/copydb.ts",
+        "format:check": "prettier --check ."
     },
     "imports": {
         "#/*": "./src/*"
