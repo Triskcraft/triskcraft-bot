@@ -337,8 +337,9 @@ function discordLogin(req: Request, res: Response) {
     res.cookie('oauth_ctx', JSON.stringify(req.query), {
         httpOnly: true,
         secure: envs.NODE_ENV === 'production',
-        sameSite: 'strict',
+        sameSite: 'lax',
         path: '/',
+        maxAge: 10 * 60 * 1000,
     })
     return res.redirect(
         `https://discord.com/oauth2/authorize?client_id=${envs.DISCORD_CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(envs.DISCORD_REDIRECT_URI)}&scope=identify`,

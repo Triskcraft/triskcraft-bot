@@ -29,11 +29,23 @@ router.get('/', cookieParser(), async (req, res) => {
         },
         body: params,
     })
+    if (!request.ok) {
+        return render(
+            res,
+            Layout({
+                children: ErrorCard({
+                    title: 'Discord Login Failed',
+                    message:
+                        'Discord rejected the authorization code. Please try again.',
+                }),
+            }),
+        )
+    }
     const response = (await request.json()) as DiscordAccessTokenResponse
     res.cookie('discord_access', JSON.stringify(response), {
         httpOnly: true,
-        secure: true,
-        sameSite: 'strict',
+        secure: envs.NODE_ENV === 'production',
+        sameSite: 'lax',
         maxAge: response.expires_in * 1000,
     })
     const oauthCtx = getOauthCtxCookie(req)
@@ -48,6 +60,7 @@ router.get('/', cookieParser(), async (req, res) => {
             }),
         )
     }
+    res.clearCookie('oauth_ctx', { path: '/' })
     res.redirect(`/oauth/authorize?${new URLSearchParams(oauthCtx)}`)
 })
 
