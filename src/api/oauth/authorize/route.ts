@@ -334,7 +334,18 @@ export default router
 // test http://localhost:8080/oauth/authorize?response_type=code&client_id=api-panel&code_challenge=eIVsW83uLPZmbiKwsR7J86HuUoMqpAWFuoLyo36gpaU&code_challenge_method=S256&redirect_uri=http://localhost:8080/oauth/callback
 
 function discordLogin(req: Request, res: Response) {
-    res.cookie('oauth_ctx', JSON.stringify(req.query), {
+    const discordState = randomBytes(32).toString('base64url')
+    const oauthCtx: Record<string, string> = {}
+
+    for (const [key, value] of Object.entries(req.query)) {
+        if (typeof value === 'string') {
+            oauthCtx[key] = value
+        }
+    }
+
+    oauthCtx.discord_state = discordState
+
+    res.cookie('oauth_ctx', JSON.stringify(oauthCtx), {
         httpOnly: true,
         secure: envs.NODE_ENV === 'production',
         sameSite: 'lax',
@@ -342,6 +353,12 @@ function discordLogin(req: Request, res: Response) {
         maxAge: 10 * 60 * 1000,
     })
     return res.redirect(
-        `https://discord.com/oauth2/authorize?client_id=${envs.DISCORD_CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(envs.DISCORD_REDIRECT_URI)}&scope=identify`,
+        `https://discord.com/oauth2/authorize?${new URLSearchParams({
+            client_id: envs.DISCORD_CLIENT_ID,
+            response_type: 'code',
+            redirect_uri: envs.DISCORD_REDIRECT_URI,
+            scope: 'identify',
+            state: discordState,
+        })}`,
     )
 }

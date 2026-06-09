@@ -15,6 +15,26 @@ router.get('/', cookieParser(), async (req, res) => {
     if (typeof req.query.code !== 'string') {
         return res.redirect('/oauth/authorize')
     }
+
+    const oauthCtx = getOauthCtxCookie(req)
+    if (
+        !oauthCtx ||
+        typeof req.query.state !== 'string' ||
+        oauthCtx.discord_state !== req.query.state
+    ) {
+        res.clearCookie('oauth_ctx', { path: '/' })
+
+        return render(
+            res,
+            Layout({
+                children: ErrorCard({
+                    title: 'Invalid Request',
+                    message: 'Invalid OAuth context. Please try again.',
+                }),
+            }),
+        )
+    }
+
     const params = new URLSearchParams({
         client_id: envs.DISCORD_CLIENT_ID,
         client_secret: envs.DISCORD_CLIENT_SECRET,
@@ -48,20 +68,12 @@ router.get('/', cookieParser(), async (req, res) => {
         sameSite: 'lax',
         maxAge: response.expires_in * 1000,
     })
-    const oauthCtx = getOauthCtxCookie(req)
-    if (!oauthCtx) {
-        return render(
-            res,
-            Layout({
-                children: ErrorCard({
-                    title: 'Invalid Request',
-                    message: 'Invalid OAuth context. Please try again.',
-                }),
-            }),
-        )
-    }
+
+    const oauthParams = { ...oauthCtx }
+    delete oauthParams.discord_state
+
     res.clearCookie('oauth_ctx', { path: '/' })
-    res.redirect(`/oauth/authorize?${new URLSearchParams(oauthCtx)}`)
+    res.redirect(`/oauth/authorize?${new URLSearchParams(oauthParams)}`)
 })
 
 export default router
