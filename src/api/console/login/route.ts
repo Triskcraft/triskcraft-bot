@@ -35,11 +35,7 @@ router.get('/', async (req, res) => {
     }
 
     const context = getConsoleOAuthContext(req)
-    if (
-        !context ||
-        context.state !== state ||
-        typeof code !== 'string'
-    ) {
+    if (!context || context.state !== state || typeof code !== 'string') {
         res.clearCookie(CONSOLE_OAUTH_COOKIE, { path: '/console/login' })
         return login(res)
     }
