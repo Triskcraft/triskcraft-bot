@@ -15,6 +15,26 @@ router.get('/', cookieParser(), async (req, res) => {
     if (typeof req.query.code !== 'string') {
         return res.redirect('/oauth/authorize')
     }
+
+    const oauthCtx = getOauthCtxCookie(req)
+    if (
+        !oauthCtx ||
+        typeof req.query.state !== 'string' ||
+        oauthCtx.discord_state !== req.query.state
+    ) {
+        res.clearCookie('oauth_ctx', { path: '/' })
+
+        return render(
+            res,
+            Layout({
+                children: ErrorCard({
+                    title: 'Invalid Request',
+                    message: 'Invalid OAuth context. Please try again.',
+                }),
+            }),
+        )
+    }
+
     const params = new URLSearchParams({
         client_id: envs.DISCORD_CLIENT_ID,
         client_secret: envs.DISCORD_CLIENT_SECRET,
@@ -29,26 +49,31 @@ router.get('/', cookieParser(), async (req, res) => {
         },
         body: params,
     })
-    const response = (await request.json()) as DiscordAccessTokenResponse
-    res.cookie('discord_access', JSON.stringify(response), {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict',
-        maxAge: response.expires_in * 1000,
-    })
-    const oauthCtx = getOauthCtxCookie(req)
-    if (!oauthCtx) {
+    if (!request.ok) {
         return render(
             res,
             Layout({
                 children: ErrorCard({
-                    title: 'Invalid Request',
-                    message: 'Invalid OAuth context. Please try again.',
+                    title: 'Discord Login Failed',
+                    message:
+                        'Discord rejected the authorization code. Please try again.',
                 }),
             }),
         )
     }
-    res.redirect(`/oauth/authorize?${new URLSearchParams(oauthCtx)}`)
+    const response = (await request.json()) as DiscordAccessTokenResponse
+    res.cookie('discord_access', JSON.stringify(response), {
+        httpOnly: true,
+        secure: envs.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: response.expires_in * 1000,
+    })
+
+    const oauthParams = { ...oauthCtx }
+    delete oauthParams.discord_state
+
+    res.clearCookie('oauth_ctx', { path: '/' })
+    res.redirect(`/oauth/authorize?${new URLSearchParams(oauthParams)}`)
 })
 
 export default router
