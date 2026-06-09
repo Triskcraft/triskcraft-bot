@@ -41,7 +41,7 @@ Además de esta guía rápida, la documentación funcional y de arquitectura est
 Instala dependencias con:
 
 ```bash
-npm install
+pnpm install
 ```
 
 ## Variables de entorno
@@ -121,20 +121,20 @@ API_PORT=3000
 
 ## Puesta en marcha
 
-1. Instala dependencias: `npm install`.
+1. Instala dependencias: `pnpm install`.
 2. Genera el cliente de Prisma y aplica las migraciones (hay SQL inicial en
    `src/prisma/migrations`):
 
     ```bash
-    npx prisma migrate deploy
-    npx prisma generate
+    pnpm exec prisma migrate deploy
+    pnpm exec prisma generate
     ```
 
 3. Arranca el bot (usa las variables `DEPLOY_COMMAND` y `DEPLOY_INACTIVITY_PANEL`
    según necesites desplegar comandos/panel):
 
     ```bash
-    npm start
+    pnpm start
     ```
 
     La API HTTP quedará escuchando en `API_PORT` y el bot se conectará al
@@ -196,8 +196,8 @@ src/
 
 ## Desarrollo y recomendaciones
 
-- Ejecuta `npm run lint` para validar estilo y reglas de ESLint.
-- Usa `npm run dev` para recargar automáticamente el bot durante el desarrollo.
+- Ejecuta `pnpm run lint` para validar estilo y reglas de ESLint.
+- Usa `pnpm run dev` para recargar automáticamente el bot durante el desarrollo.
 - Ajusta `DEPLOY_COMMAND` y `DEPLOY_INACTIVITY_PANEL` a `false` en local si no
   quieres sobrescribir comandos/panel en el servidor de producción.
 
@@ -206,7 +206,7 @@ src/
 ### Desplegar comandos y panel en un arranque controlado
 
 ```bash
-DEPLOY_COMMAND=true DEPLOY_INACTIVITY_PANEL=true npm start
+DEPLOY_COMMAND=true DEPLOY_INACTIVITY_PANEL=true pnpm start
 ```
 
 ### Consumir la API v1 desde una herramienta CLI
