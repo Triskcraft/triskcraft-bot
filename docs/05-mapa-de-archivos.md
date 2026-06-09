@@ -8,7 +8,7 @@
 - `DOCUMENTACION_TECNICA.md`: documentación técnica histórica del proyecto.
 - `LICENSE`: licencia del repositorio.
 - `package.json`: scripts, dependencias y metadatos del proyecto.
-- `package-lock.json`: bloqueo de versiones npm.
+- `pnpm-lock.yaml`: bloqueo de versiones pnpm.
 - `tsconfig.json`: configuración TypeScript.
 - `eslint.config.ts`: reglas de lint del código.
 - `prisma.config.ts`: configuración de Prisma (schema, datasource, seed).

@@ -1,4 +1,4 @@
-name: Deploy Web
+name: Deploy Bot
 
 on:
     push:
@@ -27,10 +27,10 @@ jobs:
                       sudo -u bot git reset --hard origin/main
 
                       echo "Instalando dependencias..."
-                      sudo -u bot npm ci
+                      sudo -u bot env CI=true pnpm install --frozen-lockfile
 
                       echo "Generando build..."
-                      sudo -u bot npm run build
+                      sudo -u bot pnpm run build
 
                       echo "Reiniciando servicio..."
                       sudo systemctl restart triskbot

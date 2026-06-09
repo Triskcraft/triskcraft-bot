@@ -463,10 +463,10 @@ scope=openid identify minecraft
 ### 1) Arranque del bot
 
 ```bash
-npm install
-npx prisma migrate deploy
-npx prisma generate
-npm start
+pnpm install
+pnpm exec prisma migrate deploy
+pnpm exec prisma generate
+pnpm start
 ```
 
 ### 2) Desplegar comandos y panel desde variables de entorno
@@ -474,7 +474,7 @@ npm start
 ```bash
 export DEPLOY_COMMAND=true
 export DEPLOY_INACTIVITY_PANEL=true
-npm start
+pnpm start
 ```
 
 ### 3) Ejemplos de interacción en Discord

@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "Discord bot para gestionar periodos de inactividad y estadisticas de roles.",
     "type": "module",
+    "packageManager": "pnpm@11.5.2",
     "main": "src/index.ts",
     "scripts": {
         "start": "node src/index.ts",
@@ -56,10 +57,5 @@
     },
     "engines": {
         "node": ">=24.14"
-    },
-    "overrides": {
-        "eslint-plugin-import": {
-            "eslint": "10.2.1"
-        }
     }
 }

@@ -16,7 +16,7 @@ export default defineConfig([
     tseslint.configs.recommended,
     {
         files: ['**/*.json'],
-        ignores: ['package-lock.json', 'tsconfig.json'],
+        ignores: ['pnpm-lock.yaml', 'tsconfig.json'],
         plugins: { json },
         language: 'json/json',
         rules: json.configs.recommended.rules,
