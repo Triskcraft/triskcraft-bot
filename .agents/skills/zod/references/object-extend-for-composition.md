@@ -15,15 +15,15 @@ When building on existing schemas, use `.extend()` to add new fields rather than
 import { z } from 'zod'
 
 const baseUserSchema = z.object({
-  id: z.string(),
-  name: z.string(),
+    id: z.string(),
+    name: z.string(),
 })
 
 // Manual spreading loses Zod's schema relationship
 const adminUserSchema = z.object({
-  ...baseUserSchema.shape,  // Accessing internal .shape
-  role: z.literal('admin'),
-  permissions: z.array(z.string()),
+    ...baseUserSchema.shape, // Accessing internal .shape
+    role: z.literal('admin'),
+    permissions: z.array(z.string()),
 })
 
 // Problems:
@@ -38,15 +38,15 @@ const adminUserSchema = z.object({
 import { z } from 'zod'
 
 const baseUserSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  email: z.string().email(),
+    id: z.string(),
+    name: z.string(),
+    email: z.string().email(),
 })
 
 // Extend to add fields
 const adminUserSchema = baseUserSchema.extend({
-  role: z.literal('admin'),
-  permissions: z.array(z.string()),
+    role: z.literal('admin'),
+    permissions: z.array(z.string()),
 })
 
 type AdminUser = z.infer<typeof adminUserSchema>
@@ -60,7 +60,7 @@ type AdminUser = z.infer<typeof adminUserSchema>
 
 // Override existing fields
 const strictEmailSchema = baseUserSchema.extend({
-  email: z.string().email().endsWith('@company.com'),  // Stricter validation
+    email: z.string().email().endsWith('@company.com'), // Stricter validation
 })
 ```
 
@@ -69,32 +69,34 @@ const strictEmailSchema = baseUserSchema.extend({
 ```typescript
 // Base entity with common fields
 const entitySchema = z.object({
-  id: z.string().uuid(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+    id: z.string().uuid(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
 })
 
 // User extends entity
 const userSchema = entitySchema.extend({
-  email: z.string().email(),
-  name: z.string(),
+    email: z.string().email(),
+    name: z.string(),
 })
 
 // Product extends entity
 const productSchema = entitySchema.extend({
-  name: z.string(),
-  price: z.number().positive(),
-  sku: z.string(),
+    name: z.string(),
+    price: z.number().positive(),
+    sku: z.string(),
 })
 
 // Order extends entity with references
 const orderSchema = entitySchema.extend({
-  userId: z.string().uuid(),
-  items: z.array(z.object({
-    productId: z.string().uuid(),
-    quantity: z.number().int().positive(),
-  })),
-  total: z.number().positive(),
+    userId: z.string().uuid(),
+    items: z.array(
+        z.object({
+            productId: z.string().uuid(),
+            quantity: z.number().int().positive(),
+        }),
+    ),
+    total: z.number().positive(),
 })
 ```
 
@@ -102,37 +104,33 @@ const orderSchema = entitySchema.extend({
 
 ```typescript
 const baseSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  email: z.string(),
+    id: z.string(),
+    name: z.string(),
+    email: z.string(),
 })
 
 // Create input: no id, add password
-const createSchema = baseSchema
-  .omit({ id: true })
-  .extend({
+const createSchema = baseSchema.omit({ id: true }).extend({
     password: z.string().min(8),
-  })
+})
 
 // Update input: all optional except id
-const updateSchema = baseSchema
-  .partial()
-  .extend({
-    id: z.string(),  // Override to make required
-  })
+const updateSchema = baseSchema.partial().extend({
+    id: z.string(), // Override to make required
+})
 ```
 
 **Merge for combining independent schemas:**
 
 ```typescript
 const addressSchema = z.object({
-  street: z.string(),
-  city: z.string(),
+    street: z.string(),
+    city: z.string(),
 })
 
 const contactSchema = z.object({
-  email: z.string().email(),
-  phone: z.string(),
+    email: z.string().email(),
+    phone: z.string(),
 })
 
 // Merge combines two schemas (both required)
@@ -141,6 +139,7 @@ const customerSchema = addressSchema.merge(contactSchema)
 ```
 
 **When NOT to use this pattern:**
+
 - When schemas are genuinely independent (use merge or intersection)
 - When you need to remove fields (use omit)
 

@@ -16,18 +16,18 @@ import { z } from 'zod'
 
 // Base schema
 const userSchema = z.object({
-  name: z.string().min(1),
-  email: z.string().email(),
-  age: z.number().int().positive(),
-  role: z.enum(['admin', 'user']),
+    name: z.string().min(1),
+    email: z.string().email(),
+    age: z.number().int().positive(),
+    role: z.enum(['admin', 'user']),
 })
 
 // Manually duplicated for updates - will drift!
 const updateUserSchema = z.object({
-  name: z.string().min(1).optional(),
-  email: z.string().email().optional(),
-  age: z.number().int().positive().optional(),
-  // Forgot to add role - schemas out of sync!
+    name: z.string().min(1).optional(),
+    email: z.string().email().optional(),
+    age: z.number().int().positive().optional(),
+    // Forgot to add role - schemas out of sync!
 })
 
 // Later, you add a field to userSchema but forget updateUserSchema
@@ -41,10 +41,10 @@ import { z } from 'zod'
 
 // Base schema - single source of truth
 const userSchema = z.object({
-  name: z.string().min(1),
-  email: z.string().email(),
-  age: z.number().int().positive(),
-  role: z.enum(['admin', 'user']),
+    name: z.string().min(1),
+    email: z.string().email(),
+    age: z.number().int().positive(),
+    role: z.enum(['admin', 'user']),
 })
 
 // All fields optional for updates
@@ -57,8 +57,8 @@ type UpdateUser = z.infer<typeof updateUserSchema>
 // { name?: string; email?: string; age?: number; role?: 'admin' | 'user' }
 
 // Validate partial updates
-updateUserSchema.parse({ email: 'new@example.com' })  // Valid
-updateUserSchema.parse({})  // Valid - all fields optional
+updateUserSchema.parse({ email: 'new@example.com' }) // Valid
+updateUserSchema.parse({}) // Valid - all fields optional
 ```
 
 **Partial specific fields only:**
@@ -66,8 +66,8 @@ updateUserSchema.parse({})  // Valid - all fields optional
 ```typescript
 // Only name and email are optional for updates
 const updateUserSchema = userSchema.partial({
-  name: true,
-  email: true,
+    name: true,
+    email: true,
 })
 
 type UpdateUser = z.infer<typeof updateUserSchema>
@@ -79,14 +79,14 @@ type UpdateUser = z.infer<typeof updateUserSchema>
 
 ```typescript
 const addressSchema = z.object({
-  street: z.string(),
-  city: z.string(),
-  country: z.string(),
+    street: z.string(),
+    city: z.string(),
+    country: z.string(),
 })
 
 const userSchema = z.object({
-  name: z.string(),
-  address: addressSchema,
+    name: z.string(),
+    address: addressSchema,
 })
 
 // .partial() only makes top-level fields optional
@@ -103,10 +103,10 @@ const deepPartialSchema = userSchema.deepPartial()
 
 ```typescript
 const baseSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string(),
-  email: z.string().email(),
-  createdAt: z.date(),
+    id: z.string().uuid(),
+    name: z.string(),
+    email: z.string().email(),
+    createdAt: z.date(),
 })
 
 // Create: id and createdAt are generated, rest required
@@ -117,6 +117,7 @@ const updateSchema = baseSchema.partial().omit({ id: true, createdAt: true })
 ```
 
 **When NOT to use this pattern:**
+
 - When update logic differs significantly from create (different validations)
 - When using GraphQL with explicit input types
 

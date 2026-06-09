@@ -16,25 +16,25 @@ import { z } from 'zod'
 
 // Manual type definition
 interface User {
-  id: string
-  name: string
-  email: string
-  age: number
+    id: string
+    name: string
+    email: string
+    age: number
 }
 
 // Separate schema
 const userSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string().min(1),
-  email: z.string().email(),
-  age: z.number().int().positive(),
-  role: z.enum(['admin', 'user']),  // Added to schema, forgot to add to interface!
+    id: z.string().uuid(),
+    name: z.string().min(1),
+    email: z.string().email(),
+    age: z.number().int().positive(),
+    role: z.enum(['admin', 'user']), // Added to schema, forgot to add to interface!
 })
 
 // Type and schema are now out of sync
 function createUser(user: User) {
-  const validated = userSchema.parse(user)  // Has role
-  saveToDb(user)  // Missing role - TypeScript doesn't warn
+    const validated = userSchema.parse(user) // Has role
+    saveToDb(user) // Missing role - TypeScript doesn't warn
 }
 ```
 
@@ -45,11 +45,11 @@ import { z } from 'zod'
 
 // Schema is the single source of truth
 const userSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string().min(1),
-  email: z.string().email(),
-  age: z.number().int().positive(),
-  role: z.enum(['admin', 'user']),
+    id: z.string().uuid(),
+    name: z.string().min(1),
+    email: z.string().email(),
+    age: z.number().int().positive(),
+    role: z.enum(['admin', 'user']),
 })
 
 // Type is always in sync with schema
@@ -57,9 +57,9 @@ type User = z.infer<typeof userSchema>
 // { id: string; name: string; email: string; age: number; role: 'admin' | 'user' }
 
 function createUser(user: User) {
-  // user.role exists because type is derived from schema
-  const validated = userSchema.parse(user)
-  saveToDb(validated)
+    // user.role exists because type is derived from schema
+    const validated = userSchema.parse(user)
+    saveToDb(validated)
 }
 ```
 
@@ -67,8 +67,8 @@ function createUser(user: User) {
 
 ```typescript
 const userSchema = z.object({
-  name: z.string(),
-  createdAt: z.string().transform(s => new Date(s)),  // String in, Date out
+    name: z.string(),
+    createdAt: z.string().transform(s => new Date(s)), // String in, Date out
 })
 
 // z.infer gives output type (after transforms)
@@ -81,8 +81,8 @@ type UserInput = z.input<typeof userSchema>
 
 // Use input type for function parameters accepting raw data
 function processUser(input: UserInput) {
-  const user = userSchema.parse(input)  // user is User type
-  return user.createdAt.getTime()  // Date methods available
+    const user = userSchema.parse(input) // user is User type
+    return user.createdAt.getTime() // Date methods available
 }
 ```
 
@@ -91,19 +91,22 @@ function processUser(input: UserInput) {
 ```typescript
 // Schema named with Schema suffix
 const UserSchema = z.object({
-  id: z.string(),
-  name: z.string(),
+    id: z.string(),
+    name: z.string(),
 })
 
 // Type named without suffix
 type User = z.infer<typeof UserSchema>
 
 // Alternative: lowercase schema, uppercase type
-const userSchema = z.object({/*...*/})
+const userSchema = z.object({
+    /*...*/
+})
 type User = z.infer<typeof userSchema>
 ```
 
 **When NOT to use this pattern:**
+
 - When you need a type that's different from the validation schema
 - When interfacing with external types you don't control
 

@@ -15,31 +15,31 @@ tags: error, flatten, forms, user-experience
 import { z } from 'zod'
 
 const formSchema = z.object({
-  email: z.string().email('Invalid email'),
-  password: z.string().min(8, 'Password too short'),
-  profile: z.object({
-    name: z.string().min(1, 'Name required'),
-  }),
+    email: z.string().email('Invalid email'),
+    password: z.string().min(8, 'Password too short'),
+    profile: z.object({
+        name: z.string().min(1, 'Name required'),
+    }),
 })
 
 function getFieldErrors(error: z.ZodError) {
-  const errors: Record<string, string> = {}
+    const errors: Record<string, string> = {}
 
-  for (const issue of error.issues) {
-    // Manual path joining - error prone
-    const field = issue.path.join('.')
-    if (!errors[field]) {
-      errors[field] = issue.message
+    for (const issue of error.issues) {
+        // Manual path joining - error prone
+        const field = issue.path.join('.')
+        if (!errors[field]) {
+            errors[field] = issue.message
+        }
     }
-  }
 
-  return errors
+    return errors
 }
 
 const result = formSchema.safeParse(data)
 if (!result.success) {
-  const errors = getFieldErrors(result.error)
-  // { email: 'Invalid email', 'profile.name': 'Name required' }
+    const errors = getFieldErrors(result.error)
+    // { email: 'Invalid email', 'profile.name': 'Name required' }
 }
 ```
 
@@ -49,28 +49,28 @@ if (!result.success) {
 import { z } from 'zod'
 
 const formSchema = z.object({
-  email: z.string().email('Invalid email'),
-  password: z.string().min(8, 'Password too short'),
-  profile: z.object({
-    name: z.string().min(1, 'Name required'),
-  }),
+    email: z.string().email('Invalid email'),
+    password: z.string().min(8, 'Password too short'),
+    profile: z.object({
+        name: z.string().min(1, 'Name required'),
+    }),
 })
 
 const result = formSchema.safeParse(data)
 
 if (!result.success) {
-  const { formErrors, fieldErrors } = result.error.flatten()
+    const { formErrors, fieldErrors } = result.error.flatten()
 
-  // formErrors: string[] - top-level errors (from .refine on the object)
-  // fieldErrors: { [key]: string[] } - errors by field
+    // formErrors: string[] - top-level errors (from .refine on the object)
+    // fieldErrors: { [key]: string[] } - errors by field
 
-  // Ready for form display
-  console.log(fieldErrors)
-  // {
-  //   email: ['Invalid email'],
-  //   password: ['Password too short'],
-  //   'profile.name': ['Name required']
-  // }
+    // Ready for form display
+    console.log(fieldErrors)
+    // {
+    //   email: ['Invalid email'],
+    //   password: ['Password too short'],
+    //   'profile.name': ['Name required']
+    // }
 }
 ```
 
@@ -80,8 +80,11 @@ if (!result.success) {
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 
-const { register, formState: { errors } } = useForm({
-  resolver: zodResolver(formSchema),
+const {
+    register,
+    formState: { errors },
+} = useForm({
+    resolver: zodResolver(formSchema),
 })
 
 // errors are already flattened by the resolver
@@ -92,9 +95,9 @@ const { register, formState: { errors } } = useForm({
 **Customizing flatten output:**
 
 ```typescript
-const flattened = result.error.flatten((issue) => ({
-  message: issue.message,
-  code: issue.code,
+const flattened = result.error.flatten(issue => ({
+    message: issue.message,
+    code: issue.code,
 }))
 
 // fieldErrors now contains custom objects
@@ -109,22 +112,23 @@ const flattened = result.error.flatten((issue) => ({
 const result = formSchema.safeParse(data)
 
 if (!result.success) {
-  const formatted = result.error.format()
-  // {
-  //   _errors: [],
-  //   email: { _errors: ['Invalid email'] },
-  //   profile: {
-  //     _errors: [],
-  //     name: { _errors: ['Name required'] }
-  //   }
-  // }
+    const formatted = result.error.format()
+    // {
+    //   _errors: [],
+    //   email: { _errors: ['Invalid email'] },
+    //   profile: {
+    //     _errors: [],
+    //     name: { _errors: ['Name required'] }
+    //   }
+    // }
 
-  // Access nested errors naturally
-  formatted.profile?.name?._errors  // ['Name required']
+    // Access nested errors naturally
+    formatted.profile?.name?._errors // ['Name required']
 }
 ```
 
 **When NOT to use this pattern:**
+
 - When you need access to full issue metadata (code, path as array)
 - When using a form library that expects different error format
 

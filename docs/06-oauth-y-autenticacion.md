@@ -125,10 +125,10 @@ sequenceDiagram
 
 Los scopes se solicitan en `GET /auth/authorize` usando el parámetro `scope` con valores separados por espacio. El servidor valida que todos los scopes pedidos existan y estén permitidos por `Client.scopes`.
 
-| Scope | Qué habilita en `/auth/me` |
-| --- | --- |
-| `openid` | Claims de identidad del access token: `sub`, `iss`, `aud`, `exp`. |
-| `identify` | Información general del usuario del sistema: `id`, `rank`, `created_at` y `discord_user`. |
+| Scope       | Qué habilita en `/auth/me`                                                                                            |
+| ----------- | --------------------------------------------------------------------------------------------------------------------- |
+| `openid`    | Claims de identidad del access token: `sub`, `iss`, `aud`, `exp`.                                                     |
+| `identify`  | Información general del usuario del sistema: `id`, `rank`, `created_at` y `discord_user`.                             |
 | `minecraft` | Información del jugador vinculado: `mc_player` con `digs`, `nickname`, `uuid`, `rank`, `user_id`, `medias` y `roles`. |
 
 Ejemplo:

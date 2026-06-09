@@ -16,19 +16,20 @@ await prisma.$connect()
 ### When to use
 
 Usually not needed - Prisma connects automatically on first query. Use for:
+
 - Fail fast on startup
 - Health checks
 - Pre-warming connections
 
 ```typescript
 async function main() {
-  try {
-    await prisma.$connect()
-    console.log('Database connected')
-  } catch (e) {
-    console.error('Failed to connect:', e)
-    process.exit(1)
-  }
+    try {
+        await prisma.$connect()
+        console.log('Database connected')
+    } catch (e) {
+        console.error('Failed to connect:', e)
+        process.exit(1)
+    }
 }
 ```
 
@@ -44,13 +45,13 @@ await prisma.$disconnect()
 
 ```typescript
 process.on('beforeExit', async () => {
-  await prisma.$disconnect()
+    await prisma.$disconnect()
 })
 
 // Or with SIGTERM
 process.on('SIGTERM', async () => {
-  await prisma.$disconnect()
-  process.exit(0)
+    await prisma.$disconnect()
+    process.exit(0)
 })
 ```
 
@@ -58,7 +59,7 @@ process.on('SIGTERM', async () => {
 
 ```typescript
 afterAll(async () => {
-  await prisma.$disconnect()
+    await prisma.$disconnect()
 })
 ```
 
@@ -70,14 +71,14 @@ Subscribe to events:
 
 ```typescript
 const prisma = new PrismaClient({
-  adapter,
-  log: [{ level: 'query', emit: 'event' }]
+    adapter,
+    log: [{ level: 'query', emit: 'event' }],
 })
 
-prisma.$on('query', (e) => {
-  console.log('Query:', e.query)
-  console.log('Params:', e.params)
-  console.log('Duration:', e.duration, 'ms')
+prisma.$on('query', e => {
+    console.log('Query:', e.query)
+    console.log('Params:', e.params)
+    console.log('Duration:', e.duration, 'ms')
 })
 ```
 
@@ -85,17 +86,17 @@ prisma.$on('query', (e) => {
 
 ```typescript
 const prisma = new PrismaClient({
-  adapter,
-  log: [
-    { level: 'info', emit: 'event' },
-    { level: 'warn', emit: 'event' },
-    { level: 'error', emit: 'event' }
-  ]
+    adapter,
+    log: [
+        { level: 'info', emit: 'event' },
+        { level: 'warn', emit: 'event' },
+        { level: 'error', emit: 'event' },
+    ],
 })
 
-prisma.$on('info', (e) => console.log(e.message))
-prisma.$on('warn', (e) => console.warn(e.message))
-prisma.$on('error', (e) => console.error(e.message))
+prisma.$on('info', e => console.log(e.message))
+prisma.$on('warn', e => console.warn(e.message))
+prisma.$on('error', e => console.error(e.message))
 ```
 
 ## $extends()
@@ -106,9 +107,9 @@ Add extensions for custom behavior:
 
 ```typescript
 const prisma = new PrismaClient({ adapter }).$extends({
-  client: {
-    $log: (message: string) => console.log(message)
-  }
+    client: {
+        $log: (message: string) => console.log(message),
+    },
 })
 
 prisma.$log('Hello!')
@@ -118,13 +119,13 @@ prisma.$log('Hello!')
 
 ```typescript
 const prisma = new PrismaClient({ adapter }).$extends({
-  model: {
-    user: {
-      async findByEmail(email: string) {
-        return prisma.user.findUnique({ where: { email } })
-      }
-    }
-  }
+    model: {
+        user: {
+            async findByEmail(email: string) {
+                return prisma.user.findUnique({ where: { email } })
+            },
+        },
+    },
 })
 
 const user = await prisma.user.findByEmail('alice@prisma.io')
@@ -134,15 +135,15 @@ const user = await prisma.user.findByEmail('alice@prisma.io')
 
 ```typescript
 const prisma = new PrismaClient({ adapter }).$extends({
-  query: {
-    user: {
-      async findMany({ args, query }) {
-        // Add default filter
-        args.where = { ...args.where, deletedAt: null }
-        return query(args)
-      }
-    }
-  }
+    query: {
+        user: {
+            async findMany({ args, query }) {
+                // Add default filter
+                args.where = { ...args.where, deletedAt: null }
+                return query(args)
+            },
+        },
+    },
 })
 ```
 
@@ -150,16 +151,16 @@ const prisma = new PrismaClient({ adapter }).$extends({
 
 ```typescript
 const prisma = new PrismaClient({ adapter }).$extends({
-  result: {
-    user: {
-      fullName: {
-        needs: { firstName: true, lastName: true },
-        compute(user) {
-          return `${user.firstName} ${user.lastName}`
-        }
-      }
-    }
-  }
+    result: {
+        user: {
+            fullName: {
+                needs: { firstName: true, lastName: true },
+                compute(user) {
+                    return `${user.firstName} ${user.lastName}`
+                },
+            },
+        },
+    },
 })
 
 const user = await prisma.user.findFirst()
@@ -170,9 +171,9 @@ console.log(user.fullName) // Computed field
 
 ```typescript
 const prisma = new PrismaClient({ adapter })
-  .$extends(loggingExtension)
-  .$extends(softDeleteExtension)
-  .$extends(computedFieldsExtension)
+    .$extends(loggingExtension)
+    .$extends(softDeleteExtension)
+    .$extends(computedFieldsExtension)
 ```
 
 ## $transaction()
@@ -197,7 +198,7 @@ type UserWhereInput = Prisma.UserWhereInput
 // Output types
 type User = Prisma.UserGetPayload<{}>
 type UserWithPosts = Prisma.UserGetPayload<{
-  include: { posts: true }
+    include: { posts: true }
 }>
 ```
 
@@ -209,14 +210,14 @@ Type-safe query fragments:
 import { Prisma } from '../generated/client'
 
 const userSelect = {
-  id: true,
-  email: true,
-  name: true
+    id: true,
+    email: true,
+    name: true,
 } satisfies Prisma.UserSelect
 
 const user = await prisma.user.findUnique({
-  where: { id: 1 },
-  select: userSelect
+    where: { id: 1 },
+    select: userSelect,
 })
 ```
 

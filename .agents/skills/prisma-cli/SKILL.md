@@ -3,8 +3,8 @@ name: prisma-cli
 description: Prisma CLI commands reference covering all available commands, options, and usage patterns. Use when running Prisma CLI commands, setting up projects, generating client, running migrations, managing databases, or starting Prisma's MCP server. Triggers on "prisma init", "prisma generate", "prisma migrate", "prisma db", "prisma studio", "prisma mcp".
 license: MIT
 metadata:
-  author: prisma
-  version: "7.6.0"
+    author: prisma
+    version: '7.6.0'
 ---
 
 # Prisma CLI Reference
@@ -14,6 +14,7 @@ Complete reference for all Prisma CLI commands. This skill provides guidance on 
 ## When to Apply
 
 Reference this skill when:
+
 - Setting up a new Prisma project (`prisma init`)
 - Generating Prisma Client (`prisma generate`)
 - Running database migrations (`prisma migrate`)
@@ -23,26 +24,26 @@ Reference this skill when:
 
 ## Rule Categories by Priority
 
-| Priority | Category | Impact | Prefix |
-|----------|----------|--------|--------|
-| 1 | Setup | HIGH | `init` |
-| 2 | Generation | HIGH | `generate` |
-| 3 | Development | HIGH | `dev` |
-| 4 | Database | HIGH | `db-` |
-| 5 | Migrations | CRITICAL | `migrate-` |
-| 6 | Utility | MEDIUM | `studio`, `validate`, `format`, `debug`, `mcp` |
+| Priority | Category    | Impact   | Prefix                                         |
+| -------- | ----------- | -------- | ---------------------------------------------- |
+| 1        | Setup       | HIGH     | `init`                                         |
+| 2        | Generation  | HIGH     | `generate`                                     |
+| 3        | Development | HIGH     | `dev`                                          |
+| 4        | Database    | HIGH     | `db-`                                          |
+| 5        | Migrations  | CRITICAL | `migrate-`                                     |
+| 6        | Utility     | MEDIUM   | `studio`, `validate`, `format`, `debug`, `mcp` |
 
 ## Command Categories
 
-| Category | Commands | Purpose |
-|----------|----------|---------|
-| Setup | `init` | Bootstrap new Prisma project |
-| Generation | `generate` | Generate Prisma Client |
-| Validation | `validate`, `format` | Schema validation and formatting |
-| Development | `dev` | Local Prisma Postgres for development |
-| Database | `db pull`, `db push`, `db seed`, `db execute` | Direct database operations |
-| Migrations | `migrate dev`, `migrate deploy`, `migrate reset`, `migrate status`, `migrate diff`, `migrate resolve` | Schema migrations |
-| Utility | `studio`, `mcp`, `version`, `debug` | Development and AI tooling |
+| Category    | Commands                                                                                              | Purpose                               |
+| ----------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| Setup       | `init`                                                                                                | Bootstrap new Prisma project          |
+| Generation  | `generate`                                                                                            | Generate Prisma Client                |
+| Validation  | `validate`, `format`                                                                                  | Schema validation and formatting      |
+| Development | `dev`                                                                                                 | Local Prisma Postgres for development |
+| Database    | `db pull`, `db push`, `db seed`, `db execute`                                                         | Direct database operations            |
+| Migrations  | `migrate dev`, `migrate deploy`, `migrate reset`, `migrate status`, `migrate diff`, `migrate resolve` | Schema migrations                     |
+| Utility     | `studio`, `mcp`, `version`, `debug`                                                                   | Development and AI tooling            |
 
 ## Quick Reference
 
@@ -187,14 +188,14 @@ import 'dotenv/config'
 import { defineConfig, env } from 'prisma/config'
 
 export default defineConfig({
-  schema: 'prisma/schema.prisma',
-  migrations: {
-    path: 'prisma/migrations',
-    seed: 'tsx prisma/seed.ts',
-  },
-  datasource: {
-    url: env('DATABASE_URL'),
-  },
+    schema: 'prisma/schema.prisma',
+    migrations: {
+        path: 'prisma/migrations',
+        seed: 'tsx prisma/seed.ts',
+    },
+    datasource: {
+        url: env('DATABASE_URL'),
+    },
 })
 ```
 

@@ -22,11 +22,11 @@ prisma migrate diff [options]
 
 ## Options
 
-| Option | Description |
-|--------|-------------|
-| `--script` | Render SQL script to stdout |
+| Option        | Description                                        |
+| ------------- | -------------------------------------------------- |
+| `--script`    | Render SQL script to stdout                        |
 | `--exit-code` | Exit 2 if changes detected, 0 if empty, 1 if error |
-| `--config` | Custom path to your Prisma config file |
+| `--config`    | Custom path to your Prisma config file             |
 
 ### Sources (Must provide one `from` and one `to`)
 

@@ -18,12 +18,12 @@ prisma studio [options]
 
 ## Options
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--port` / `-p` | Port to start Studio on | `5555` |
-| `--browser` / `-b` | Browser to open Studio in | System default |
-| `--config` | Custom path to your Prisma config file | - |
-| `--url` | Database connection string (overrides the one in your Prisma config) | - |
+| Option             | Description                                                          | Default        |
+| ------------------ | -------------------------------------------------------------------- | -------------- |
+| `--port` / `-p`    | Port to start Studio on                                              | `5555`         |
+| `--browser` / `-b` | Browser to open Studio in                                            | System default |
+| `--config`         | Custom path to your Prisma config file                               | -              |
+| `--url`            | Database connection string (overrides the one in your Prisma config) | -              |
 
 ## Examples
 
@@ -113,25 +113,29 @@ Some recent builds also expose AI-assisted SQL authoring. Treat these as interac
 ## Common Workflow
 
 1. Run migrations:
-   ```bash
-   prisma migrate dev
-   ```
+
+    ```bash
+    prisma migrate dev
+    ```
 
 2. Seed data:
-   ```bash
-   prisma db seed
-   ```
+
+    ```bash
+    prisma db seed
+    ```
 
 3. Open Studio to verify:
-   ```bash
-   prisma studio
-   ```
+
+    ```bash
+    prisma studio
+    ```
 
 4. Make manual edits if needed
 
 ## Security Note
 
 Studio provides direct database access. Only run on:
+
 - Local development machines
 - Secure internal networks
 - Never expose publicly

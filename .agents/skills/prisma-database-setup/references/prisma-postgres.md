@@ -15,6 +15,7 @@ prisma init --db
 ```
 
 This will:
+
 1. Log you into Prisma Data Platform.
 2. Create a new project and database instance.
 3. Update your `.env` with the connection string.
@@ -52,10 +53,10 @@ In `prisma.config.ts`:
 import { defineConfig, env } from 'prisma/config'
 
 export default defineConfig({
-  schema: 'prisma/schema.prisma',
-  datasource: {
-    url: env('DATABASE_URL'),
-  },
+    schema: 'prisma/schema.prisma',
+    datasource: {
+        url: env('DATABASE_URL'),
+    },
 })
 ```
 
@@ -66,19 +67,21 @@ Use a driver adapter for Prisma Postgres in the standard SQL workflow.
 ### Recommended for standard Node.js apps
 
 1. Install adapter and driver:
-   ```bash
-   npm install @prisma/adapter-pg pg
-   ```
+
+    ```bash
+    npm install @prisma/adapter-pg pg
+    ```
 
 2. Use the direct TCP connection string from Prisma Console:
-   ```typescript
-   import 'dotenv/config'
-   import { PrismaClient } from '../generated/client'
-   import { PrismaPg } from '@prisma/adapter-pg'
 
-   const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
-   const prisma = new PrismaClient({ adapter })
-   ```
+    ```typescript
+    import 'dotenv/config'
+    import { PrismaClient } from '../generated/client'
+    import { PrismaPg } from '@prisma/adapter-pg'
+
+    const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
+    const prisma = new PrismaClient({ adapter })
+    ```
 
 `PrismaPg` also accepts the connection string directly:
 
@@ -93,8 +96,8 @@ For PostgreSQL prepared statement naming, pass adapter options as the second arg
 import { createHash } from 'node:crypto'
 
 const adapter = new PrismaPg(process.env.DATABASE_URL!, {
-  statementNameGenerator: ({ sql }) =>
-    `prisma_${createHash('sha1').update(sql).digest('hex').slice(0, 16)}`,
+    statementNameGenerator: ({ sql }) =>
+        `prisma_${createHash('sha1').update(sql).digest('hex').slice(0, 16)}`,
 })
 ```
 
@@ -111,9 +114,9 @@ import { PrismaClient } from '../generated/client'
 import { PrismaPostgresAdapter } from '@prisma/adapter-ppg'
 
 const prisma = new PrismaClient({
-  adapter: new PrismaPostgresAdapter({
-    connectionString: process.env.PRISMA_DIRECT_TCP_URL,
-  }),
+    adapter: new PrismaPostgresAdapter({
+        connectionString: process.env.PRISMA_DIRECT_TCP_URL,
+    }),
 })
 ```
 

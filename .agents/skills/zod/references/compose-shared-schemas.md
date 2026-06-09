@@ -16,33 +16,35 @@ When the same schema pattern appears in multiple places, extract it into a share
 import { z } from 'zod'
 
 const userSchema = z.object({
-  id: z.string().uuid(),
-  email: z.string().email(),
-  name: z.string().min(1),
-  createdAt: z.date(),
+    id: z.string().uuid(),
+    email: z.string().email(),
+    name: z.string().min(1),
+    createdAt: z.date(),
 })
 
 // api/orders.ts
 import { z } from 'zod'
 
 const orderSchema = z.object({
-  id: z.string().uuid(),  // Duplicated
-  userId: z.string().uuid(),  // Same pattern
-  items: z.array(z.object({
-    productId: z.string().uuid(),  // Duplicated
-    quantity: z.number().int().positive(),
-  })),
-  createdAt: z.date(),  // Duplicated
+    id: z.string().uuid(), // Duplicated
+    userId: z.string().uuid(), // Same pattern
+    items: z.array(
+        z.object({
+            productId: z.string().uuid(), // Duplicated
+            quantity: z.number().int().positive(),
+        }),
+    ),
+    createdAt: z.date(), // Duplicated
 })
 
 // api/comments.ts
 import { z } from 'zod'
 
 const commentSchema = z.object({
-  id: z.string().uuid(),  // Same duplication
-  userId: z.string().uuid(),
-  content: z.string().min(1),
-  createdAt: z.date(),  // Inconsistency risk
+    id: z.string().uuid(), // Same duplication
+    userId: z.string().uuid(),
+    content: z.string().min(1),
+    createdAt: z.date(), // Inconsistency risk
 })
 ```
 
@@ -58,21 +60,23 @@ export type UUID = z.infer<typeof uuid>
 
 // Timestamps
 export const timestamps = z.object({
-  createdAt: z.date(),
-  updatedAt: z.date(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
 })
 
 // Base entity with ID
-export const baseEntity = z.object({
-  id: uuid,
-}).merge(timestamps)
+export const baseEntity = z
+    .object({
+        id: uuid,
+    })
+    .merge(timestamps)
 
 export type BaseEntity = z.infer<typeof baseEntity>
 
 // Pagination
 export const paginationParams = z.object({
-  page: z.coerce.number().int().positive().default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(20),
+    page: z.coerce.number().int().positive().default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(20),
 })
 ```
 
@@ -82,8 +86,8 @@ import { z } from 'zod'
 import { baseEntity, uuid } from './common'
 
 export const userSchema = baseEntity.extend({
-  email: z.string().email(),
-  name: z.string().min(1),
+    email: z.string().email(),
+    name: z.string().min(1),
 })
 
 export type User = z.infer<typeof userSchema>
@@ -95,14 +99,14 @@ import { z } from 'zod'
 import { baseEntity, uuid } from './common'
 
 const orderItemSchema = z.object({
-  productId: uuid,
-  quantity: z.number().int().positive(),
+    productId: uuid,
+    quantity: z.number().int().positive(),
 })
 
 export const orderSchema = baseEntity.extend({
-  userId: uuid,
-  items: z.array(orderItemSchema).min(1),
-  total: z.number().positive(),
+    userId: uuid,
+    items: z.array(orderItemSchema).min(1),
+    total: z.number().positive(),
 })
 
 export type Order = z.infer<typeof orderSchema>
@@ -131,6 +135,7 @@ import { userSchema, orderSchema, uuid, type User } from '@/schemas'
 ```
 
 **When NOT to use this pattern:**
+
 - One-off schemas used only in a single file
 - When schemas look similar but have different semantics (don't over-abstract)
 

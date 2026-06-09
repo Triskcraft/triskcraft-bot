@@ -15,16 +15,16 @@ tags: schema, unknown, any, type-safety
 import { z } from 'zod'
 
 const eventSchema = z.object({
-  type: z.string(),
-  payload: z.any(),  // Infers to 'any'
+    type: z.string(),
+    payload: z.any(), // Infers to 'any'
 })
 
 type Event = z.infer<typeof eventSchema>
 // { type: string; payload: any }
 
 function handleEvent(event: Event) {
-  // No type error - TypeScript allows anything
-  console.log(event.payload.foo.bar.baz)  // Runtime crash if structure is wrong
+    // No type error - TypeScript allows anything
+    console.log(event.payload.foo.bar.baz) // Runtime crash if structure is wrong
 }
 ```
 
@@ -34,21 +34,21 @@ function handleEvent(event: Event) {
 import { z } from 'zod'
 
 const eventSchema = z.object({
-  type: z.string(),
-  payload: z.unknown(),  // Infers to 'unknown'
+    type: z.string(),
+    payload: z.unknown(), // Infers to 'unknown'
 })
 
 type Event = z.infer<typeof eventSchema>
 // { type: string; payload: unknown }
 
 function handleEvent(event: Event) {
-  // TypeScript error: Object is of type 'unknown'
-  console.log(event.payload.foo)  // Won't compile
+    // TypeScript error: Object is of type 'unknown'
+    console.log(event.payload.foo) // Won't compile
 
-  // Must narrow type first
-  if (typeof event.payload === 'object' && event.payload !== null) {
-    // Now TypeScript knows it's an object
-  }
+    // Must narrow type first
+    if (typeof event.payload === 'object' && event.payload !== null) {
+        // Now TypeScript knows it's an object
+    }
 }
 ```
 
@@ -58,30 +58,31 @@ function handleEvent(event: Event) {
 import { z } from 'zod'
 
 const userCreatedSchema = z.object({
-  type: z.literal('user.created'),
-  payload: z.object({
-    userId: z.string(),
-    email: z.string().email(),
-  }),
+    type: z.literal('user.created'),
+    payload: z.object({
+        userId: z.string(),
+        email: z.string().email(),
+    }),
 })
 
 const orderPlacedSchema = z.object({
-  type: z.literal('order.placed'),
-  payload: z.object({
-    orderId: z.string(),
-    amount: z.number(),
-  }),
+    type: z.literal('order.placed'),
+    payload: z.object({
+        orderId: z.string(),
+        amount: z.number(),
+    }),
 })
 
 const eventSchema = z.discriminatedUnion('type', [
-  userCreatedSchema,
-  orderPlacedSchema,
+    userCreatedSchema,
+    orderPlacedSchema,
 ])
 
 // Full type safety for each event type
 ```
 
 **When NOT to use this pattern:**
+
 - When you're consuming a third-party API where you truly don't know the shape
 - When prototyping and will add proper types later
 

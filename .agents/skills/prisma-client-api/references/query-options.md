@@ -8,13 +8,13 @@ Choose specific fields to return:
 
 ```typescript
 const user = await prisma.user.findUnique({
-  where: { id: 1 },
-  select: {
-    id: true,
-    name: true,
-    email: true,
-    // password: false (excluded by not including)
-  }
+    where: { id: 1 },
+    select: {
+        id: true,
+        name: true,
+        email: true,
+        // password: false (excluded by not including)
+    },
 })
 // Returns: { id: 1, name: 'Alice', email: 'alice@prisma.io' }
 ```
@@ -23,16 +23,16 @@ const user = await prisma.user.findUnique({
 
 ```typescript
 const user = await prisma.user.findUnique({
-  where: { id: 1 },
-  select: {
-    name: true,
-    posts: {
-      select: {
-        title: true,
-        published: true
-      }
-    }
-  }
+    where: { id: 1 },
+    select: {
+        name: true,
+        posts: {
+            select: {
+                title: true,
+                published: true,
+            },
+        },
+    },
 })
 ```
 
@@ -40,14 +40,14 @@ const user = await prisma.user.findUnique({
 
 ```typescript
 const user = await prisma.user.findMany({
-  select: {
-    name: true,
-    posts: {
-      include: {
-        comments: true
-      }
-    }
-  }
+    select: {
+        name: true,
+        posts: {
+            include: {
+                comments: true,
+            },
+        },
+    },
 })
 ```
 
@@ -55,12 +55,12 @@ const user = await prisma.user.findMany({
 
 ```typescript
 const users = await prisma.user.findMany({
-  select: {
-    name: true,
-    _count: {
-      select: { posts: true }
-    }
-  }
+    select: {
+        name: true,
+        _count: {
+            select: { posts: true },
+        },
+    },
 })
 // Returns: { name: 'Alice', _count: { posts: 5 } }
 ```
@@ -71,11 +71,11 @@ Include related records:
 
 ```typescript
 const user = await prisma.user.findUnique({
-  where: { id: 1 },
-  include: {
-    posts: true,
-    profile: true
-  }
+    where: { id: 1 },
+    include: {
+        posts: true,
+        profile: true,
+    },
 })
 ```
 
@@ -83,14 +83,14 @@ const user = await prisma.user.findUnique({
 
 ```typescript
 const user = await prisma.user.findUnique({
-  where: { id: 1 },
-  include: {
-    posts: {
-      where: { published: true },
-      orderBy: { createdAt: 'desc' },
-      take: 5
-    }
-  }
+    where: { id: 1 },
+    include: {
+        posts: {
+            where: { published: true },
+            orderBy: { createdAt: 'desc' },
+            take: 5,
+        },
+    },
 })
 ```
 
@@ -98,18 +98,18 @@ const user = await prisma.user.findUnique({
 
 ```typescript
 const user = await prisma.user.findUnique({
-  where: { id: 1 },
-  include: {
-    posts: {
-      include: {
-        comments: {
-          include: {
-            author: true
-          }
-        }
-      }
-    }
-  }
+    where: { id: 1 },
+    include: {
+        posts: {
+            include: {
+                comments: {
+                    include: {
+                        author: true,
+                    },
+                },
+            },
+        },
+    },
 })
 ```
 
@@ -117,11 +117,11 @@ const user = await prisma.user.findUnique({
 
 ```typescript
 const users = await prisma.user.findMany({
-  include: {
-    _count: {
-      select: { posts: true, followers: true }
-    }
-  }
+    include: {
+        _count: {
+            select: { posts: true, followers: true },
+        },
+    },
 })
 ```
 
@@ -131,10 +131,10 @@ Exclude specific fields:
 
 ```typescript
 const user = await prisma.user.findUnique({
-  where: { id: 1 },
-  omit: {
-    password: true
-  }
+    where: { id: 1 },
+    omit: {
+        password: true,
+    },
 })
 // Returns all fields except password
 ```
@@ -143,12 +143,12 @@ const user = await prisma.user.findUnique({
 
 ```typescript
 const users = await prisma.user.findMany({
-  omit: { password: true },
-  include: {
-    posts: {
-      omit: { content: true }
-    }
-  }
+    omit: { password: true },
+    include: {
+        posts: {
+            omit: { content: true },
+        },
+    },
 })
 ```
 
@@ -160,10 +160,10 @@ Filter records:
 
 ```typescript
 const users = await prisma.user.findMany({
-  where: {
-    email: { contains: '@prisma.io' },
-    role: 'ADMIN'
-  }
+    where: {
+        email: { contains: '@prisma.io' },
+        role: 'ADMIN',
+    },
 })
 ```
 
@@ -176,15 +176,12 @@ Sort results:
 ```typescript
 // Single field
 const users = await prisma.user.findMany({
-  orderBy: { name: 'asc' }
+    orderBy: { name: 'asc' },
 })
 
 // Multiple fields
 const users = await prisma.user.findMany({
-  orderBy: [
-    { role: 'desc' },
-    { name: 'asc' }
-  ]
+    orderBy: [{ role: 'desc' }, { name: 'asc' }],
 })
 ```
 
@@ -192,9 +189,9 @@ const users = await prisma.user.findMany({
 
 ```typescript
 const users = await prisma.user.findMany({
-  orderBy: {
-    posts: { _count: 'desc' }
-  }
+    orderBy: {
+        posts: { _count: 'desc' },
+    },
 })
 ```
 
@@ -202,9 +199,9 @@ const users = await prisma.user.findMany({
 
 ```typescript
 const users = await prisma.user.findMany({
-  orderBy: {
-    name: { sort: 'asc', nulls: 'last' }
-  }
+    orderBy: {
+        name: { sort: 'asc', nulls: 'last' },
+    },
 })
 ```
 
@@ -215,14 +212,14 @@ Pagination:
 ```typescript
 // First page
 const users = await prisma.user.findMany({
-  take: 10,
-  skip: 0
+    take: 10,
+    skip: 0,
 })
 
 // Second page
 const users = await prisma.user.findMany({
-  take: 10,
-  skip: 10
+    take: 10,
+    skip: 10,
 })
 ```
 
@@ -230,8 +227,8 @@ const users = await prisma.user.findMany({
 
 ```typescript
 const lastUsers = await prisma.user.findMany({
-  take: -10,
-  orderBy: { id: 'asc' }
+    take: -10,
+    orderBy: { id: 'asc' },
 })
 // Returns last 10 users
 ```
@@ -243,16 +240,16 @@ Cursor-based pagination:
 ```typescript
 // First page
 const firstPage = await prisma.user.findMany({
-  take: 10,
-  orderBy: { id: 'asc' }
+    take: 10,
+    orderBy: { id: 'asc' },
 })
 
 // Next page using cursor
 const nextPage = await prisma.user.findMany({
-  take: 10,
-  skip: 1,  // Skip the cursor record
-  cursor: { id: firstPage[firstPage.length - 1].id },
-  orderBy: { id: 'asc' }
+    take: 10,
+    skip: 1, // Skip the cursor record
+    cursor: { id: firstPage[firstPage.length - 1].id },
+    orderBy: { id: 'asc' },
 })
 ```
 
@@ -262,8 +259,8 @@ Return unique values:
 
 ```typescript
 const cities = await prisma.user.findMany({
-  distinct: ['city'],
-  select: { city: true }
+    distinct: ['city'],
+    select: { city: true },
 })
 ```
 
@@ -271,6 +268,6 @@ const cities = await prisma.user.findMany({
 
 ```typescript
 const locations = await prisma.user.findMany({
-  distinct: ['city', 'country']
+    distinct: ['city', 'country'],
 })
 ```

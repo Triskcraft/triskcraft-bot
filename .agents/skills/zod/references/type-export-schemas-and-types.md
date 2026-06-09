@@ -16,10 +16,10 @@ When defining schemas in shared modules, export both the schema and its inferred
 import { z } from 'zod'
 
 export const userSchema = z.object({
-  id: z.string().uuid(),
-  email: z.string().email(),
-  name: z.string(),
-  role: z.enum(['admin', 'user']),
+    id: z.string().uuid(),
+    email: z.string().email(),
+    name: z.string(),
+    role: z.enum(['admin', 'user']),
 })
 
 // Every consumer must derive the type
@@ -27,13 +27,13 @@ export const userSchema = z.object({
 import { userSchema } from '@/schemas/user'
 import type { z } from 'zod'
 
-type User = z.infer<typeof userSchema>  // Repeated everywhere
+type User = z.infer<typeof userSchema> // Repeated everywhere
 
 // components/UserCard.tsx
 import { userSchema } from '@/schemas/user'
 import type { z } from 'zod'
 
-type User = z.infer<typeof userSchema>  // Same boilerplate again
+type User = z.infer<typeof userSchema> // Same boilerplate again
 ```
 
 **Correct (exporting schema and type):**
@@ -43,18 +43,18 @@ type User = z.infer<typeof userSchema>  // Same boilerplate again
 import { z } from 'zod'
 
 export const userSchema = z.object({
-  id: z.string().uuid(),
-  email: z.string().email(),
-  name: z.string(),
-  role: z.enum(['admin', 'user']),
+    id: z.string().uuid(),
+    email: z.string().email(),
+    name: z.string(),
+    role: z.enum(['admin', 'user']),
 })
 
 export type User = z.infer<typeof userSchema>
 
 // For schemas with transforms, export both
 export const apiUserSchema = z.object({
-  id: z.string(),
-  created_at: z.string().transform(s => new Date(s)),
+    id: z.string(),
+    created_at: z.string().transform(s => new Date(s)),
 })
 
 export type ApiUserInput = z.input<typeof apiUserSchema>
@@ -98,18 +98,19 @@ export const UserRole = z.enum(['admin', 'user', 'guest'])
 export type UserRole = z.infer<typeof UserRole>
 
 export const userSchema = z.object({
-  id: z.string(),
-  role: UserRole,
+    id: z.string(),
+    role: UserRole,
 })
 
 export type User = z.infer<typeof userSchema>
 
 // Access enum values
-UserRole.options  // ['admin', 'user', 'guest']
-UserRole.enum.admin  // 'admin'
+UserRole.options // ['admin', 'user', 'guest']
+UserRole.enum.admin // 'admin'
 ```
 
 **When NOT to use this pattern:**
+
 - Internal schemas that won't be used outside the module
 - Transient schemas used only for validation (not as types)
 

@@ -3,8 +3,8 @@ name: prisma-postgres
 description: Prisma Postgres setup and operations guidance across Console, create-db CLI, Management API, and Management API SDK. Use when creating Prisma Postgres databases, working in Prisma Console, provisioning with create-db/create-pg/create-postgres, or integrating programmatic provisioning with service tokens or OAuth.
 license: MIT
 metadata:
-  author: prisma
-  version: "7.6.0"
+    author: prisma
+    version: '7.6.0'
 ---
 
 # Prisma Postgres
@@ -14,6 +14,7 @@ Guidance for creating, managing, and integrating Prisma Postgres across interact
 ## When to Apply
 
 Reference this skill when:
+
 - Setting up Prisma Postgres from Prisma Console
 - Provisioning instant temporary databases with `create-db`
 - Linking an existing local project with `prisma postgres link`
@@ -23,12 +24,12 @@ Reference this skill when:
 
 ## Rule Categories by Priority
 
-| Priority | Category | Impact | Prefix |
-|----------|----------|--------|--------|
-| 1 | CLI Provisioning | CRITICAL | `create-db-cli` |
-| 2 | Management API | CRITICAL | `management-api` |
-| 3 | Management API SDK | HIGH | `management-api-sdk` |
-| 4 | Console and Connections | HIGH | `console-and-connections` |
+| Priority | Category                | Impact   | Prefix                    |
+| -------- | ----------------------- | -------- | ------------------------- |
+| 1        | CLI Provisioning        | CRITICAL | `create-db-cli`           |
+| 2        | Management API          | CRITICAL | `management-api`          |
+| 3        | Management API SDK      | HIGH     | `management-api-sdk`      |
+| 4        | Console and Connections | HIGH     | `console-and-connections` |
 
 ## Quick Reference
 

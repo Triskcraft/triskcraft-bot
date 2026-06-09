@@ -53,8 +53,8 @@ const users = await prisma.$queryRaw(query)
 import { Prisma } from '../generated/client'
 
 const conditions = [
-  Prisma.sql`role = ${'ADMIN'}`,
-  Prisma.sql`verified = ${true}`
+    Prisma.sql`role = ${'ADMIN'}`,
+    Prisma.sql`verified = ${true}`,
 ]
 
 const users = await prisma.$queryRaw`
@@ -99,8 +99,8 @@ For fully dynamic queries (use with caution!):
 // ⚠️ SQL injection risk - only use with trusted input
 const table = 'User'
 const users = await prisma.$queryRawUnsafe(
-  `SELECT * FROM "${table}" WHERE id = $1`,
-  userId
+    `SELECT * FROM "${table}" WHERE id = $1`,
+    userId,
 )
 ```
 
@@ -108,9 +108,9 @@ const users = await prisma.$queryRawUnsafe(
 
 ```typescript
 const result = await prisma.$executeRawUnsafe(
-  'UPDATE "User" SET name = $1 WHERE id = $2',
-  'Alice',
-  1
+    'UPDATE "User" SET name = $1 WHERE id = $2',
+    'Alice',
+    1,
 )
 ```
 
@@ -132,7 +132,7 @@ const users = await prisma.$queryRaw`
 // ❌ SQL injection vulnerability!
 const email = userInput
 const users = await prisma.$queryRawUnsafe(
-  `SELECT * FROM "User" WHERE email = '${email}'`
+    `SELECT * FROM "User" WHERE email = '${email}'`,
 )
 ```
 
@@ -164,9 +164,9 @@ const posts = await prisma.$queryRaw`
 ## Transactions with Raw Queries
 
 ```typescript
-await prisma.$transaction(async (tx) => {
-  await tx.$executeRaw`UPDATE "Account" SET balance = balance - ${amount} WHERE id = ${senderId}`
-  await tx.$executeRaw`UPDATE "Account" SET balance = balance + ${amount} WHERE id = ${recipientId}`
+await prisma.$transaction(async tx => {
+    await tx.$executeRaw`UPDATE "Account" SET balance = balance - ${amount} WHERE id = ${senderId}`
+    await tx.$executeRaw`UPDATE "Account" SET balance = balance + ${amount} WHERE id = ${recipientId}`
 })
 ```
 

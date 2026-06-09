@@ -8,11 +8,11 @@ Load related records:
 
 ```typescript
 const user = await prisma.user.findUnique({
-  where: { id: 1 },
-  include: {
-    posts: true,
-    profile: true
-  }
+    where: { id: 1 },
+    include: {
+        posts: true,
+        profile: true,
+    },
 })
 ```
 
@@ -20,15 +20,15 @@ const user = await prisma.user.findUnique({
 
 ```typescript
 const user = await prisma.user.findUnique({
-  where: { id: 1 },
-  include: {
-    posts: {
-      where: { published: true },
-      orderBy: { createdAt: 'desc' },
-      take: 5,
-      select: { id: true, title: true }
-    }
-  }
+    where: { id: 1 },
+    include: {
+        posts: {
+            where: { published: true },
+            orderBy: { createdAt: 'desc' },
+            take: 5,
+            select: { id: true, title: true },
+        },
+    },
 })
 ```
 
@@ -36,16 +36,16 @@ const user = await prisma.user.findUnique({
 
 ```typescript
 const user = await prisma.user.findUnique({
-  where: { id: 1 },
-  include: {
-    posts: {
-      include: {
-        comments: {
-          include: { author: true }
-        }
-      }
-    }
-  }
+    where: { id: 1 },
+    include: {
+        posts: {
+            include: {
+                comments: {
+                    include: { author: true },
+                },
+            },
+        },
+    },
 })
 ```
 
@@ -53,13 +53,13 @@ const user = await prisma.user.findUnique({
 
 ```typescript
 const user = await prisma.user.findUnique({
-  where: { id: 1 },
-  select: {
-    name: true,
-    posts: {
-      select: { title: true }
-    }
-  }
+    where: { id: 1 },
+    select: {
+        name: true,
+        posts: {
+            select: { title: true },
+        },
+    },
 })
 ```
 
@@ -69,18 +69,15 @@ const user = await prisma.user.findUnique({
 
 ```typescript
 const user = await prisma.user.create({
-  data: {
-    email: 'alice@prisma.io',
-    posts: {
-      create: [
-        { title: 'Post 1' },
-        { title: 'Post 2' }
-      ]
+    data: {
+        email: 'alice@prisma.io',
+        posts: {
+            create: [{ title: 'Post 1' }, { title: 'Post 2' }],
+        },
+        profile: {
+            create: { bio: 'Hello!' },
+        },
     },
-    profile: {
-      create: { bio: 'Hello!' }
-    }
-  }
 })
 ```
 
@@ -88,15 +85,15 @@ const user = await prisma.user.create({
 
 ```typescript
 const post = await prisma.post.create({
-  data: {
-    title: 'New Post',
-    author: {
-      connectOrCreate: {
-        where: { email: 'alice@prisma.io' },
-        create: { email: 'alice@prisma.io', name: 'Alice' }
-      }
-    }
-  }
+    data: {
+        title: 'New Post',
+        author: {
+            connectOrCreate: {
+                where: { email: 'alice@prisma.io' },
+                create: { email: 'alice@prisma.io', name: 'Alice' },
+            },
+        },
+    },
 })
 ```
 
@@ -104,20 +101,20 @@ const post = await prisma.post.create({
 
 ```typescript
 const post = await prisma.post.create({
-  data: {
-    title: 'New Post',
-    author: {
-      connect: { id: 1 }
-    }
-  }
+    data: {
+        title: 'New Post',
+        author: {
+            connect: { id: 1 },
+        },
+    },
 })
 
 // Shorthand for foreign key
 const post = await prisma.post.create({
-  data: {
-    title: 'New Post',
-    authorId: 1
-  }
+    data: {
+        title: 'New Post',
+        authorId: 1,
+    },
 })
 ```
 
@@ -127,15 +124,15 @@ const post = await prisma.post.create({
 
 ```typescript
 const user = await prisma.user.update({
-  where: { id: 1 },
-  data: {
-    posts: {
-      update: {
-        where: { id: 1 },
-        data: { title: 'Updated Title' }
-      }
-    }
-  }
+    where: { id: 1 },
+    data: {
+        posts: {
+            update: {
+                where: { id: 1 },
+                data: { title: 'Updated Title' },
+            },
+        },
+    },
 })
 ```
 
@@ -143,15 +140,15 @@ const user = await prisma.user.update({
 
 ```typescript
 const user = await prisma.user.update({
-  where: { id: 1 },
-  data: {
-    posts: {
-      updateMany: {
-        where: { published: false },
-        data: { published: true }
-      }
-    }
-  }
+    where: { id: 1 },
+    data: {
+        posts: {
+            updateMany: {
+                where: { published: false },
+                data: { published: true },
+            },
+        },
+    },
 })
 ```
 
@@ -159,15 +156,15 @@ const user = await prisma.user.update({
 
 ```typescript
 const user = await prisma.user.update({
-  where: { id: 1 },
-  data: {
-    profile: {
-      upsert: {
-        create: { bio: 'New bio' },
-        update: { bio: 'Updated bio' }
-      }
-    }
-  }
+    where: { id: 1 },
+    data: {
+        profile: {
+            upsert: {
+                create: { bio: 'New bio' },
+                update: { bio: 'Updated bio' },
+            },
+        },
+    },
 })
 ```
 
@@ -176,20 +173,20 @@ const user = await prisma.user.update({
 ```typescript
 // 1-to-1 optional
 const user = await prisma.user.update({
-  where: { id: 1 },
-  data: {
-    profile: { disconnect: true }
-  }
+    where: { id: 1 },
+    data: {
+        profile: { disconnect: true },
+    },
 })
 
 // Many-to-many
 const post = await prisma.post.update({
-  where: { id: 1 },
-  data: {
-    tags: {
-      disconnect: [{ id: 1 }, { id: 2 }]
-    }
-  }
+    where: { id: 1 },
+    data: {
+        tags: {
+            disconnect: [{ id: 1 }, { id: 2 }],
+        },
+    },
 })
 ```
 
@@ -197,22 +194,22 @@ const post = await prisma.post.update({
 
 ```typescript
 const user = await prisma.user.update({
-  where: { id: 1 },
-  data: {
-    posts: {
-      delete: { id: 1 }
-    }
-  }
+    where: { id: 1 },
+    data: {
+        posts: {
+            delete: { id: 1 },
+        },
+    },
 })
 
 // Delete many
 const user = await prisma.user.update({
-  where: { id: 1 },
-  data: {
-    posts: {
-      deleteMany: { published: false }
-    }
-  }
+    where: { id: 1 },
+    data: {
+        posts: {
+            deleteMany: { published: false },
+        },
+    },
 })
 ```
 
@@ -221,12 +218,12 @@ const user = await prisma.user.update({
 ```typescript
 // Replace all related records
 const post = await prisma.post.update({
-  where: { id: 1 },
-  data: {
-    tags: {
-      set: [{ id: 1 }, { id: 2 }]
-    }
-  }
+    where: { id: 1 },
+    data: {
+        tags: {
+            set: [{ id: 1 }, { id: 2 }],
+        },
+    },
 })
 ```
 
@@ -238,9 +235,9 @@ At least one matches:
 
 ```typescript
 const users = await prisma.user.findMany({
-  where: {
-    posts: { some: { published: true } }
-  }
+    where: {
+        posts: { some: { published: true } },
+    },
 })
 ```
 
@@ -250,9 +247,9 @@ All match:
 
 ```typescript
 const users = await prisma.user.findMany({
-  where: {
-    posts: { every: { published: true } }
-  }
+    where: {
+        posts: { every: { published: true } },
+    },
 })
 ```
 
@@ -262,9 +259,9 @@ None match:
 
 ```typescript
 const users = await prisma.user.findMany({
-  where: {
-    posts: { none: { published: true } }
-  }
+    where: {
+        posts: { none: { published: true } },
+    },
 })
 ```
 
@@ -272,9 +269,9 @@ const users = await prisma.user.findMany({
 
 ```typescript
 const users = await prisma.user.findMany({
-  where: {
-    profile: { is: { country: 'USA' } }
-  }
+    where: {
+        profile: { is: { country: 'USA' } },
+    },
 })
 ```
 
@@ -282,12 +279,12 @@ const users = await prisma.user.findMany({
 
 ```typescript
 const users = await prisma.user.findMany({
-  select: {
-    name: true,
-    _count: {
-      select: { posts: true, followers: true }
-    }
-  }
+    select: {
+        name: true,
+        _count: {
+            select: { posts: true, followers: true },
+        },
+    },
 })
 // { name: 'Alice', _count: { posts: 5, followers: 100 } }
 ```
@@ -296,13 +293,13 @@ const users = await prisma.user.findMany({
 
 ```typescript
 const users = await prisma.user.findMany({
-  select: {
-    name: true,
-    _count: {
-      select: {
-        posts: { where: { published: true } }
-      }
-    }
-  }
+    select: {
+        name: true,
+        _count: {
+            select: {
+                posts: { where: { published: true } },
+            },
+        },
+    },
 })
 ```

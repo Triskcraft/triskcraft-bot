@@ -16,19 +16,19 @@ import { z } from 'zod'
 import { NextRequest, NextResponse } from 'next/server'
 
 const createUserSchema = z.object({
-  email: z.string().email(),
-  name: z.string().min(1),
+    email: z.string().email(),
+    name: z.string().min(1),
 })
 
 export async function POST(req: NextRequest) {
-  const body = await req.json()
+    const body = await req.json()
 
-  // If validation fails, this throws and crashes the handler
-  const user = createUserSchema.parse(body)
+    // If validation fails, this throws and crashes the handler
+    const user = createUserSchema.parse(body)
 
-  // Never reached if parse throws
-  await db.users.create({ data: user })
-  return NextResponse.json({ success: true })
+    // Never reached if parse throws
+    await db.users.create({ data: user })
+    return NextResponse.json({ success: true })
 }
 // Result: 500 Internal Server Error with stack trace
 ```
@@ -40,26 +40,26 @@ import { z } from 'zod'
 import { NextRequest, NextResponse } from 'next/server'
 
 const createUserSchema = z.object({
-  email: z.string().email(),
-  name: z.string().min(1),
+    email: z.string().email(),
+    name: z.string().min(1),
 })
 
 export async function POST(req: NextRequest) {
-  const body = await req.json()
+    const body = await req.json()
 
-  const result = createUserSchema.safeParse(body)
+    const result = createUserSchema.safeParse(body)
 
-  if (!result.success) {
-    // Return structured error response
-    return NextResponse.json(
-      { error: 'Validation failed', issues: result.error.issues },
-      { status: 400 }
-    )
-  }
+    if (!result.success) {
+        // Return structured error response
+        return NextResponse.json(
+            { error: 'Validation failed', issues: result.error.issues },
+            { status: 400 },
+        )
+    }
 
-  // result.data is typed correctly
-  await db.users.create({ data: result.data })
-  return NextResponse.json({ success: true })
+    // result.data is typed correctly
+    await db.users.create({ data: result.data })
+    return NextResponse.json({ success: true })
 }
 ```
 
@@ -91,10 +91,11 @@ const config = configSchema.parse(JSON.parse(process.env.CONFIG))
 expect(() => schema.parse(invalidData)).toThrow()
 
 // Schema development - see errors immediately
-schema.parse(testData)  // See what fails during development
+schema.parse(testData) // See what fails during development
 ```
 
 **When NOT to use this pattern:**
+
 - Internal configuration parsing where invalid data should crash early
 - Tests where you want exceptions to fail the test
 - Scripts where you want to see the full error
