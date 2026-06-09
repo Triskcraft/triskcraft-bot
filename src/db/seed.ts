@@ -34,6 +34,7 @@ if (!clientCount) {
             redirect_uris: [
                 'http://localhost:8080/oauth/callback',
                 'https://api.triskcraft.com/oauth/callback',
+                'https://api.triskcraft.com/console/login',
             ],
             scopes: ['openid', 'identify', 'minecraft'],
         },

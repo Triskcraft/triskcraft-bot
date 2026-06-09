@@ -1,0 +1,42 @@
+name: Test Web
+
+on:
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 24.14.0
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 11.5.2
+                  run_install: false
+
+            - name: Verify pnpm
+              run: pnpm --version
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+              env:
+                  CI: true
+
+            - name: Lint
+              run: pnpm run lint
+
+            - name: Check formatting
+              run: pnpm run format:check
+
+            - name: Build
+              run: pnpm run build

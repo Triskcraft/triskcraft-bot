@@ -1,4 +1,8 @@
-import { ForbiddenError, InternalServerError, UnauthorizedError } from '#/api/errors.ts'
+import {
+    ForbiddenError,
+    InternalServerError,
+    UnauthorizedError,
+} from '#/api/errors.ts'
 import { db } from '#/db/prisma.ts'
 import { verifyToken } from '#/utils/encript.ts'
 import { parseScopes } from '#/utils/api.ts'

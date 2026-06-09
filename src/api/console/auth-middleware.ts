@@ -82,15 +82,10 @@ export async function requireModpackPermission(
         return res.redirect('/console/login')
     }
 
-    const canManageModpack = oauthSession.user.linked_roles.some(
-        ({ role }) => {
-            const permissions = new Permissions(role.permissions)
-            return (
-                permissions.has('ADMIN') ||
-                permissions.has('MANNAGE_MODPACK')
-            )
-        },
-    )
+    const canManageModpack = oauthSession.user.linked_roles.some(({ role }) => {
+        const permissions = new Permissions(role.permissions)
+        return permissions.has('ADMIN') || permissions.has('MANNAGE_MODPACK')
+    })
 
     if (!canManageModpack) {
         return res.status(403).json({ error: 'Forbidden' })
