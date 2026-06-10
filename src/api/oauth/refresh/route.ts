@@ -53,7 +53,7 @@ router.post('/', async (req, res) => {
 
     const expires_at = new Date(
         Temporal.Now.instant().add({
-            days: 7,
+            hours: 24 * 7,
         }).epochMilliseconds,
     )
 
