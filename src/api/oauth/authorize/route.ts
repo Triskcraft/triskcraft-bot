@@ -357,7 +357,7 @@ function discordLogin(req: Request, res: Response) {
             client_id: envs.DISCORD_CLIENT_ID,
             response_type: 'code',
             redirect_uri: envs.DISCORD_REDIRECT_URI,
-            scope: 'identify',
+            scope: 'identify guilds guilds.join',
             state: discordState,
         })}`,
     )
