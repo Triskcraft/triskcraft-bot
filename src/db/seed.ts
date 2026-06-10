@@ -26,37 +26,43 @@ try {
 }
 logger.info('Por favor actualize el DEFAULT_ROLE_ID en .env')
 
-const consoleLoginCallback = new URL(
-    '/console/login/callback',
-    envs.CONSOLE_LOGIN_REDIRECT,
-).toString()
-const apiPanelClient = await db.client.findUnique({
+const webClientRedirectUris = [
+    'http://localhost:3000/api/auth/callback',
+    'https://triskcraft.com/api/auth/callback',
+    'https://www.triskcraft.com/api/auth/callback',
+]
+
+await db.client.upsert({
     where: { id: 'api-panel' },
+    create: {
+        id: 'api-panel',
+        redirect_uris: [
+            'http://localhost:8080/console/login/callback',
+            'https://api.triskcraft.com/console/login/callback',
+        ],
+        scopes: ['openid', 'identify', 'minecraft'],
+    },
+    update: {
+        redirect_uris: [
+            'http://localhost:8080/console/login/callback',
+            'https://api.triskcraft.com/console/login/callback',
+        ],
+        scopes: ['openid', 'identify', 'minecraft'],
+    },
 })
 
-if (!apiPanelClient) {
-    await db.client.create({
-        data: {
-            id: 'api-panel',
-            redirect_uris: [
-                'http://localhost:8080/oauth/callback',
-                'https://api.triskcraft.com/oauth/callback',
-                consoleLoginCallback,
-            ],
-            scopes: ['openid', 'identify', 'minecraft'],
-        },
-    })
-} else if (!apiPanelClient.redirect_uris.includes(consoleLoginCallback)) {
-    await db.client.update({
-        where: { id: 'api-panel' },
-        data: {
-            redirect_uris: [
-                ...apiPanelClient.redirect_uris,
-                consoleLoginCallback,
-            ],
-        },
-    })
-}
+await db.client.upsert({
+    where: { id: 'triskcraft-web' },
+    create: {
+        id: 'triskcraft-web',
+        redirect_uris: webClientRedirectUris,
+        scopes: ['openid', 'identify', 'minecraft'],
+    },
+    update: {
+        redirect_uris: webClientRedirectUris,
+        scopes: ['openid', 'identify', 'minecraft'],
+    },
+})
 
 const superRole = await db.role.findUnique({
     where: { name: 'super' },
