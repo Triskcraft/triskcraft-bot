@@ -33,6 +33,7 @@ router.get('/:id', async (req, res) => {
         where: { id: req.params.id },
     })
     if (!role) {
+        res.status(404)
         return render(
             res,
             Layout({
@@ -62,6 +63,7 @@ router.get('/:id/delete', async (req, res) => {
         where: { id: req.params.id },
     })
     if (!role) {
+        res.status(404)
         return render(
             res,
             Layout({
@@ -89,6 +91,7 @@ router.post('/:id/delete', async (req, res) => {
         where: { id: req.params.id },
     })
     if (!role) {
+        res.status(404)
         return render(
             res,
             Layout({
@@ -117,6 +120,7 @@ router.post('/:id/delete', async (req, res) => {
         ])
     } catch (error) {
         logger.error(error, `error al intentar eliminar el rol ${role.name}`)
+        res.status(500)
         return render(
             res,
             Layout({
@@ -152,6 +156,7 @@ router.post(
             where: { id: req.params.id },
         })
         if (!role) {
+            res.status(404)
             return render(
                 res,
                 Layout({
@@ -180,12 +185,13 @@ router.post(
                         },
                     })
                     if (!user) {
+                        res.status(404)
                         return render(
                             res,
                             Layout({
                                 title: 'Agregando un rol',
                                 children: ErrorCard({
-                                    code: 500,
+                                    code: 404,
                                     title: 'No se encontró el usuario',
                                     message:
                                         'Puede que no halla iniciado sesion en triskcraft.com',
@@ -221,6 +227,7 @@ router.post(
                         error,
                         `error al intentar agregar ${role.name} a ${form.id}`,
                     )
+                    res.status(500)
                     return render(
                         res,
                         Layout({
@@ -248,12 +255,13 @@ router.post(
                         },
                     })
                     if (!user) {
+                        res.status(404)
                         return render(
                             res,
                             Layout({
-                                title: 'Agregando un rol',
+                                title: 'Quitando un rol',
                                 children: ErrorCard({
-                                    code: 500,
+                                    code: 404,
                                     title: 'No se encontró el usuario',
                                     message:
                                         'Puede que no halla iniciado sesion en triskcraft.com',
@@ -262,12 +270,10 @@ router.post(
                             }),
                         )
                     }
-                    await db.linkedRole.delete({
+                    await db.linkedRole.deleteMany({
                         where: {
-                            user_id_role_id: {
-                                role_id: role.id,
-                                user_id: user.id,
-                            },
+                            role_id: role.id,
+                            user_id: user.id,
                         },
                     })
                     return render(
@@ -281,8 +287,9 @@ router.post(
                 } catch (error) {
                     logger.error(
                         error,
-                        `error al intentar agregar ${role.name} a ${form.id}`,
+                        `error al intentar quitar ${role.name} a ${form.id}`,
                     )
+                    res.status(500)
                     return render(
                         res,
                         Layout({
@@ -317,6 +324,7 @@ router.post(
                         error,
                         `error al intentar actualizar el rol ${role.name} con ${perms.bitfield}`,
                     )
+                    res.status(500)
                     return render(
                         res,
                         Layout({
@@ -330,9 +338,29 @@ router.post(
                 }
             }
             case 'addrole': {
+                const rawName = req.body.id
+                const name = typeof rawName === 'string' ? rawName.trim() : ''
+
+                if (!name || name.length > 64) {
+                    res.status(400)
+                    return render(
+                        res,
+                        Layout({
+                            title: 'Creando un rol',
+                            children: ErrorCard({
+                                code: 400,
+                                title: 'Nombre de rol inválido',
+                                message:
+                                    'El nombre debe tener entre 1 y 64 caracteres.',
+                                backUrl: `/console/roles/${role.id}`,
+                            }),
+                        }),
+                    )
+                }
+
                 try {
                     const nrole = await db.role.create({
-                        data: { name: req.body.id },
+                        data: { name },
                     })
                     return render(
                         res,
@@ -345,6 +373,7 @@ router.post(
                 } catch (error) {
                     if (error instanceof PrismaClientKnownRequestError) {
                         if (error.code === 'P2002') {
+                            res.status(400)
                             return render(
                                 res,
                                 Layout({
@@ -358,6 +387,11 @@ router.post(
                             )
                         }
                     }
+                    logger.error(
+                        error,
+                        `error al intentar crear el rol ${name}`,
+                    )
+                    res.status(500)
                     return render(
                         res,
                         Layout({
@@ -371,7 +405,20 @@ router.post(
                 }
             }
             default: {
-                req.query.ac satisfies never
+                res.status(400)
+                return render(
+                    res,
+                    Layout({
+                        title: 'Acción inválida',
+                        children: ErrorCard({
+                            code: 400,
+                            title: 'Acción inválida',
+                            message:
+                                'La acción solicitada no existe o está incompleta.',
+                            backUrl: `/console/roles/${role.id}`,
+                        }),
+                    }),
+                )
             }
         }
     },
