@@ -1,4 +1,4 @@
-import { envs } from '#/config.ts'
+import { envs, STATE_KEYS } from '#/config.ts'
 import { PermissionsFlagsBits } from '#/classes/permissions.ts'
 import { db } from '#/db/prisma.ts'
 import { logger } from '#/logger.ts'
@@ -65,7 +65,7 @@ await db.client.upsert({
 })
 
 const superState = await db.state.findUnique({
-    where: { key: 'super_role_id' },
+    where: { key: STATE_KEYS.SUPER_ROLE_ID },
 })
 if (!superState) {
     const superRole = await db.role.upsert({
@@ -82,7 +82,7 @@ if (!superState) {
     })
     await db.state.create({
         data: {
-            key: 'super_role_id',
+            key: STATE_KEYS.SUPER_ROLE_ID,
             value: superRole.id,
         },
     })
@@ -101,7 +101,7 @@ if (!superState) {
     })
     await db.state.update({
         where: {
-            key: 'super_role_id',
+            key: STATE_KEYS.SUPER_ROLE_ID,
         },
         data: {
             value: nsuper.id,
@@ -110,7 +110,7 @@ if (!superState) {
 }
 
 const userState = await db.state.findUnique({
-    where: { key: 'default_role_id' },
+    where: { key: STATE_KEYS.DEFAULT_ROLE_ID },
 })
 if (!userState) {
     const defaultRole = await db.role.upsert({
@@ -125,7 +125,7 @@ if (!userState) {
     })
     await db.state.create({
         data: {
-            key: 'default_role_id',
+            key: STATE_KEYS.DEFAULT_ROLE_ID,
             value: defaultRole.id,
         },
     })
@@ -142,7 +142,7 @@ if (!userState) {
     })
     await db.state.update({
         where: {
-            key: 'default_role_id',
+            key: STATE_KEYS.DEFAULT_ROLE_ID,
         },
         data: {
             value: nuser.id,

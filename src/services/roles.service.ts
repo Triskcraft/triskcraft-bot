@@ -1,5 +1,5 @@
 import { client } from '#/client.ts'
-import { envs } from '#/config.ts'
+import { envs, STATE_KEYS } from '#/config.ts'
 import { db } from '#/db/prisma.ts'
 import { logger } from '#/logger.ts'
 import {
@@ -122,7 +122,7 @@ class RoleService {
             })
         } else {
             const whpmid = await db.state.findUnique({
-                where: { key: 'roles_panel_message_id' },
+                where: { key: STATE_KEYS.ROLES_PANEL_MESSAGE_ID },
                 select: { value: true },
             })
             if (whpmid) {
@@ -335,16 +335,16 @@ class RoleService {
             await this.#message.pin()
         }
         await db.state.upsert({
-            where: { key: 'roles_panel_message_id' },
+            where: { key: STATE_KEYS.ROLES_PANEL_MESSAGE_ID },
             update: { value: nid },
-            create: { key: 'roles_panel_message_id', value: nid },
+            create: { key: STATE_KEYS.ROLES_PANEL_MESSAGE_ID, value: nid },
         })
     }
 
     async #getSelectedUser() {
         if (this.#selectedUser) return this.#selectedUser
         const sdb = await db.state.findUnique({
-            where: { key: 'roles_panel_selected_user' },
+            where: { key: STATE_KEYS.ROLES_PANEL_SELECTED_USER },
         })
         return sdb?.value ?? null
     }
@@ -353,9 +353,9 @@ class RoleService {
         this.#selectedUser = uuid
         await this.renderPannel()
         await db.state.upsert({
-            where: { key: 'roles_panel_selected_user' },
+            where: { key: STATE_KEYS.ROLES_PANEL_SELECTED_USER },
             update: { value: uuid },
-            create: { key: 'roles_panel_selected_user', value: uuid },
+            create: { key: STATE_KEYS.ROLES_PANEL_SELECTED_USER, value: uuid },
         })
     }
 
