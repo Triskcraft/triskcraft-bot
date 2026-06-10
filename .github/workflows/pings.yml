@@ -6,4 +6,4 @@ on:
 
 jobs:
     notify:
-        uses: Triskcraft/.github/workflows/pings.yml@main
+        uses: Triskcraft/.github/.github/workflows/pings.yml@main
