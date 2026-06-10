@@ -1,0 +1,9 @@
+name: PR Assignment Notifications
+
+on:
+    pull_request:
+        types: [assigned]
+
+jobs:
+    notify:
+        uses: Triskcraft/.github/workflows/pings.yml@main

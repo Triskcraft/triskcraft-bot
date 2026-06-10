@@ -26,17 +26,34 @@ try {
 }
 logger.info('Por favor actualize el DEFAULT_ROLE_ID en .env')
 
-const clientCount = await db.client.count()
-if (!clientCount) {
+const consoleLoginCallback = new URL(
+    '/console/login/callback',
+    envs.CONSOLE_LOGIN_REDIRECT,
+).toString()
+const apiPanelClient = await db.client.findUnique({
+    where: { id: 'api-panel' },
+})
+
+if (!apiPanelClient) {
     await db.client.create({
         data: {
             id: 'api-panel',
             redirect_uris: [
                 'http://localhost:8080/oauth/callback',
                 'https://api.triskcraft.com/oauth/callback',
-                'https://api.triskcraft.com/console/login',
+                consoleLoginCallback,
             ],
             scopes: ['openid', 'identify', 'minecraft'],
+        },
+    })
+} else if (!apiPanelClient.redirect_uris.includes(consoleLoginCallback)) {
+    await db.client.update({
+        where: { id: 'api-panel' },
+        data: {
+            redirect_uris: [
+                ...apiPanelClient.redirect_uris,
+                consoleLoginCallback,
+            ],
         },
     })
 }
