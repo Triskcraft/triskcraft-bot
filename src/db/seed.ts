@@ -1,5 +1,5 @@
 import { envs } from '#/config.ts'
-import { Permissions } from '#/classes/permissions.ts'
+import { PermissionsFlagsBits } from '#/classes/permissions.ts'
 import { db } from '#/db/prisma.ts'
 import { logger } from '#/logger.ts'
 import { PrismaClientKnownRequestError } from './generated/internal/prismaNamespace.ts'
@@ -64,28 +64,88 @@ await db.client.upsert({
     },
 })
 
-const superRole = await db.role.findUnique({
-    where: { name: 'super' },
+const superState = await db.state.findUnique({
+    where: { key: 'super_role_id' },
 })
-
-if (!superRole) {
-    await db.role.create({
+if (!superState) {
+    const superRole = await db.role.upsert({
+        where: {
+            name: 'Super',
+        },
+        create: {
+            name: 'Super',
+            permissions: PermissionsFlagsBits.ADMIN,
+        },
+        update: {
+            permissions: PermissionsFlagsBits.ADMIN,
+        },
+    })
+    await db.state.create({
         data: {
-            name: 'super',
-            permissions: Permissions.Flags.ADMIN,
+            key: 'super_role_id',
+            value: superRole.id,
+        },
+    })
+} else {
+    const nsuper = await db.role.upsert({
+        where: {
+            id: superState.value,
+        },
+        create: {
+            name: 'Super',
+            permissions: PermissionsFlagsBits.ADMIN,
+        },
+        update: {
+            permissions: PermissionsFlagsBits.ADMIN,
+        },
+    })
+    await db.state.update({
+        where: {
+            key: 'super_role_id',
+        },
+        data: {
+            value: nsuper.id,
         },
     })
 }
 
-const userRole = await db.role.findUnique({
-    where: { name: 'user' },
+const userState = await db.state.findUnique({
+    where: { key: 'default_role_id' },
 })
-
-if (!userRole) {
-    await db.role.create({
-        data: {
-            name: 'user',
+if (!userState) {
+    const defaultRole = await db.role.upsert({
+        where: {
+            name: 'User',
+        },
+        create: {
+            name: 'User',
             permissions: 0,
+        },
+        update: {},
+    })
+    await db.state.create({
+        data: {
+            key: 'default_role_id',
+            value: defaultRole.id,
+        },
+    })
+} else {
+    const nuser = await db.role.upsert({
+        where: {
+            id: userState.value,
+        },
+        create: {
+            name: 'User',
+            permissions: 0,
+        },
+        update: {},
+    })
+    await db.state.update({
+        where: {
+            key: 'default_role_id',
+        },
+        data: {
+            value: nuser.id,
         },
     })
 }
