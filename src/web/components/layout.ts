@@ -59,6 +59,36 @@ export function Layout({ children, title = 'Console Admin' }: LayoutProps) {
                     .btn:hover {
                         background-color: #0056b3;
                     }
+
+                    .btn-remove {
+                        background: #fbeaec;
+                        color: #b42332;
+                        padding: 10px 14px;
+                    }
+
+                    .btn-remove:hover {
+                        background: #f5d2d7;
+                    }
+
+                    .btn-primary,
+                    .btn-remove {
+                        text-decoration: none;
+                        border: 0;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        font-weight: 700;
+                        padding: 10px 14px;
+                        transition: background-color 0.2s ease;
+                    }
+
+                    .btn-primary {
+                        background: #5865f2;
+                        color: white;
+                    }
+
+                    .btn-primary:hover {
+                        background: #4752c4;
+                    }
                 </style>
             </head>
             <body>
