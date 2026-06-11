@@ -26,6 +26,7 @@ router.get(
     '/',
     requirePermission(
         PermissionsFlagsBits.MANAGE_MODPACK | PermissionsFlagsBits.MANAGE_ROLES,
+        true,
     ),
     async (req, res) => {
         render(
