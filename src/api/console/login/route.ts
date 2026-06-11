@@ -6,6 +6,7 @@ import { ErrorCard } from '#/web/components/error-card.ts'
 import { Layout } from '#/web/components/layout.ts'
 import { Router, type Request, type Response } from 'express'
 import { randomUUID } from 'node:crypto'
+import { AnchorButton } from '#/web/components/button.ts'
 
 const router = Router()
 const CONSOLE_CLIENT_ID = 'api-panel'
@@ -59,9 +60,11 @@ router.get('/', async (_req, res) => {
                             Estás entrando a una consola exclusiva para personal
                             autorizado de Triskcraft.
                         </p>
-                        <a class="btn" href="${loginUrl}">
-                            Iniciar sesión con Discord
-                        </a>
+                        ${AnchorButton({
+                            href: loginUrl,
+                            children: 'Iniciar sesión con Discord',
+                            className: 'login-button',
+                        })}
                     </section>
                 </main>
 
@@ -89,13 +92,9 @@ router.get('/', async (_req, res) => {
                         margin: 0 0 28px;
                     }
 
-                    .login-panel .btn {
+                    .login-button {
                         display: block;
-                        background-color: #5865f2;
-                    }
-
-                    .login-panel .btn:hover {
-                        background-color: #4752c4;
+                        width: 100%;
                     }
                 </style>
             `,

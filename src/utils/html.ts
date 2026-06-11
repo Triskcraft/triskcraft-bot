@@ -16,3 +16,11 @@ export function html(strings: TemplateStringsArray, ...values: unknown[]) {
 export function render(res: Response, content: string) {
     return res.send(content)
 }
+
+export function escapeAttribute(value: string) {
+    return value
+        .replaceAll('&', '&amp;')
+        .replaceAll('"', '&quot;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+}

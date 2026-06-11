@@ -1,4 +1,5 @@
 import { html } from '#/utils/html.ts'
+import { AnchorButton } from './button.ts'
 
 interface ErrorCardProps {
     title?: string
@@ -22,9 +23,11 @@ export function ErrorCard({
                 <p class="error-message">${message}</p>
 
                 <div class="menu-links">
-                    <a href="${backUrl}" class="btn btn-secondary">
-                        Volver al inicio
-                    </a>
+                    ${AnchorButton({
+                        href: backUrl,
+                        children: 'Volver al inicio',
+                        variant: 'secondary',
+                    })}
                 </div>
             </div>
         </div>
@@ -57,14 +60,6 @@ export function ErrorCard({
                 color: #666;
                 line-height: 1.5;
                 margin-bottom: 30px;
-            }
-
-            .btn-secondary {
-                background-color: #6c757d;
-            }
-
-            .btn-secondary:hover {
-                background-color: #5a6268;
             }
         </style>
     `

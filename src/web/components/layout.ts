@@ -46,18 +46,57 @@ export function Layout({ children, title = 'Console Admin' }: LayoutProps) {
                         gap: 15px;
                     }
 
-                    .btn {
+                    .button {
+                        align-items: center;
+                        border: 0;
+                        border-radius: 6px;
+                        box-sizing: border-box;
+                        cursor: pointer;
+                        display: inline-flex;
+                        font: inherit;
+                        font-weight: 700;
+                        justify-content: center;
+                        padding: 10px 14px;
                         text-decoration: none;
-                        color: white;
-                        background-color: #007bff;
-                        padding: 15px;
-                        border-radius: 8px;
-                        font-weight: bold;
-                        transition: background 0.3s ease;
+                        transition:
+                            background-color 0.2s ease,
+                            color 0.2s ease;
                     }
 
-                    .btn:hover {
-                        background-color: #0056b3;
+                    .button-primary {
+                        color: white;
+                        background-color: #5865f2;
+                    }
+
+                    .button-primary:hover {
+                        background-color: #4752c4;
+                    }
+
+                    .button-secondary {
+                        background-color: #6c757d;
+                        color: white;
+                    }
+
+                    .button-secondary:hover {
+                        background-color: #5a6268;
+                    }
+
+                    .button-danger {
+                        background-color: #dc3545;
+                        color: white;
+                    }
+
+                    .button-danger:hover {
+                        background-color: #b42332;
+                    }
+
+                    .button:disabled {
+                        cursor: not-allowed;
+                        opacity: 0.5;
+                    }
+
+                    .menu-links .button {
+                        width: 100%;
                     }
                 </style>
             </head>

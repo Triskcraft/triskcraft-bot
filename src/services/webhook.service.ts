@@ -1,5 +1,5 @@
 import { client } from '#/client.ts'
-import { envs } from '#/config.ts'
+import { envs, STATE_KEYS } from '#/config.ts'
 import {
     ActionRowBuilder,
     ButtonBuilder,
@@ -69,7 +69,7 @@ export async function deployWebhookPanel() {
         ),
     )
     const whpmid = await db.state.findUnique({
-        where: { key: 'wh_panel_message_id' },
+        where: { key: STATE_KEYS.WEBHOOK_PANEL_MESSAGE_ID },
         select: { value: true },
     })
     if (whpmid) {
@@ -120,8 +120,8 @@ async function checkPinned(
         await nmsg.pin()
     }
     await db.state.upsert({
-        where: { key: 'wh_panel_message_id' },
+        where: { key: STATE_KEYS.WEBHOOK_PANEL_MESSAGE_ID },
         update: { value: nid },
-        create: { key: 'wh_panel_message_id', value: nid },
+        create: { key: STATE_KEYS.WEBHOOK_PANEL_MESSAGE_ID, value: nid },
     })
 }

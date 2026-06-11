@@ -181,5 +181,14 @@ export const WEBHOOK_PERMISSIONS = {
     JOIN: 'join',
 } as const
 
+export const STATE_KEYS = {
+    SUPER_ROLE_ID: 'super_role_id',
+    DEFAULT_ROLE_ID: 'default_role_id',
+    WEBHOOK_PANEL_MESSAGE_ID: 'wh_panel_message_id',
+    ROLES_PANEL_MESSAGE_ID: 'roles_panel_message_id',
+    ROLES_PANEL_SELECTED_USER: 'roles_panel_selected_user',
+    BLOG_PANEL_MESSAGE_ID: 'blog_panel_message_id',
+} as const
+
 export type WebhookPermission =
     (typeof WEBHOOK_PERMISSIONS)[keyof typeof WEBHOOK_PERMISSIONS]

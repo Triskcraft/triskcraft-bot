@@ -1,5 +1,5 @@
 import { client } from '#/client.ts'
-import { envs } from '#/config.ts'
+import { envs, STATE_KEYS } from '#/config.ts'
 import { db } from '#/db/prisma.ts'
 import { logger } from '#/logger.ts'
 import {
@@ -201,7 +201,7 @@ class BlogService {
             })
         } else {
             const whpmid = await db.state.findUnique({
-                where: { key: 'blog_panel_message_id' },
+                where: { key: STATE_KEYS.BLOG_PANEL_MESSAGE_ID },
                 select: { value: true },
             })
             if (whpmid) {
@@ -271,9 +271,9 @@ class BlogService {
             await this.#message.pin()
         }
         await db.state.upsert({
-            where: { key: 'blog_panel_message_id' },
+            where: { key: STATE_KEYS.BLOG_PANEL_MESSAGE_ID },
             update: { value: nid },
-            create: { key: 'blog_panel_message_id', value: nid },
+            create: { key: STATE_KEYS.BLOG_PANEL_MESSAGE_ID, value: nid },
         })
     }
 

@@ -5,6 +5,7 @@ import { Upload } from '@aws-sdk/lib-storage'
 import Busboy from 'busboy'
 import type { CompleteMultipartUploadCommandOutput } from '@aws-sdk/client-s3'
 import { Layout } from '#/web/components/layout.ts'
+import { Button } from '#/web/components/button.ts'
 
 const router = Router()
 
@@ -93,17 +94,6 @@ function Form() {
                     width: 100%;
                 }
 
-                .btn-upload {
-                    width: 100%;
-                    background: #3182ce;
-                    color: white;
-                    border: none;
-                    padding: 12px;
-                    border-radius: 6px;
-                    font-weight: bold;
-                    cursor: pointer;
-                }
-
                 /* Estilos de la Barra (Oculta por defecto) */
                 .progress-area {
                     display: none; /* Se muestra al iniciar la subida */
@@ -156,20 +146,8 @@ function Form() {
                     box-sizing: border-box;
                 }
 
-                .btn-submit {
+                .upload-button {
                     width: 100%;
-                    background-color: #28a745;
-                    color: white;
-                    border: none;
-                    padding: 12px;
-                    border-radius: 6px;
-                    font-weight: bold;
-                    cursor: pointer;
-                    transition: background 0.3s;
-                }
-
-                .btn-submit:hover {
-                    background-color: #218838;
                 }
 
                 .back-link {
@@ -195,9 +173,12 @@ function Form() {
                     />
                 </div>
 
-                <button type="submit" class="btn-submit" id="uploadBtn">
-                    Subir Archivo
-                </button>
+                ${Button({
+                    type: 'submit',
+                    id: 'uploadBtn',
+                    className: 'upload-button',
+                    children: 'Subir Archivo',
+                })}
             </form>
 
             <a href="/console" class="back-link">← Volver al menú</a>
