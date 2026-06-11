@@ -115,7 +115,12 @@ export async function roleFunctions(
             return await removeUserFromRole(role, req.body.id, res)
         }
         case 'chperm': {
-            return await changeRolePermissions(role, req.body, res)
+            return await changeRolePermissions(
+                role,
+                req.body,
+                req.user!.id,
+                res,
+            )
         }
         case 'addrole': {
             return await createRole(role, req.body.id, res)
@@ -311,10 +316,28 @@ export async function removeUserFromRole(
 export async function changeRolePermissions(
     role: Role,
     permissionsObject: Record<string, unknown>,
+    sessionUserId: string,
     res: Response,
 ) {
     const perms = new Permissions(Object.keys(permissionsObject))
     try {
+        const superRoleState = await db.state.findUnique({
+            where: { key: STATE_KEYS.SUPER_ROLE_ID },
+            select: { value: true },
+        })
+        const sessionUserIsSuper = await db.linkedRole.findUnique({
+            where: {
+                user_id_role_id: {
+                    user_id: sessionUserId,
+                    role_id: superRoleState?.value ?? '',
+                },
+            },
+        })
+
+        if (!sessionUserIsSuper) {
+            perms.remove('ADMIN')
+        }
+
         const nrole = await db.role.update({
             where: { id: role.id },
             data: {

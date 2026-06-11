@@ -84,6 +84,8 @@ export function requirePermission<T extends Parameters<typeof perm.has>[0]>(
             return res.redirect('/console/login')
         }
 
+        req.user = { id: oauthSession.user_id }
+
         const canManageModpack = oauthSession.user.linked_roles.some(
             ({ role }) => {
                 const permissions = new Permissions(role.permissions)
