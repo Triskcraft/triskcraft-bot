@@ -15,26 +15,27 @@ export const FORM_ACTIONS = {
     CHPERM: 'chperm',
     ADDROLE: 'addrole',
     CHNAME: 'chname',
+    SETDEFAULT: 'setdefault',
 } as const
 
 export type FormAction = (typeof FORM_ACTIONS)[keyof typeof FORM_ACTIONS]
 
 interface GenRoleLIstProps {
+    defaultRoleId: string | undefined
     selectedRoleId: string
+    systemRoleId: string | undefined
 }
-async function GenRoleLIst({ selectedRoleId }: GenRoleLIstProps) {
-    const [roles, systemRoleState] = await Promise.all([
-        db.role.findMany({
-            select: {
-                id: true,
-                name: true,
-            },
-        }),
-        db.state.findUnique({
-            where: { key: STATE_KEYS.SUPER_ROLE_ID },
-            select: { value: true },
-        }),
-    ])
+async function GenRoleLIst({
+    defaultRoleId,
+    selectedRoleId,
+    systemRoleId,
+}: GenRoleLIstProps) {
+    const roles = await db.role.findMany({
+        select: {
+            id: true,
+            name: true,
+        },
+    })
 
     const roleList = roles
         .map(
@@ -46,9 +47,12 @@ async function GenRoleLIst({ selectedRoleId }: GenRoleLIstProps) {
                             ''
                         )}"
                     >
-                        ${name}
+                        <span>${name}</span>
+                        ${id === defaultRoleId ?
+                            html`<span class="role-badge">Default</span>`
+                        :   ''}
                     </a>
-                    ${id === systemRoleState?.value ?
+                    ${id === systemRoleId || id === defaultRoleId ?
                         ''
                     :   AnchorButton({
                             href: `/console/roles/${id}/delete`,
@@ -81,11 +85,14 @@ async function GenRoleLIst({ selectedRoleId }: GenRoleLIstProps) {
             }
 
             .role-link {
+                align-items: center;
                 flex: 1;
                 border-radius: 6px;
                 color: #4a4f5d;
-                display: block;
+                display: flex;
                 font-weight: 600;
+                gap: 8px;
+                justify-content: space-between;
                 padding: 10px 14px;
                 text-decoration: none;
                 transition:
@@ -97,6 +104,16 @@ async function GenRoleLIst({ selectedRoleId }: GenRoleLIstProps) {
             .role-link.active {
                 background: #eef0ff;
                 color: #4752c4;
+            }
+
+            .role-badge {
+                background: #dfe3ff;
+                border-radius: 999px;
+                color: #4752c4;
+                font-size: 0.68rem;
+                letter-spacing: 0.04em;
+                padding: 3px 7px;
+                text-transform: uppercase;
             }
         </style>`
 }
@@ -211,6 +228,19 @@ interface RolePanelProps {
     role: Role
 }
 export async function RolePanel({ role }: RolePanelProps) {
+    const [defaultRoleState, systemRoleState] = await Promise.all([
+        db.state.findUnique({
+            where: { key: STATE_KEYS.DEFAULT_ROLE_ID },
+            select: { value: true },
+        }),
+        db.state.findUnique({
+            where: { key: STATE_KEYS.SUPER_ROLE_ID },
+            select: { value: true },
+        }),
+    ])
+    const isDefaultRole = defaultRoleState?.value === role.id
+    const isSystemRole = systemRoleState?.value === role.id
+
     return html`
         <main class="roles-console">
             <header class="roles-header">
@@ -236,6 +266,27 @@ export async function RolePanel({ role }: RolePanelProps) {
                     <p class="roles-description">
                         Configura los permisos y miembros asociados a cada rol.
                     </p>
+                    ${isDefaultRole ?
+                        html`<p class="default-role-status">
+                            <span class="role-badge">Default</span>
+                            Este rol se asigna automáticamente a los nuevos
+                            usuarios.
+                        </p>`
+                    : isSystemRole ?
+                        html`<p class="default-role-status">
+                            El rol Super no puede establecerse como Default.
+                        </p>`
+                    :   html`<form
+                            action="?ac=${FORM_ACTIONS.SETDEFAULT}"
+                            method="POST"
+                            class="default-role-form"
+                        >
+                            ${Button({
+                                type: 'submit',
+                                variant: 'secondary',
+                                children: 'Establecer como Default',
+                            })}
+                        </form>`}
                 </div>
                 <a href="/console" class="back-link">Volver al menú</a>
             </header>
@@ -260,7 +311,9 @@ export async function RolePanel({ role }: RolePanelProps) {
                         </div>
                     </form>
                     ${await GenRoleLIst({
+                        defaultRoleId: defaultRoleState?.value,
                         selectedRoleId: role.id,
+                        systemRoleId: systemRoleState?.value,
                     })}
                 </aside>
 
@@ -346,6 +399,19 @@ export async function RolePanel({ role }: RolePanelProps) {
             .roles-description {
                 color: #5d6270;
                 margin: 0;
+            }
+
+            .default-role-status {
+                align-items: center;
+                color: #5d6270;
+                display: flex;
+                font-size: 0.85rem;
+                gap: 8px;
+                margin: 14px 0 0;
+            }
+
+            .default-role-form {
+                margin-top: 14px;
             }
 
             .back-link {

@@ -8,7 +8,9 @@ import { requirePermission } from '#/api/console/auth-middleware.ts'
 import { DeleteRoleForm, RolePanel } from './components.ts'
 import {
     confirmDeleteRole,
+    isDefaultRole,
     isSystemRole,
+    renderDefaultRoleError,
     renderSystemRoleError,
     roleFunctions,
 } from './post.ts'
@@ -74,6 +76,9 @@ router.get('/:id/delete', async (req, res) => {
     }
     if (await isSystemRole(role.id)) {
         return renderSystemRoleError(res, role.id)
+    }
+    if (await isDefaultRole(role.id)) {
+        return renderDefaultRoleError(res, role.id)
     }
     render(
         res,

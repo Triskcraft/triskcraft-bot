@@ -1,5 +1,4 @@
-import { envs, PRIVATE_KEY } from '#/config.ts'
-import { Permissions } from '#/classes/permissions.ts'
+import { envs, PRIVATE_KEY, STATE_KEYS } from '#/config.ts'
 import { db } from '#/db/prisma.ts'
 import {
     OAUTH_SCOPES,
@@ -235,11 +234,30 @@ router.get('/', cookieParser(), async (req, res) => {
         },
     })
     const discordUser = (await request.json()) as APIUser
-    const roleName =
-        discordUser.id === envs.SUPER_USER_DISCORD_ID ? 'Super' : 'User'
-    const rolePermissions = roleName === 'Super' ? Permissions.Flags.ADMIN : 0n
+    const initialRoleStateKey =
+        discordUser.id === envs.SUPER_USER_DISCORD_ID ?
+            STATE_KEYS.SUPER_ROLE_ID
+        :   STATE_KEYS.DEFAULT_ROLE_ID
+    const initialRoleState = await db.state.findUnique({
+        where: { key: initialRoleStateKey },
+        select: { value: true },
+    })
 
-    //TODO: actualizar a state keys
+    if (!initialRoleState) {
+        res.status(500)
+        return render(
+            res,
+            Layout({
+                title: 'Error de configuración',
+                children: ErrorCard({
+                    code: 500,
+                    title: 'No se pudo asignar un rol',
+                    message:
+                        'La configuración de roles iniciales no está disponible.',
+                }),
+            }),
+        )
+    }
 
     const user = await db.user.upsert({
         where: {
@@ -257,15 +275,7 @@ router.get('/', cookieParser(), async (req, res) => {
             },
             linked_roles: {
                 create: {
-                    role: {
-                        connectOrCreate: {
-                            where: { name: roleName },
-                            create: {
-                                name: roleName,
-                                permissions: rolePermissions,
-                            },
-                        },
-                    },
+                    role_id: initialRoleState.value,
                 },
             },
         },

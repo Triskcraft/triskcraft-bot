@@ -19,6 +19,15 @@ export async function isSystemRole(roleId: string) {
     return systemRoleState?.value === roleId
 }
 
+export async function isDefaultRole(roleId: string) {
+    const defaultRoleState = await db.state.findUnique({
+        where: { key: STATE_KEYS.DEFAULT_ROLE_ID },
+        select: { value: true },
+    })
+
+    return defaultRoleState?.value === roleId
+}
+
 export async function confirmDeleteRole(
     req: Request<{ id: string }>,
     res: Response,
@@ -43,6 +52,9 @@ export async function confirmDeleteRole(
     }
     if (await isSystemRole(role.id)) {
         return renderSystemRoleError(res, role.id)
+    }
+    if (await isDefaultRole(role.id)) {
+        return renderDefaultRoleError(res, role.id)
     }
     try {
         await db.$transaction([
@@ -128,6 +140,9 @@ export async function roleFunctions(
         case 'chname': {
             return await changeRoleName(role, req.body.id, res)
         }
+        case 'setdefault': {
+            return await setDefaultRole(role, res)
+        }
         default: {
             req.query.ac satisfies never // DO NOT TOUCH
             res.status(400)
@@ -148,6 +163,26 @@ export async function roleFunctions(
     }
 }
 
+export function renderDefaultRoleError(
+    res: Parameters<typeof render>[0],
+    roleId: string,
+) {
+    res.status(409)
+    return render(
+        res,
+        Layout({
+            title: 'Rol Default',
+            children: ErrorCard({
+                code: 409,
+                title: 'No se puede eliminar el rol Default',
+                message:
+                    'Establece otro rol como Default antes de eliminar este rol.',
+                backUrl: `/console/roles/${roleId}`,
+            }),
+        }),
+    )
+}
+
 export function renderSystemRoleError(
     res: Parameters<typeof render>[0],
     roleId: string,
@@ -166,6 +201,54 @@ export function renderSystemRoleError(
             }),
         }),
     )
+}
+
+export async function setDefaultRole(role: Role, res: Response) {
+    if (await isSystemRole(role.id)) {
+        res.status(400)
+        return render(
+            res,
+            Layout({
+                title: 'Rol Default inválido',
+                children: ErrorCard({
+                    code: 400,
+                    title: 'Super no puede ser el rol Default',
+                    message:
+                        'El rol Default se asigna a usuarios nuevos y no puede conceder acceso administrativo.',
+                    backUrl: `/console/roles/${role.id}`,
+                }),
+            }),
+        )
+    }
+
+    try {
+        await db.state.upsert({
+            where: { key: STATE_KEYS.DEFAULT_ROLE_ID },
+            create: {
+                key: STATE_KEYS.DEFAULT_ROLE_ID,
+                value: role.id,
+            },
+            update: {
+                value: role.id,
+            },
+        })
+
+        return res.redirect(`/console/roles/${role.id}`)
+    } catch (error) {
+        logger.error(error, `error al establecer ${role.name} como Default`)
+        res.status(500)
+        return render(
+            res,
+            Layout({
+                title: 'Actualizando rol Default',
+                children: ErrorCard({
+                    code: 500,
+                    message: 'Intenta más tarde',
+                    backUrl: `/console/roles/${role.id}`,
+                }),
+            }),
+        )
+    }
 }
 
 export async function addUserToRole(
