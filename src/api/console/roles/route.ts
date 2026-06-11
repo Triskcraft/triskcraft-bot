@@ -8,6 +8,7 @@ import type { Role } from '#/db/generated/client.ts'
 import { requirePermission } from '#/api/console/auth-middleware.ts'
 import { logger } from '#/logger.ts'
 import { PrismaClientKnownRequestError } from '#/db/generated/internal/prismaNamespace.ts'
+import { STATE_KEYS } from '#/config.ts'
 
 const router = Router()
 router.use(urlencoded({ extended: true }))
@@ -17,6 +18,7 @@ const FORM_ACTIONS = {
     ADDUSR: 'addusr',
     CHPERM: 'chperm',
     ADDROLE: 'addrole',
+    CHNAME: 'chname',
 } as const
 
 type FormActions = (typeof FORM_ACTIONS)[keyof typeof FORM_ACTIONS]
@@ -77,6 +79,9 @@ router.get('/:id/delete', async (req, res) => {
             }),
         )
     }
+    if (await isSystemRole(role.id)) {
+        return renderSystemRoleError(res, role.id)
+    }
     render(
         res,
         Layout({
@@ -104,6 +109,9 @@ router.post('/:id/delete', async (req, res) => {
                 }),
             }),
         )
+    }
+    if (await isSystemRole(role.id)) {
+        return renderSystemRoleError(res, role.id)
     }
     try {
         await db.$transaction([
@@ -138,7 +146,7 @@ router.post('/:id/delete', async (req, res) => {
 
 router.post(
     '/:id',
-    requirePermission(PermissionsFlagsBits.MANNAGE_ROLES),
+    requirePermission(PermissionsFlagsBits.MANAGE_ROLES),
     async (
         req: Request<
             {
@@ -170,6 +178,16 @@ router.post(
                 }),
             )
         }
+
+        const modifiesSelectedRole =
+            req.query.ac === FORM_ACTIONS.ADDUSR ||
+            req.query.ac === FORM_ACTIONS.RMUSR ||
+            req.query.ac === FORM_ACTIONS.CHPERM
+
+        if (modifiesSelectedRole && (await isSystemRole(role.id))) {
+            return renderSystemRoleError(res, role.id)
+        }
+
         switch (req.query.ac) {
             case 'addusr': {
                 const form = req.body
@@ -362,6 +380,69 @@ router.post(
                     const nrole = await db.role.create({
                         data: { name },
                     })
+                    return res.redirect('/console/roles/' + nrole.id)
+                } catch (error) {
+                    if (error instanceof PrismaClientKnownRequestError) {
+                        if (error.code === 'P2002') {
+                            res.status(400)
+                            return render(
+                                res,
+                                Layout({
+                                    children: ErrorCard({
+                                        code: 400,
+                                        title: 'Ese rol ya existe',
+                                        message: 'Intenta con otro nombre',
+                                        backUrl: '/console/roles',
+                                    }),
+                                }),
+                            )
+                        }
+                    }
+                    logger.error(
+                        error,
+                        `error al intentar crear el rol ${name}`,
+                    )
+                    res.status(500)
+                    return render(
+                        res,
+                        Layout({
+                            children: ErrorCard({
+                                code: 500,
+                                message: 'Intenta más tarde',
+                                backUrl: '/console/roles',
+                            }),
+                        }),
+                    )
+                }
+            }
+            case 'chname': {
+                const name = req.body.id
+                const superState = await db.state.findFirst({
+                    where: { key: STATE_KEYS.SUPER_ROLE_ID },
+                })
+                if (role.id === superState!.value) {
+                    res.status(500)
+                    return render(
+                        res,
+                        Layout({
+                            children: ErrorCard({
+                                code: 500,
+                                title: 'Operación prohibida',
+                                message: 'Este rol es manejado por el sistema',
+                                backUrl: '/console/roles',
+                            }),
+                        }),
+                    )
+                }
+                try {
+                    const nrole = await db.role.update({
+                        where: {
+                            id: role.id,
+                        },
+                        data: {
+                            name,
+                        },
+                    })
                     return render(
                         res,
                         Layout({
@@ -403,8 +484,10 @@ router.post(
                         }),
                     )
                 }
+                return
             }
             default: {
+                req.query.ac satisfies never // DO NOT TOUCH
                 res.status(400)
                 return render(
                     res,
@@ -430,12 +513,18 @@ interface GenRoleLIstProps {
     selectedRoleId: string
 }
 async function GenRoleLIst({ selectedRoleId }: GenRoleLIstProps) {
-    const roles = await db.role.findMany({
-        select: {
-            id: true,
-            name: true,
-        },
-    })
+    const [roles, systemRoleState] = await Promise.all([
+        db.role.findMany({
+            select: {
+                id: true,
+                name: true,
+            },
+        }),
+        db.state.findUnique({
+            where: { key: STATE_KEYS.SUPER_ROLE_ID },
+            select: { value: true },
+        }),
+    ])
 
     const roleList = roles
         .map(
@@ -449,9 +538,14 @@ async function GenRoleLIst({ selectedRoleId }: GenRoleLIstProps) {
                     >
                         ${name}
                     </a>
-                    <a href="/console/roles/${id}/delete" class="btn-remove">
-                        -
-                    </a>
+                    ${id === systemRoleState?.value ?
+                        ''
+                    :   html`<a
+                            href="/console/roles/${id}/delete"
+                            class="btn-remove"
+                        >
+                            -
+                        </a>`}
                 </li>`,
         )
         .join('\n')
@@ -610,7 +704,23 @@ async function RolePanel({ role }: RolePanelProps) {
             <header class="roles-header">
                 <div>
                     <p class="roles-label">Consola administrativa</p>
-                    <h1>Administrar rol ${role.name}</h1>
+                    <div class="title-role">
+                        <h1>Administrar rol</h1>
+                        <form action="?ac=${FORM_ACTIONS.CHNAME}" method="POST">
+                            <input
+                                type="text"
+                                placeholder="${role.name}"
+                                name="id"
+                                required
+                            />
+                            <input type="reset" class="btn btn-secondary" />
+                            <input
+                                type="submit"
+                                value="Guardar"
+                                class="btn-primary"
+                            />
+                        </form>
+                    </div>
                     <p class="roles-description">
                         Configura los permisos y miembros asociados a cada rol.
                     </p>
@@ -676,6 +786,27 @@ async function RolePanel({ role }: RolePanelProps) {
         </main>
 
         <style>
+            .title-role {
+                display: flex;
+                align-items: center;
+
+                & > form {
+                    & > input[type='text'] {
+                        background: #f4f4f9;
+                        padding: 2px 8px 0px 8px;
+                        border: 0;
+                        font-size: 2em;
+                        font-weight: bold;
+                        color: #333;
+                    }
+
+                    & > input[type='text']::placeholder {
+                        color: #333;
+                        font-weight: bold;
+                    }
+                }
+            }
+
             .roles-console {
                 box-sizing: border-box;
                 width: min(1100px, calc(100% - 32px));
@@ -729,7 +860,7 @@ async function RolePanel({ role }: RolePanelProps) {
             .roles-grid {
                 display: grid;
                 grid-template-columns:
-                    minmax(180px, 0.7fr) minmax(280px, 1.3fr)
+                    minmax(180px, 1fr) minmax(280px, 1fr)
                     minmax(260px, 1fr);
                 gap: 18px;
                 align-items: start;
@@ -1018,4 +1149,33 @@ function Form({ role }: FormProps) {
             </div>
         </div>
     `
+}
+
+async function isSystemRole(roleId: string) {
+    const systemRoleState = await db.state.findUnique({
+        where: { key: STATE_KEYS.SUPER_ROLE_ID },
+        select: { value: true },
+    })
+
+    return systemRoleState?.value === roleId
+}
+
+function renderSystemRoleError(
+    res: Parameters<typeof render>[0],
+    roleId: string,
+) {
+    res.status(403)
+    return render(
+        res,
+        Layout({
+            title: 'Rol protegido',
+            children: ErrorCard({
+                code: 403,
+                title: 'Rol administrado por el sistema',
+                message:
+                    'El rol Super es necesario para administrar la consola y no se puede modificar ni eliminar.',
+                backUrl: `/console/roles/${roleId}`,
+            }),
+        }),
+    )
 }

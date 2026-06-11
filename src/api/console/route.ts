@@ -12,20 +12,19 @@ const router = Router()
 router.use('/login', login)
 router.use(
     '/mods',
-    requirePermission(PermissionsFlagsBits.MANNAGE_MODPACK),
+    requirePermission(PermissionsFlagsBits.MANAGE_MODPACK),
     mods,
 )
 router.use(
     '/roles',
-    requirePermission(PermissionsFlagsBits.MANNAGE_ROLES),
+    requirePermission(PermissionsFlagsBits.MANAGE_ROLES),
     roles,
 )
 
 router.get(
     '/',
     requirePermission(
-        PermissionsFlagsBits.MANNAGE_MODPACK |
-            PermissionsFlagsBits.MANNAGE_ROLES,
+        PermissionsFlagsBits.MANAGE_MODPACK | PermissionsFlagsBits.MANAGE_ROLES,
     ),
     async (req, res) => {
         render(

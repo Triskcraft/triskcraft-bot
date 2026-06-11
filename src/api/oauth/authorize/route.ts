@@ -236,8 +236,10 @@ router.get('/', cookieParser(), async (req, res) => {
     })
     const discordUser = (await request.json()) as APIUser
     const roleName =
-        discordUser.id === envs.SUPER_USER_DISCORD_ID ? 'super' : 'user'
-    const rolePermissions = roleName === 'super' ? Permissions.Flags.ADMIN : 0n
+        discordUser.id === envs.SUPER_USER_DISCORD_ID ? 'Super' : 'User'
+    const rolePermissions = roleName === 'Super' ? Permissions.Flags.ADMIN : 0n
+
+    //TODO: actualizar a state keys
 
     const user = await db.user.upsert({
         create: {

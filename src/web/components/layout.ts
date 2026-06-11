@@ -71,7 +71,8 @@ export function Layout({ children, title = 'Console Admin' }: LayoutProps) {
                     }
 
                     .btn-primary,
-                    .btn-remove {
+                    .btn-remove,
+                    .btn-secondary {
                         text-decoration: none;
                         border: 0;
                         border-radius: 6px;
@@ -88,6 +89,14 @@ export function Layout({ children, title = 'Console Admin' }: LayoutProps) {
 
                     .btn-primary:hover {
                         background: #4752c4;
+                    }
+
+                    .btn-secondary {
+                        background-color: #6c757d;
+                    }
+
+                    .btn-secondary:hover {
+                        background-color: #5a6268;
                     }
                 </style>
             </head>
