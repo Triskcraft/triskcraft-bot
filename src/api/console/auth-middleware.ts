@@ -34,6 +34,7 @@ const perm = new Permissions()
 
 export function requirePermission<T extends Parameters<typeof perm.has>[0]>(
     bits: T,
+    anyBits = false,
 ) {
     return async (req: Request, res: Response, next: NextFunction) => {
         const session = getConsoleSession(req)
@@ -89,7 +90,10 @@ export function requirePermission<T extends Parameters<typeof perm.has>[0]>(
         const canManageModpack = oauthSession.user.linked_roles.some(
             ({ role }) => {
                 const permissions = new Permissions(role.permissions)
-                return permissions.has(bits) || permissions.has('ADMIN')
+                return (
+                    permissions.has('ADMIN') ||
+                    (anyBits ? permissions.any(bits) : permissions.has(bits))
+                )
             },
         )
 

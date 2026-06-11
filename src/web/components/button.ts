@@ -1,4 +1,4 @@
-import { html } from '#/utils/html.ts'
+import { escapeAttribute, html } from '#/utils/html.ts'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'danger'
 
@@ -23,14 +23,6 @@ interface InputSubmitButtonProps extends BaseButtonProps {
     value: string
     name?: string
     disabled?: boolean
-}
-
-function escapeAttribute(value: string) {
-    return value
-        .replaceAll('&', '&amp;')
-        .replaceAll('"', '&quot;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
 }
 
 function getButtonAttributes({

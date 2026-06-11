@@ -2,7 +2,7 @@ import { Permissions, PermissionsFlagsBits } from '#/classes/permissions.ts'
 import { STATE_KEYS } from '#/config.ts'
 import type { Role } from '#/db/generated/client.ts'
 import { db } from '#/db/prisma.ts'
-import { html } from '#/utils/html.ts'
+import { escapeAttribute, html } from '#/utils/html.ts'
 import {
     AnchorButton,
     Button,
@@ -47,7 +47,7 @@ async function GenRoleLIst({
                             ''
                         )}"
                     >
-                        <span>${name}</span>
+                        <span>${escapeAttribute(name)}</span>
                         ${id === defaultRoleId ?
                             html`<span class="role-badge">Default</span>`
                         :   ''}
@@ -251,7 +251,7 @@ export async function RolePanel({ role }: RolePanelProps) {
                         <form action="?ac=${FORM_ACTIONS.CHNAME}" method="POST">
                             <input
                                 type="text"
-                                placeholder="${role.name}"
+                                placeholder="${escapeAttribute(role.name)}"
                                 name="id"
                                 required
                             />
@@ -671,7 +671,9 @@ export function DeleteRoleForm({ role }: FormProps) {
                 }
             </style>
 
-            <h2>Estás seguro de eliminar el rol ${role.name}?</h2>
+            <h2>
+                Estás seguro de eliminar el rol ${escapeAttribute(role.name)}?
+            </h2>
             <p>Esta acción <strong>no es reversible</strong></p>
 
             <form action="/console/roles/${role.id}/delete" method="POST">
