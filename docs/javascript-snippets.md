@@ -1,4 +1,3 @@
-
 # Javascript snippets
 
 - `np` - nextPage
@@ -19,7 +18,7 @@
 
 ```javascript
 const FileName = ({}) => {
-  return <div></div>
+    return <div></div>
 }
 
 export default FileName
@@ -29,13 +28,13 @@ export default FileName
 
 ```javascript
 const FileName = ({}) => {
-  return <div></div>
+    return <div></div>
 }
 
-export const getServerSideProps = async (ctx) => {
-  return {
-    props: {}
-  }
+export const getServerSideProps = async ctx => {
+    return {
+        props: {},
+    }
 }
 
 export default FileName
@@ -45,13 +44,13 @@ export default FileName
 
 ```javascript
 const FileName = ({}) => {
-  return <div></div>
+    return <div></div>
 }
 
-export const getStaticProps = async (ctx) => {
-  return {
-    props: {},
-  }
+export const getStaticProps = async ctx => {
+    return {
+        props: {},
+    }
 }
 
 export default FileName
@@ -61,14 +60,14 @@ export default FileName
 
 ```javascript
 const FileName = ({}) => {
-  return <div></div>
+    return <div></div>
 }
 
 export const getStaticPaths = async () => {
-  return {
-    paths: [],
-    fallback: false,
-  }
+    return {
+        paths: [],
+        fallback: false,
+    }
 }
 
 export default FileName
@@ -77,20 +76,20 @@ export default FileName
 ## `nssp` - nextServerSideProps
 
 ```javascript
-export const getServerSideProps = async (ctx) => {
-  return {
-    props: {}
-  }
+export const getServerSideProps = async ctx => {
+    return {
+        props: {},
+    }
 }
 ```
 
 ## `nsp` - nextStaticProps
 
 ```javascript
-export const getStaticProps = async (ctx) => {
-  return {
-    props: {},
-  }
+export const getStaticProps = async ctx => {
+    return {
+        props: {},
+    }
 }
 ```
 
@@ -98,20 +97,18 @@ export const getStaticProps = async (ctx) => {
 
 ```javascript
 export const getStaticPaths = async () => {
-  return {
-    paths: [],
-    fallback: false,
-  }
+    return {
+        paths: [],
+        fallback: false,
+    }
 }
 ```
 
 ## `nip` - nextInitialProps
 
 ```javascript
-FileName.getInitialProps = async (ctx) => {
-  return {
-    
-  }
+FileName.getInitialProps = async ctx => {
+    return {}
 }
 ```
 
@@ -125,7 +122,7 @@ FileName.getInitialProps = async (ctx) => {
 
 ```javascript
 export default function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
+    return <Component {...pageProps} />
 }
 ```
 
@@ -135,22 +132,22 @@ export default function MyApp({ Component, pageProps }) {
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 
 class MyDocument extends Document {
-  static async getInitialProps(ctx) {
-    const initialProps = await Document.getInitialProps(ctx)
-    return { ...initialProps }
-  }
+    static async getInitialProps(ctx) {
+        const initialProps = await Document.getInitialProps(ctx)
+        return { ...initialProps }
+    }
 
-  render() {
-    return (
-      <Html>
-        <Head />
-        <body>
-          <Main />
-          <NextScript />
-        </body>
-      </Html>
-    );
-  }
+    render() {
+        return (
+            <Html>
+                <Head />
+                <body>
+                    <Main />
+                    <NextScript />
+                </body>
+            </Html>
+        )
+    }
 }
 
 export default MyDocument
@@ -159,20 +156,16 @@ export default MyDocument
 ## `napi` - nextApi
 
 ```javascript
-export default async function handler(req, res) {
-  
-}
+export default async function handler(req, res) {}
 ```
 
 ## `nmid` - nextMiddleware
 
 ```javascript
 import { NextResponse } from 'next/server'
-export async function middleware(request) {
-  
-}
+export async function middleware(request) {}
 
 export const config = {
-  matcher: '/about/:path*',
+    matcher: '/about/:path*',
 }
 ```

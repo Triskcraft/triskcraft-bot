@@ -25,9 +25,10 @@
     "[typescript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-    "typescript.tsdk": "node_modules\\typescript\\lib",
+    "js/ts.tsdk.path": "node_modules/typescript/lib",
     "[javascript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-    "webPreview.schemaPath": "c:\\Users\\tecno\\code\\bot-inactividad\\src\\prisma\\main.schema.prisma"
+    "webPreview.schemaPath": "c:\\Users\\tecno\\code\\bot-inactividad\\src\\prisma\\main.schema.prisma",
+    "lit-plugin.rules.no-incompatible-type-binding": "off"
 }

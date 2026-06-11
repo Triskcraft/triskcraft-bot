@@ -3,6 +3,11 @@ import { STATE_KEYS } from '#/config.ts'
 import type { Role } from '#/db/generated/client.ts'
 import { db } from '#/db/prisma.ts'
 import { html } from '#/utils/html.ts'
+import {
+    AnchorButton,
+    Button,
+    InputSubmitButton,
+} from '#/web/components/button.ts'
 
 export const FORM_ACTIONS = {
     RMUSR: 'rmusr',
@@ -45,12 +50,11 @@ async function GenRoleLIst({ selectedRoleId }: GenRoleLIstProps) {
                     </a>
                     ${id === systemRoleState?.value ?
                         ''
-                    :   html`<a
-                            href="/console/roles/${id}/delete"
-                            class="btn-remove"
-                        >
-                            -
-                        </a>`}
+                    :   AnchorButton({
+                            href: `/console/roles/${id}/delete`,
+                            children: '-',
+                            variant: 'danger',
+                        })}
                 </li>`,
         )
         .join('\n')
@@ -127,7 +131,7 @@ async function GenPermissionsLIst({ role }: GenPermissionsLIstProps) {
         >
             <div class="panel-heading">
                 <h2>Permisos</h2>
-                <input class="btn-primary" type="submit" value="Guardar" />
+                ${InputSubmitButton({ value: 'Guardar' })}
             </div>
             <ul class="option-list">
                 ${permsList}
@@ -189,7 +193,10 @@ async function GenUsersLIst({ selectedRoleId }: GenUsersLIstProps) {
                 <span>${username}</span>
                 <form action="?ac=${FORM_ACTIONS.RMUSR}" method="POST">
                     <input type="hidden" name="id" value="${id}" />
-                    <input class="btn-remove" type="submit" value="-" />
+                    ${InputSubmitButton({
+                        value: '-',
+                        variant: 'danger',
+                    })}
                 </form>
             </li>`
         })
@@ -218,12 +225,12 @@ export async function RolePanel({ role }: RolePanelProps) {
                                 name="id"
                                 required
                             />
-                            <input type="reset" class="btn btn-secondary" />
-                            <input
-                                type="submit"
-                                value="Guardar"
-                                class="btn-primary"
-                            />
+                            ${Button({
+                                type: 'reset',
+                                variant: 'secondary',
+                                children: 'Restablecer',
+                            })}
+                            ${InputSubmitButton({ value: 'Guardar' })}
                         </form>
                     </div>
                     <p class="roles-description">
@@ -249,11 +256,7 @@ export async function RolePanel({ role }: RolePanelProps) {
                                 aria-label="Nuevo rol"
                                 required
                             />
-                            <input
-                                class="btn-primary"
-                                type="submit"
-                                value="Agregar"
-                            />
+                            ${InputSubmitButton({ value: 'Agregar' })}
                         </div>
                     </form>
                     ${await GenRoleLIst({
@@ -278,11 +281,7 @@ export async function RolePanel({ role }: RolePanelProps) {
                                 aria-label="ID de Discord"
                                 required
                             />
-                            <input
-                                class="btn-primary"
-                                type="submit"
-                                value="Agregar"
-                            />
+                            ${InputSubmitButton({ value: 'Agregar' })}
                         </div>
                     </form>
                     ${await GenUsersLIst({ selectedRoleId: role.id })}
@@ -545,17 +544,6 @@ export function DeleteRoleForm({ role }: FormProps) {
                     width: 100%;
                 }
 
-                .btn-upload {
-                    width: 100%;
-                    background: #3182ce;
-                    color: white;
-                    border: none;
-                    padding: 12px;
-                    border-radius: 6px;
-                    font-weight: bold;
-                    cursor: pointer;
-                }
-
                 /* Estilos de la Barra (Oculta por defecto) */
                 .progress-area {
                     display: none; /* Se muestra al iniciar la subida */
@@ -608,22 +596,6 @@ export function DeleteRoleForm({ role }: FormProps) {
                     box-sizing: border-box;
                 }
 
-                .btn-submit {
-                    width: 100%;
-                    background-color: #28a745;
-                    color: white;
-                    border: none;
-                    padding: 12px;
-                    border-radius: 6px;
-                    font-weight: bold;
-                    cursor: pointer;
-                    transition: background 0.3s;
-                }
-
-                .btn-submit:hover {
-                    background-color: #218838;
-                }
-
                 .back-link {
                     display: block;
                     margin-top: 15px;
@@ -637,8 +609,16 @@ export function DeleteRoleForm({ role }: FormProps) {
             <p>Esta acción <strong>no es reversible</strong></p>
 
             <form action="/console/roles/${role.id}/delete" method="POST">
-                <a href="/console/roles" class="btn-primary">Cancelar</a>
-                <button type="submit" class="btn-remove">Eliminar</button>
+                ${AnchorButton({
+                    href: '/console/roles',
+                    children: 'Cancelar',
+                    variant: 'secondary',
+                })}
+                ${Button({
+                    type: 'submit',
+                    children: 'Eliminar',
+                    variant: 'danger',
+                })}
             </form>
 
             <a href="/console" class="back-link">← Volver al menú</a>

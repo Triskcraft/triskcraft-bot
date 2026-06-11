@@ -6,6 +6,7 @@ import login from './login/route.ts'
 import { Layout } from '#/web/components/layout.ts'
 import { requirePermission } from './auth-middleware.ts'
 import { PermissionsFlagsBits } from '#/classes/permissions.ts'
+import { AnchorButton } from '#/web/components/button.ts'
 
 const router = Router()
 
@@ -35,12 +36,14 @@ router.get(
                         <h1>Herramientas de Consola</h1>
 
                         <nav class="menu-links">
-                            <a href="/console/mods" class="btn"
-                                >Upload SMP Mods</a
-                            >
-                            <a href="/console/roles" class="btn"
-                                >Manage Roles</a
-                            >
+                            ${AnchorButton({
+                                href: '/console/mods',
+                                children: 'Upload SMP Mods',
+                            })}
+                            ${AnchorButton({
+                                href: '/console/roles',
+                                children: 'Manage Roles',
+                            })}
                         </nav>
                     </div>
                 `,
