@@ -242,6 +242,9 @@ router.get('/', cookieParser(), async (req, res) => {
     //TODO: actualizar a state keys
 
     const user = await db.user.upsert({
+        where: {
+            discord_user_id: discordUser.id,
+        },
         create: {
             discord_user: {
                 connectOrCreate: {
@@ -265,9 +268,6 @@ router.get('/', cookieParser(), async (req, res) => {
                     },
                 },
             },
-        },
-        where: {
-            discord_user_id: discordUser.id,
         },
         update: {
             discord_user: {

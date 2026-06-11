@@ -321,6 +321,9 @@ export async function changeRolePermissions(
 ) {
     const perms = new Permissions(Object.keys(permissionsObject))
     try {
+        if (await isSystemRole(role.id)) {
+            return renderSystemRoleError(res, role.id)
+        }
         const superRoleState = await db.state.findUnique({
             where: { key: STATE_KEYS.SUPER_ROLE_ID },
             select: { value: true },
