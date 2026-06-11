@@ -28,6 +28,58 @@ export async function isDefaultRole(roleId: string) {
     return defaultRoleState?.value === roleId
 }
 
+async function assignDefaultRoleToUsersWithoutRoles() {
+    const defaultRoleState = await db.state.findUnique({
+        where: { key: STATE_KEYS.DEFAULT_ROLE_ID },
+        select: { value: true },
+    })
+    const defaultRoleId = defaultRoleState?.value
+
+    if (!defaultRoleId) {
+        logger.warn('No se pudo asignar el rol default: no está configurado')
+        return
+    }
+
+    const usersWithoutRoles = await db.user.findMany({
+        where: {
+            linked_roles: {
+                none: {},
+            },
+        },
+        select: {
+            id: true,
+        },
+    })
+
+    if (usersWithoutRoles.length === 0) {
+        return
+    }
+
+    const result = await db.linkedRole.createMany({
+        data: usersWithoutRoles.map(({ id }) => ({
+            user_id: id,
+            role_id: defaultRoleId,
+        })),
+        skipDuplicates: true,
+    })
+
+    logger.info(
+        { assignedUsers: result.count, defaultRoleId },
+        'Rol default asignado a usuarios sin rol',
+    )
+}
+
+function scheduleDefaultRoleAssignment() {
+    setImmediate(() => {
+        void assignDefaultRoleToUsersWithoutRoles().catch(error => {
+            logger.error(
+                error,
+                'Error al asignar el rol default a usuarios sin rol',
+            )
+        })
+    })
+}
+
 export async function confirmDeleteRole(
     req: Request<{ id: string }>,
     res: Response,
@@ -84,6 +136,7 @@ export async function confirmDeleteRole(
             }),
         )
     }
+    scheduleDefaultRoleAssignment()
     return res.redirect('/console/roles')
 }
 
