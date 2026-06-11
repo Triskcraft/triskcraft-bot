@@ -242,6 +242,14 @@ export async function removeUserFromRole(
     res: Response,
 ) {
     if (!discordId) return res.redirect('/console/roles')
+    const userCount = await db.linkedRole.count({
+        where: {
+            role_id: role.id,
+        },
+    })
+    if (userCount < 2) {
+        return renderSystemRoleError(res, role.id)
+    }
     try {
         const user = await db.user.findFirst({
             where: {
