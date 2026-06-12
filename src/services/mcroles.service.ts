@@ -407,8 +407,7 @@ class MCRoleService {
                     name: role.name,
                 },
             })
-            // await this.roles.fetch()
-            await this.#buildPanel()
+            await this.renderPannel()
         })
         client.on(Events.GuildRoleDelete, async role => {
             const dbrole = await db.minecraftRole.findFirst({
@@ -418,8 +417,7 @@ class MCRoleService {
             await db.minecraftRole.delete({
                 where: { id: role.id },
             })
-            // await this.roles.fetch()
-            await this.#buildPanel()
+            await this.renderPannel()
         })
     }
 }
