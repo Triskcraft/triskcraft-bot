@@ -2,7 +2,6 @@ import { client } from '#/client.ts'
 import { envs } from '#/config.ts'
 import { db } from '#/db/prisma.ts'
 import { Router } from 'express'
-import { getRank } from '#/utils/roles.ts'
 import z from 'zod'
 import {
     BadRequestError,
@@ -66,13 +65,11 @@ router.post('/', async (req, res) => {
                     discord_user: {
                         connect: { id: codedb.discord_id },
                     },
-                    rank: getRank([...discordMember.roles.cache.values()]),
                 },
                 update: {
                     discord_user: {
                         connect: { id: codedb.discord_id },
                     },
-                    rank: getRank([...discordMember.roles.cache.values()]),
                     nickname,
                     status: PLAYER_STATUS.ACTIVE,
                 },
