@@ -129,7 +129,6 @@ model DiscordUser {
 
     inactivity_periods InactivityPeriod[]
     link_code          LinkCode?
-    webhook_tokens     WebhookToken[]
     post_blocks        PostBlocks[]
     user               User?
 
@@ -137,16 +136,14 @@ model DiscordUser {
 }
 
 model WebhookToken {
-    id              String   @id @default(dbgenerated("snowflake()"))
-    name            String   @unique
-    discord_user_id String
-    user_id         String?
-    secret          String
-    permissions     String[]
-    created_at      DateTime @default(now())
+    id          String   @id @default(dbgenerated("snowflake()"))
+    name        String   @unique
+    user_id     String
+    secret      String
+    permissions String[]
+    created_at  DateTime @default(now())
 
-    discord_user DiscordUser @relation(fields: [discord_user_id], references: [id])
-    user         User?       @relation(fields: [user_id], references: [id])
+    user User @relation(fields: [user_id], references: [id])
 
     @@map("webhook_tokens")
 }

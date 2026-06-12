@@ -38,6 +38,13 @@ export async function deployWebhookPanel() {
 
     const tokens = await db.webhookToken.findMany({
         orderBy: { created_at: 'desc' },
+        include: {
+            user: {
+                select: {
+                    discord_user_id: true,
+                },
+            },
+        },
     })
     for (const token of tokens) {
         container.addSectionComponents(
@@ -45,7 +52,7 @@ export async function deployWebhookPanel() {
                 .addTextDisplayComponents(
                     new TextDisplayBuilder().setContent(
                         `- **${token.name}**\n` +
-                            `Creado el <t:${Math.floor(token.created_at.getTime() / 1000)}:d> por <@${token.discord_user_id}>\n` +
+                            `Creado el <t:${Math.floor(token.created_at.getTime() / 1000)}:d> por <@${token.user.discord_user_id}>\n` +
                             `Permisos: ${new Intl.ListFormat('es', {
                                 style: 'long',
                                 type: 'conjunction',

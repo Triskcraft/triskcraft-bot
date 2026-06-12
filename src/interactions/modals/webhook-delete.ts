@@ -17,6 +17,13 @@ export default class extends ModalInteractionHandler {
     static override async build({ id }: { id: string }) {
         const token = await db.webhookToken.findUnique({
             where: { id },
+            include: {
+                user: {
+                    select: {
+                        discord_user_id: true,
+                    },
+                },
+            },
         })
         if (!token) {
             return new ModalBuilder()
@@ -31,7 +38,7 @@ export default class extends ModalInteractionHandler {
             .addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(
                     `Creado el <t:${Math.floor(token.created_at.getTime() / 1000)}:d>\n` +
-                        `por <@${token.discord_user_id}>\n` +
+                        `por <@${token.user.discord_user_id}>\n` +
                         `permisos:\n` +
                         token.permissions.map(p => `- ${p}`).join('\n'),
                 ),
