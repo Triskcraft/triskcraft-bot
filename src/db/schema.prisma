@@ -173,6 +173,7 @@ model Post {
     id              String      @id @default(dbgenerated("snowflake()"))
     title           String      @unique
     discord_user_id String
+    user_id         String?
     player_uuid     String?     @map("minecraft_player_uuid")
     thread_id       String
     status          POST_STATUS @default(DRAFT)
@@ -180,6 +181,7 @@ model Post {
     created_at      DateTime    @default(now())
     updated_at      DateTime    @updatedAt
 
+    user         User?        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
     discord_user DiscordUser  @relation(fields: [discord_user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
     player       Player?      @relation(fields: [player_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
     post_blocks  PostBlocks[]
@@ -257,6 +259,7 @@ model User {
     authorization_codes AuthorizationCode[]
     sessions            Session[]
     linked_roles        LinkedRole[]
+    posts               Post[]
 
     @@map("users")
 }
