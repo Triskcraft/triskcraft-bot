@@ -30,6 +30,51 @@ async function shutdown(signal: string) {
 process.on('SIGINT', () => shutdown('SIGINT'))
 process.on('SIGTERM', () => shutdown('SIGTERM'))
 
+async function migrateWebhookUsers() {
+    const webhooks = await db.webhookToken.findMany({
+        where: {
+            user_id: null,
+        },
+        select: {
+            id: true,
+            discord_user: {
+                select: {
+                    user: {
+                        select: {
+                            id: true,
+                        },
+                    },
+                },
+            },
+        },
+    })
+
+    const webhooksWithUser = webhooks.filter(
+        webhook => webhook.discord_user.user,
+    )
+
+    await db.$transaction(
+        webhooksWithUser.map(webhook =>
+            db.webhookToken.update({
+                where: {
+                    id: webhook.id,
+                },
+                data: {
+                    user_id: webhook.discord_user.user!.id,
+                },
+            }),
+        ),
+    )
+
+    logger.info(
+        {
+            linkedWebhooks: webhooksWithUser.length,
+            missingUsers: webhooks.length - webhooksWithUser.length,
+        },
+        'Migración de usuarios de webhooks completada',
+    )
+}
+
 /**
  * Punto de entrada principal del bot. Aquí se inicializan los servicios
  * compartidos (API HTTP, cliente de Discord, acceso a base de datos y
@@ -53,6 +98,7 @@ if (envs.DEPLOY_INACTIVITY_PANEL) {
     logger.info('Saltando el despliegue del panel de inactividad')
 }
 // Activa los jobs programados que mantienen el sistema actualizado.
+await migrateWebhookUsers()
 await deployWebhookPanel()
 scheduler.start()
 await blogService.start()
