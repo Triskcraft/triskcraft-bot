@@ -13,9 +13,10 @@ import {
 } from '#/services/rank.service.ts'
 import { monitoredService } from '#/services/monitored.service.ts'
 import { Scheduler } from '#/services/scheduler.ts'
-import { roleService } from '#/services/roles.service.ts'
+import { mcRoleService } from '#/services/mcroles.service.ts'
 import { blogService } from '#/services/blog.service.ts'
 import { welcomeService } from './services/welcome.service.ts'
+import { usersService } from './services/users.service.ts'
 
 /**
  * Maneja el apagado ordenado del proceso, garantizando que cada componente
@@ -60,10 +61,11 @@ await deployWebhookPanel()
 initializeRankService()
 // Activa los jobs programados que mantienen el sistema actualizado.
 scheduler.start()
-blogService.start()
-welcomeService.start()
+await blogService.start()
+await welcomeService.start()
+usersService.start()
 if (envs.ROLE_SERVICE) {
-    roleService.start()
+    await mcRoleService.start()
 }
 
 /**

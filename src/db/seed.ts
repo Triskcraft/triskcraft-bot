@@ -1,38 +1,6 @@
 import { STATE_KEYS } from '#/config.ts'
 import { PermissionsFlagsBits } from '#/classes/permissions.ts'
 import { db } from '#/db/prisma.ts'
-import { logger } from '#/logger.ts'
-
-const DEFAULT_MINECRAFT_ROLE_NAME = 'Digger'
-const defaultMinecraftRoleState = await db.state.findUnique({
-    where: { key: STATE_KEYS.DEFAULT_MINECRAFT_ROLE_ID },
-})
-const defaultMinecraftRole =
-    (defaultMinecraftRoleState ?
-        await db.minecraftRole.findUnique({
-            where: { id: defaultMinecraftRoleState.value },
-        })
-    :   null) ??
-    (await db.minecraftRole.findUnique({
-        where: { name: DEFAULT_MINECRAFT_ROLE_NAME },
-    })) ??
-    (await db.minecraftRole.create({
-        data: {
-            name: DEFAULT_MINECRAFT_ROLE_NAME,
-        },
-    }))
-
-await db.state.upsert({
-    where: { key: STATE_KEYS.DEFAULT_MINECRAFT_ROLE_ID },
-    create: {
-        key: STATE_KEYS.DEFAULT_MINECRAFT_ROLE_ID,
-        value: defaultMinecraftRole.id,
-    },
-    update: {
-        value: defaultMinecraftRole.id,
-    },
-})
-logger.info(defaultMinecraftRole, 'Default Minecraft role configurado')
 
 const webClientRedirectUris = [
     'http://localhost:3000/api/auth/callback',

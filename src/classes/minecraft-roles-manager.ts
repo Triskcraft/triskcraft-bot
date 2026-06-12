@@ -17,6 +17,7 @@ export class MinecraftRolesManager {
             },
         })
         const members = playersService.players.cache
+        this.#cache.clear()
         for (const r of roles) {
             this.#cache.set(
                 r.id,
@@ -56,16 +57,6 @@ export class MinecraftRolesManager {
 
     get cache() {
         return this.#cache
-    }
-
-    async create(name: string) {
-        const role = new MinecraftRole(
-            await db.minecraftRole.create({
-                data: { name },
-            }),
-        )
-        this.#cache.set(role.id, role)
-        return role
     }
 
     async delete(id: string) {

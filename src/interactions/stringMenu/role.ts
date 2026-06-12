@@ -4,7 +4,7 @@ import {
     StringSelectMenuOptionBuilder,
 } from 'discord.js'
 import { StringMenuHandler } from '#/services/interactions.service.ts'
-import { roleService } from '#/services/roles.service.ts'
+import { mcRoleService } from '#/services/mcroles.service.ts'
 import { playersService } from '#/services/players.service.ts'
 
 export default class extends StringMenuHandler {
@@ -44,6 +44,6 @@ export default class extends StringMenuHandler {
     override async run(interaction: StringSelectMenuInteraction<'cached'>) {
         await interaction.deferUpdate()
         const value = interaction.values[0]!
-        await roleService.selectUser(value)
+        await mcRoleService.selectUser(value)
     }
 }

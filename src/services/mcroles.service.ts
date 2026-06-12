@@ -15,58 +15,62 @@ import {
     ActionRowBuilder,
     StringSelectMenuBuilder,
     Message,
+    Events,
 } from 'discord.js'
 import RoleStringMenu from '#/interactions/stringMenu/role.ts'
 import RoleAddStringMenu from '#/interactions/stringMenu/role-add.ts'
-import RoleCreateButton from '#/interactions/buttons/role/role-create.ts'
 import { listMax, Paginator } from '#/utils/format.ts'
-import roleRemove from '#/interactions/buttons/role/role-remove.ts'
 import { randomUUID } from 'node:crypto'
-import roleEdit from '#/interactions/buttons/role/role-edit.ts'
-import roleDelete from '#/interactions/buttons/role/role-delete.ts'
 import rolePage from '#/interactions/buttons/role/role-page.ts'
-import { MinecraftRole } from '#/classes/minecraft-role.ts'
 import { Player } from '#/classes/player.ts'
-import { MinecraftRolesManager } from '#/classes/minecraft-roles-manager.ts'
 import roleBack from '#/interactions/buttons/role/role-back.ts'
 import { PLAYER_STATUS } from '#/db/generated/enums.ts'
 import { playersService } from './players.service.ts'
+import type { MinecraftRole } from '#/db/generated/client.ts'
 
-const PANNEL_NAME = '# 🎭 **Panel de Roles**'
+const PANNEL_NAME = '# 🎭 **Panel de Roles de Minecraft**'
 
-class RoleService {
+class MCRoleService {
     #message: Message | null = null
 
     #selectedUser: string | null = null
 
     #defaultRole: MinecraftRole | null = null
 
+    #started = false
+
     get defaultRoleId() {
         return this.#defaultRole?.id
     }
 
-    #roles = new MinecraftRolesManager()
+    // #roles = new MinecraftRolesManager()
 
     #selectedRole: MinecraftRole | null = null
     #selectedPage = 1
 
-    get roles() {
-        return this.#roles
-    }
+    // get roles() {
+    //     return this.#roles
+    // }
 
     async start() {
-        logger.info('Inicializando Role Service')
-        await this.#roles.fetch()
+        logger.info('[ROLE SERVICE] Inicializando...')
+        // await this.#roles.fetch()
         const defaultRoleState = await db.state.findUnique({
             where: { key: STATE_KEYS.DEFAULT_MINECRAFT_ROLE_ID },
             select: { value: true },
         })
         this.#defaultRole =
             defaultRoleState ?
-                (this.#roles.cache.get(defaultRoleState.value) ?? null)
+                await db.minecraftRole.findUnique({
+                    where: { id: defaultRoleState.value },
+                })
             :   null
-        await this.#chechDefaultRole()
-        await this.renderPannel()
+        if (!this.#started) {
+            await this.#chechDefaultRole()
+            await this.renderPannel()
+        }
+        this.registerListener()
+        this.#started = true
     }
 
     async #chechDefaultRole() {
@@ -159,17 +163,28 @@ class RoleService {
     }
 
     async #buildPanel() {
-        const roles = this.roles.cache
+        const roles = await db.minecraftRole.findMany({
+            select: {
+                name: true,
+                id: true,
+                linked_roles: {
+                    select: {
+                        player: {
+                            select: {
+                                nickname: true,
+                            },
+                        },
+                    },
+                },
+            },
+        })
         const container = new ContainerBuilder()
-            .addSectionComponents(
-                new SectionBuilder()
-                    .addTextDisplayComponents(
-                        new TextDisplayBuilder().setContent(
-                            PANNEL_NAME +
-                                '\nAdministra los roles del servidor de Minecraft.',
-                        ),
-                    )
-                    .setButtonAccessory(await RoleCreateButton.build()),
+            .addTextDisplayComponents(
+                new TextDisplayBuilder().setContent(
+                    PANNEL_NAME +
+                        '\nAdministra los roles del servidor de Minecraft.' +
+                        '\n> Para agreggar o eliminar roles usa /settings mineraft-roles',
+                ),
             )
             .addSeparatorComponents(new SeparatorBuilder())
 
@@ -179,7 +194,9 @@ class RoleService {
                     .addTextDisplayComponents(
                         new TextDisplayBuilder().setContent(
                             `- **${role.name}**\nAsignado a ${listMax(
-                                role.players.map(u => `**${u.nickname}**`),
+                                role.linked_roles.map(
+                                    l => `**${l.player.nickname}**`,
+                                ),
                                 2,
                             )}`,
                         ),
@@ -231,17 +248,9 @@ class RoleService {
                 container.addTextDisplayComponents(
                     new TextDisplayBuilder().setContent('Roles:'),
                 )
-                for (const { id, name } of user.linked_roles.map(l => l.role)) {
-                    container.addSectionComponents(
-                        new SectionBuilder()
-                            .addTextDisplayComponents(
-                                new TextDisplayBuilder().setContent(
-                                    `- ${name}`,
-                                ),
-                            )
-                            .setButtonAccessory(
-                                await roleRemove.build({ id, uuid: user.uuid }),
-                            ),
+                for (const { name } of user.linked_roles.map(l => l.role)) {
+                    container.addTextDisplayComponents(
+                        new TextDisplayBuilder().setContent(`- ${name}`),
                     )
                 }
                 container.addActionRowComponents(
@@ -268,7 +277,16 @@ class RoleService {
                 )
                 .setButtonAccessory(await roleBack.build()),
         )
-        const pages = new Paginator([...role.players.values()], { peer: 5 })
+        const players = await db.player.findMany({
+            where: {
+                linked_roles: {
+                    some: {
+                        role_id: role.id,
+                    },
+                },
+            },
+        })
+        const pages = new Paginator(players, { peer: 5 })
         const { page, hasNext, hasPrev, items, totalPages } = pages.get(
             this.#selectedPage,
         )
@@ -279,17 +297,9 @@ class RoleService {
                 ),
             )
         } else {
-            for (const { nickname, uuid } of items) {
-                container.addSectionComponents(
-                    new SectionBuilder()
-                        .addTextDisplayComponents(
-                            new TextDisplayBuilder().setContent(
-                                `- ${nickname}`,
-                            ),
-                        )
-                        .setButtonAccessory(
-                            await roleRemove.build({ id: role.id, uuid }),
-                        ),
+            for (const { nickname } of items) {
+                container.addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent(`- ${nickname}`),
                 )
             }
         }
@@ -313,8 +323,6 @@ class RoleService {
                     disabled: !hasNext,
                     page: page + 1,
                 }),
-                await roleDelete.build({ id: role.id }),
-                await roleEdit.build({ id: role.id }),
             ),
         )
     }
@@ -384,6 +392,36 @@ class RoleService {
         this.#selectedPage = page
         await this.renderPannel()
     }
+
+    registerListener() {
+        if (this.#started) return
+        client.on(Events.GuildRoleUpdate, async (old, role) => {
+            if (old.name === role.name) return
+            const dbrole = await db.minecraftRole.findFirst({
+                where: { id: role.id },
+            })
+            if (!dbrole) return
+            await db.minecraftRole.update({
+                where: { id: role.id },
+                data: {
+                    name: role.name,
+                },
+            })
+            // await this.roles.fetch()
+            await this.#buildPanel()
+        })
+        client.on(Events.GuildRoleDelete, async role => {
+            const dbrole = await db.minecraftRole.findFirst({
+                where: { id: role.id },
+            })
+            if (!dbrole) return
+            await db.minecraftRole.delete({
+                where: { id: role.id },
+            })
+            // await this.roles.fetch()
+            await this.#buildPanel()
+        })
+    }
 }
 
 export class AlreadyExistsError extends Error {}
@@ -393,4 +431,4 @@ export class UnknowError extends Error {
     }
 }
 
-export const roleService = new RoleService()
+export const mcRoleService = new MCRoleService()
