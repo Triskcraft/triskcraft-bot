@@ -1,6 +1,6 @@
 import { ButtonBuilder, ButtonStyle, type ButtonInteraction } from 'discord.js'
 import { ButtonInteractionHandler } from '#/services/interactions.service.ts'
-import { roleService } from '#/services/roles.service.ts'
+import { mcRoleService } from '#/services/mcroles.service.ts'
 
 export default class extends ButtonInteractionHandler<'page' | 'id'> {
     override regex = /^role:page:(?<id>\d+):(?<page>\d+)$/
@@ -8,7 +8,7 @@ export default class extends ButtonInteractionHandler<'page' | 'id'> {
         const parser = this.parser(interaction.customId)
         const page = +parser.get('page')
 
-        await roleService.changuePage(page)
+        await mcRoleService.changuePage(page)
     }
     static override async build({
         id,

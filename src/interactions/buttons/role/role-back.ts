@@ -1,12 +1,12 @@
 import { ButtonBuilder, ButtonStyle, type ButtonInteraction } from 'discord.js'
 import { ButtonInteractionHandler } from '#/services/interactions.service.ts'
-import { roleService } from '#/services/roles.service.ts'
+import { mcRoleService } from '#/services/mcroles.service.ts'
 
 export default class extends ButtonInteractionHandler {
     override regex = /^role:back$/
     override async run(interaction: ButtonInteraction<'cached'>) {
         await interaction.deferUpdate()
-        await roleService.selectRole(null)
+        await mcRoleService.selectRole(null)
     }
     static override async build(
         _params?: Record<string, unknown>,

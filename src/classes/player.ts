@@ -1,5 +1,4 @@
 import { envs } from '#/config.ts'
-import { db } from '#/db/prisma.ts'
 import { inspect } from 'node:util'
 
 export class Player {
@@ -55,31 +54,5 @@ export class Player {
 
     [inspect.custom]() {
         return this.toJSON()
-    }
-
-    async setRole(roleName: string) {
-        const role = await db.minecraftRole.upsert({
-            where: {
-                name: roleName,
-            },
-            update: {},
-            create: {
-                name: roleName,
-            },
-        })
-
-        await db.linkedMinecraftRole.deleteMany({
-            where: {
-                mc_user_uuid: this.#uuid,
-            },
-        })
-        await db.linkedMinecraftRole.create({
-            data: {
-                mc_user_uuid: this.#uuid,
-                role_id: role.id,
-            },
-        })
-        this.#role = role.id
-        return this
     }
 }

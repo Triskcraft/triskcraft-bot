@@ -77,7 +77,6 @@ Claves recomendadas y su valor por defecto:
 | `API_PORT`                  | Puerto para la API HTTP.                                            | `3000`          |
 | `NODE_ENV`                  | Entorno (`development`, `production`, etc.).                        | `development`   |
 | `DEFAULT_ROLE_NAME`         | Nombre del rol por defecto cuando no hay rol explícito.             | `Digger`        |
-| `DEFAULT_ROLE_ID`           | ID del rol por defecto usado en algunos flujos.                     | ``              |
 | `DEFAULT_RANK`              | Nombre del rango por defecto.                                       | `Miembro`       |
 | `ROLE_SERVICE`              | Si es `true`, habilita lógica adicional de roles monitoreados.      | `false`         |
 | `FRONT_ORIGIN`              | Origen permitido por CORS para la API.                              | sin restricción |

@@ -1,30 +1,6 @@
-import { envs, STATE_KEYS } from '#/config.ts'
+import { STATE_KEYS } from '#/config.ts'
 import { PermissionsFlagsBits } from '#/classes/permissions.ts'
 import { db } from '#/db/prisma.ts'
-import { logger } from '#/logger.ts'
-import { PrismaClientKnownRequestError } from './generated/internal/prismaNamespace.ts'
-
-try {
-    const defaultRole = await db.minecraftRole.create({
-        data: {
-            name: envs.DEFAULT_ROLE_NAME,
-        },
-    })
-
-    logger.info(defaultRole, 'Default role creado')
-} catch (error) {
-    if (error instanceof PrismaClientKnownRequestError) {
-        if (error.code === 'P2002') {
-            const defaultRole = await db.minecraftRole.findUnique({
-                where: {
-                    name: envs.DEFAULT_ROLE_NAME,
-                },
-            })
-            logger.info(defaultRole, 'Default role existente')
-        }
-    }
-}
-logger.info('Por favor actualize el DEFAULT_ROLE_ID en .env')
 
 const webClientRedirectUris = [
     'http://localhost:3000/api/auth/callback',

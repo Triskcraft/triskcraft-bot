@@ -1,7 +1,6 @@
 import { db } from '#/db/prisma.ts'
 import { inspect } from 'node:util'
 import { logger } from '#/logger.ts'
-import { envs } from '#/config.ts'
 import { Player } from '#/classes/player.ts'
 import { Collection } from 'discord.js'
 import { PrismaClientKnownRequestError } from '#/db/generated/internal/prismaNamespace.ts'
@@ -81,9 +80,6 @@ export class MinecraftRole {
                     },
                 ),
             )
-        }
-        if (this.#id === envs.DEFAULT_ROLE_ID) {
-            envs.DEFAULT_ROLE_NAME = name
         }
         this.#name = name
         return this

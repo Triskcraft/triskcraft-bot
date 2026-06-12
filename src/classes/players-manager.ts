@@ -2,7 +2,6 @@ import { db } from '#/db/prisma.ts'
 import { Collection } from 'discord.js'
 import { Player } from '#/classes/player.ts'
 import { PLAYER_STATUS } from '#/db/generated/enums.ts'
-import { roleService } from '#/services/roles.service.ts'
 
 type UUID = string
 
@@ -93,11 +92,6 @@ export class PlayersManager {
             where: { uuid },
             data: { status: PLAYER_STATUS.DELETED },
         })
-        for (const [, role] of roleService.roles.cache.filter(r =>
-            r.players.has(uuid),
-        )) {
-            await role.removePlayer(uuid)
-        }
         this.#cache.delete(uuid)
     }
 }

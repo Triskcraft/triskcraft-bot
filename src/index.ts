@@ -13,9 +13,10 @@ import {
 } from '#/services/rank.service.ts'
 import { monitoredService } from '#/services/monitored.service.ts'
 import { Scheduler } from '#/services/scheduler.ts'
-import { roleService } from '#/services/roles.service.ts'
+import { mcRoleService } from '#/services/mcroles.service.ts'
 import { blogService } from '#/services/blog.service.ts'
 import { welcomeService } from './services/welcome.service.ts'
+import { usersService } from './services/users.service.ts'
 
 /**
  * Maneja el apagado ordenado del proceso, garantizando que cada componente
@@ -34,6 +35,63 @@ async function shutdown(signal: string) {
 process.on('SIGINT', () => shutdown('SIGINT'))
 process.on('SIGTERM', () => shutdown('SIGTERM'))
 
+async function migrateDiscordUsers() {
+    const discordUsers = await db.discordUser.findMany({
+        select: {
+            id: true,
+            player: {
+                select: {
+                    uuid: true,
+                },
+            },
+            user: {
+                select: {
+                    mc_player_uuid: true,
+                },
+            },
+        },
+    })
+
+    let createdUsers = 0
+    let linkedPlayers = 0
+
+    for (const discordUser of discordUsers) {
+        const playerUuid = discordUser.player?.uuid
+
+        await db.user.upsert({
+            where: {
+                discord_user_id: discordUser.id,
+            },
+            create: {
+                discord_user_id: discordUser.id,
+                ...(playerUuid ? { mc_player_uuid: playerUuid } : {}),
+            },
+            update:
+                playerUuid && discordUser.user?.mc_player_uuid !== playerUuid ?
+                    {
+                        mc_player_uuid: playerUuid,
+                    }
+                :   {},
+        })
+
+        if (!discordUser.user) {
+            createdUsers++
+        }
+        if (playerUuid && discordUser.user?.mc_player_uuid !== playerUuid) {
+            linkedPlayers++
+        }
+    }
+
+    logger.info(
+        {
+            createdUsers,
+            linkedPlayers,
+            processedDiscordUsers: discordUsers.length,
+        },
+        'Migración de usuarios completada',
+    )
+}
+
 /**
  * Punto de entrada principal del bot. Aquí se inicializan los servicios
  * compartidos (API HTTP, cliente de Discord, acceso a base de datos y
@@ -48,6 +106,7 @@ app.listen(envs.API_PORT, async () => {
  * coordinación entre las interacciones de Discord y la API HTTP.
  */
 const scheduler = new Scheduler(inactivityService, monitoredService)
+await migrateDiscordUsers()
 await interactionService.registerInteractionHandlers()
 
 if (envs.DEPLOY_INACTIVITY_PANEL) {
@@ -60,10 +119,11 @@ await deployWebhookPanel()
 initializeRankService()
 // Activa los jobs programados que mantienen el sistema actualizado.
 scheduler.start()
-blogService.start()
-welcomeService.start()
+await blogService.start()
+await welcomeService.start()
+usersService.start()
 if (envs.ROLE_SERVICE) {
-    roleService.start()
+    await mcRoleService.start()
 }
 
 /**

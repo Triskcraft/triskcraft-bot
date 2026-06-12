@@ -4,7 +4,7 @@ import {
     StringSelectMenuOptionBuilder,
 } from 'discord.js'
 import { StringMenuHandler } from '#/services/interactions.service.ts'
-import { roleService } from '#/services/roles.service.ts'
+import { mcRoleService } from '#/services/mcroles.service.ts'
 
 export const ROLE_PANEL_MODE = {
     ROLE: 'ROLE',
@@ -44,9 +44,10 @@ export default class extends StringMenuHandler {
         await interaction.deferUpdate()
         const uuid = this.regex.exec(interaction.customId)?.groups?.uuid
         if (!uuid) return
-        for (const role of interaction.values) {
-            await roleService.roles.cache.get(role)?.addPlayer(uuid)
-        }
-        await roleService.renderPannel()
+        // TODO: check
+        // for (const role of interaction.values) {
+        //     await mcRoleService.roles.cache.get(role)?.addPlayer(uuid)
+        // }
+        await mcRoleService.renderPannel()
     }
 }
