@@ -82,6 +82,7 @@ export default class extends ModalInteractionHandler {
             interaction.fields.getStringSelectValues('permissions')
         const name = interaction.fields.getTextInputValue('name')
         let wt: WebhookToken
+        let userId: string
         try {
             const user = await db.user.upsert({
                 where: {
@@ -108,6 +109,7 @@ export default class extends ModalInteractionHandler {
                     },
                 },
             })
+            userId = user.id
             wt = await db.webhookToken.create({
                 data: {
                     secret: encrypt(secret).payload,
@@ -116,11 +118,6 @@ export default class extends ModalInteractionHandler {
                     user: {
                         connect: {
                             id: user.id,
-                        },
-                    },
-                    discord_user: {
-                        connect: {
-                            id: interaction.user.id,
                         },
                     },
                 },
@@ -148,7 +145,7 @@ export default class extends ModalInteractionHandler {
 
         const jwt = await new SignJWT({
             id: wt.id,
-            user: interaction.user.id,
+            user: userId,
             permissions,
             name,
         })

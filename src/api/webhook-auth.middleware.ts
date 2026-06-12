@@ -59,7 +59,6 @@ export function webhookAuth(permissions: WebhookPermission[]) {
         }
         const tokendb = await db.webhookToken.findUnique({
             where: { id: jwtPayload.payload.id },
-            include: { discord_user: true },
         })
         if (!tokendb) {
             throw new UnauthorizedError()
