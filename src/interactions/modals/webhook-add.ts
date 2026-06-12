@@ -83,11 +83,11 @@ export default class extends ModalInteractionHandler {
         const name = interaction.fields.getTextInputValue('name')
         let wt: WebhookToken
         try {
-            wt = await db.webhookToken.create({
-                data: {
-                    secret: encrypt(secret).payload,
-                    permissions: [...permissions],
-                    name,
+            const user = await db.user.upsert({
+                where: {
+                    discord_user_id: interaction.user.id,
+                },
+                create: {
                     discord_user: {
                         connectOrCreate: {
                             create: {
@@ -97,6 +97,30 @@ export default class extends ModalInteractionHandler {
                             where: {
                                 id: interaction.user.id,
                             },
+                        },
+                    },
+                },
+                update: {
+                    discord_user: {
+                        update: {
+                            username: interaction.user.username,
+                        },
+                    },
+                },
+            })
+            wt = await db.webhookToken.create({
+                data: {
+                    secret: encrypt(secret).payload,
+                    permissions: [...permissions],
+                    name,
+                    user: {
+                        connect: {
+                            id: user.id,
+                        },
+                    },
+                    discord_user: {
+                        connect: {
+                            id: interaction.user.id,
                         },
                     },
                 },

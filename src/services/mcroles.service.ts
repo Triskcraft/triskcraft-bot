@@ -226,9 +226,16 @@ class MCRoleService {
         if (selected) {
             const user = await db.player.findFirst({
                 where: { uuid: selected, status: PLAYER_STATUS.ACTIVE },
-                include: { linked_roles: { select: { role: true } } },
+                include: {
+                    linked_roles: { select: { role: true } },
+                    user: {
+                        select: {
+                            discord_user_id: true,
+                        },
+                    },
+                },
             })
-            if (!user) {
+            if (!user?.user) {
                 container.addTextDisplayComponents(
                     new TextDisplayBuilder().setContent(
                         'Lo lamento, no se encontró ese jugador',
@@ -238,7 +245,7 @@ class MCRoleService {
                 playersService.players.cache.set(
                     user.uuid,
                     new Player({
-                        discord_user_id: user.discord_user_id,
+                        discord_user_id: user.user.discord_user_id,
                         nickname: user.nickname,
                         role:
                             user.linked_roles[0]?.role.id ?? envs.DEFAULT_RANK,

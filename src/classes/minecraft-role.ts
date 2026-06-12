@@ -56,7 +56,11 @@ export class MinecraftRole {
             select: {
                 linked_roles: {
                     select: {
-                        player: true,
+                        player: {
+                            include: {
+                                user: true,
+                            },
+                        },
                         role_id: true,
                     },
                 },
@@ -64,7 +68,7 @@ export class MinecraftRole {
         })
         logger.info(`[ROLE SERVICE] Rol ${this.#name} renombrado a ${name}`)
         for (const { player, role_id } of linked_roles.filter(
-            l => l.player.status === PLAYER_STATUS.ACTIVE,
+            l => l.player.status === PLAYER_STATUS.ACTIVE && l.player.user,
         )) {
             this.#players.getOrInsert(
                 player.uuid,
@@ -72,7 +76,7 @@ export class MinecraftRole {
                     player.uuid,
                     () => {
                         return new Player({
-                            discord_user_id: player.discord_user_id,
+                            discord_user_id: player.user!.discord_user_id,
                             nickname: player.nickname,
                             uuid: player.uuid,
                             role: role_id,
@@ -167,7 +171,11 @@ export class MinecraftRole {
             include: {
                 linked_roles: {
                     include: {
-                        player: true,
+                        player: {
+                            include: {
+                                user: true,
+                            },
+                        },
                     },
                 },
             },
@@ -176,17 +184,14 @@ export class MinecraftRole {
         this.#id = role.id
         this.#name = role.name
 
-        for (const {
-            discord_user_id,
-            nickname,
-            uuid,
-            role: role_id,
-        } of role.linked_roles
+        for (const { nickname, uuid, role: role_id, user } of role.linked_roles
             .map(l => ({ ...l.player, role: l.role_id }))
-            .filter(p => p.status === PLAYER_STATUS.ACTIVE)) {
+            .filter(
+                p => p.status === PLAYER_STATUS.ACTIVE && p.user !== null,
+            )) {
             this.#players.getOrInsertComputed(uuid, () => {
                 return new Player({
-                    discord_user_id,
+                    discord_user_id: user!.discord_user_id,
                     nickname,
                     uuid,
                     role: role_id,

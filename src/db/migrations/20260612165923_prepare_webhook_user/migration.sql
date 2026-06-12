@@ -1,12 +1,34 @@
-/*
-  Warnings:
+-- AlterTable
+ALTER TABLE "webhook_tokens" ADD COLUMN "user_id" TEXT;
 
-  - You are about to drop the column `discord_user_id` on the `minecraft_users` table. All the data in the column will be lost.
-  - You are about to drop the column `discord_user_id` on the `posts` table. All the data in the column will be lost.
-  - You are about to drop the column `minecraft_player_uuid` on the `posts` table. All the data in the column will be lost.
-  - Made the column `user_id` on table `posts` required. This step will fail if there are existing NULL values in that column.
+-- Create missing application users before moving existing relations.
+INSERT INTO "users" ("discord_user_id", "created_at", "updated_at")
+SELECT "id", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM "discord_users"
+ON CONFLICT ("discord_user_id") DO NOTHING;
 
-*/
+-- Link application users to their existing Minecraft players.
+UPDATE "users" AS "user"
+SET
+    "mc_player_uuid" = "player"."uuid",
+    "updated_at" = CURRENT_TIMESTAMP
+FROM "minecraft_users" AS "player"
+WHERE
+    "user"."discord_user_id" = "player"."discord_user_id"
+    AND "user"."mc_player_uuid" IS DISTINCT FROM "player"."uuid";
+
+-- Move post ownership to application users.
+UPDATE "posts" AS "post"
+SET "user_id" = "user"."id"
+FROM "users" AS "user"
+WHERE "user"."discord_user_id" = "post"."discord_user_id";
+
+-- Associate existing webhook tokens with their application users.
+UPDATE "webhook_tokens" AS "token"
+SET "user_id" = "user"."id"
+FROM "users" AS "user"
+WHERE "user"."discord_user_id" = "token"."discord_user_id";
+
 -- DropForeignKey
 ALTER TABLE "minecraft_users" DROP CONSTRAINT "minecraft_users_discord_user_id_fkey";
 
@@ -26,9 +48,6 @@ ALTER TABLE "minecraft_users" DROP COLUMN "discord_user_id";
 ALTER TABLE "posts" DROP COLUMN "discord_user_id",
 DROP COLUMN "minecraft_player_uuid",
 ALTER COLUMN "user_id" SET NOT NULL;
-
--- AlterTable
-ALTER TABLE "webhook_tokens" ADD COLUMN     "user_id" TEXT;
 
 -- AddForeignKey
 ALTER TABLE "webhook_tokens" ADD CONSTRAINT "webhook_tokens_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
