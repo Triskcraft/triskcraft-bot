@@ -6,12 +6,16 @@ export class PostsManager {
     async fetch() {
         const roles = await db.post.findMany({
             select: {
-                discord_user_id: true,
                 status: true,
                 id: true,
                 title: true,
                 thread_id: true,
                 cover_media: true,
+                user: {
+                    select: {
+                        discord_user_id: true,
+                    },
+                },
             },
         })
         for (const post of roles) {
@@ -19,6 +23,7 @@ export class PostsManager {
                 post.id,
                 new Post({
                     ...post,
+                    discord_user_id: post.user.discord_user_id,
                 }),
             )
         }
@@ -42,24 +47,39 @@ export class PostsManager {
         title: string
         thread_id: string
     }) {
-        await db.discordUser.upsert({
-            where: {
-                id: discord_user_id,
+        const user = await db.user.upsert({
+            where: { discord_user_id },
+            create: {
+                discord_user: {
+                    connectOrCreate: {
+                        where: { id: discord_user_id },
+                        create: {
+                            id: discord_user_id,
+                            username: discord_username,
+                        },
+                    },
+                },
             },
             update: {
-                username: discord_username,
-            },
-            create: {
-                id: discord_user_id,
-                username: discord_username,
+                discord_user: {
+                    update: {
+                        username: discord_username,
+                    },
+                },
             },
         })
 
-        const post = new Post(
-            await db.post.create({
-                data: { discord_user_id, title, thread_id },
-            }),
-        )
+        const createdPost = await db.post.create({
+            data: {
+                title,
+                thread_id,
+                user_id: user.id,
+            },
+        })
+        const post = new Post({
+            ...createdPost,
+            discord_user_id,
+        })
         this.#cache.set(post.id, post)
         return post
     }

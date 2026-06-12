@@ -2,7 +2,6 @@ import { client } from '#/client.ts'
 import { envs } from '#/config.ts'
 import { db } from '#/db/prisma.ts'
 import { Router } from 'express'
-import { getRank } from '#/utils/roles.ts'
 import z from 'zod'
 import {
     BadRequestError,
@@ -57,33 +56,44 @@ router.post('/', async (req, res) => {
     }
 
     try {
-        const [user] = await db.$transaction([
-            db.player.upsert({
-                where: { uuid: codedb.id },
+        const user = await db.$transaction(async transaction => {
+            const player = await transaction.player.upsert({
+                where: { uuid },
                 create: {
                     nickname,
                     uuid,
-                    discord_user: {
-                        connect: { id: codedb.discord_id },
-                    },
-                    rank: getRank([...discordMember.roles.cache.values()]),
                 },
                 update: {
-                    discord_user: {
-                        connect: { id: codedb.discord_id },
-                    },
-                    rank: getRank([...discordMember.roles.cache.values()]),
                     nickname,
                     status: PLAYER_STATUS.ACTIVE,
                 },
                 select: {
                     uuid: true,
                 },
-            }),
-            db.linkCode.delete({
+            })
+            await transaction.user.upsert({
+                where: {
+                    discord_user_id: codedb.discord_id,
+                },
+                create: {
+                    discord_user: {
+                        connect: { id: codedb.discord_id },
+                    },
+                    mc_player: {
+                        connect: { uuid: player.uuid },
+                    },
+                },
+                update: {
+                    mc_player: {
+                        connect: { uuid: player.uuid },
+                    },
+                },
+            })
+            await transaction.linkCode.delete({
                 where: { code },
-            }),
-        ])
+            })
+            return player
+        })
 
         if (!user) {
             throw new InternalServerError('Error al vincular la cuenta')

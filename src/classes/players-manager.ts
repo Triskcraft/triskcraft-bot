@@ -21,9 +21,9 @@ export class PlayersManager {
                 select: {
                     uuid: true,
                     nickname: true,
-                    discord_user_id: true,
                     user: {
                         select: {
+                            discord_user_id: true,
                             linked_roles: {
                                 select: {
                                     role_id: true,
@@ -34,10 +34,11 @@ export class PlayersManager {
                 },
             })
             for (const m of members) {
+                if (!m.user) continue
                 this.#cache.set(
                     m.uuid,
                     new Player({
-                        discord_user_id: m.discord_user_id,
+                        discord_user_id: m.user.discord_user_id,
                         nickname: m.nickname,
                         uuid: m.uuid,
                         role: m.user?.linked_roles[0]?.role_id ?? '',
@@ -56,9 +57,9 @@ export class PlayersManager {
                 select: {
                     uuid: true,
                     nickname: true,
-                    discord_user_id: true,
                     user: {
                         select: {
+                            discord_user_id: true,
                             linked_roles: {
                                 select: {
                                     role_id: true,
@@ -68,9 +69,9 @@ export class PlayersManager {
                     },
                 },
             })
-            if (memberData) {
+            if (memberData?.user) {
                 member = new Player({
-                    discord_user_id: memberData.discord_user_id,
+                    discord_user_id: memberData.user.discord_user_id,
                     nickname: memberData.nickname,
                     uuid: memberData.uuid,
                     role: memberData.user?.linked_roles[0]?.role_id ?? '',

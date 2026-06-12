@@ -7,10 +7,6 @@ import { db } from '#/db/prisma.ts'
 import { inactivityService } from '#/services/inactivity.service.ts'
 import { interactionService } from '#/services/interactions.service.ts'
 import { deployWebhookPanel } from '#/services/webhook.service.ts'
-import {
-    initializeRankService,
-    unregisterRankService,
-} from '#/services/rank.service.ts'
 import { monitoredService } from '#/services/monitored.service.ts'
 import { Scheduler } from '#/services/scheduler.ts'
 import { mcRoleService } from '#/services/mcroles.service.ts'
@@ -25,7 +21,6 @@ import { usersService } from './services/users.service.ts'
 async function shutdown(signal: string) {
     logger.info({ signal }, 'Cerrando bot')
     scheduler.stop()
-    unregisterRankService()
     welcomeService.stop()
     await client.destroy()
     await db.$disconnect()
@@ -35,60 +30,48 @@ async function shutdown(signal: string) {
 process.on('SIGINT', () => shutdown('SIGINT'))
 process.on('SIGTERM', () => shutdown('SIGTERM'))
 
-async function migrateDiscordUsers() {
-    const discordUsers = await db.discordUser.findMany({
+async function migrateWebhookUsers() {
+    const webhooks = await db.webhookToken.findMany({
+        where: {
+            user_id: null,
+        },
         select: {
             id: true,
-            player: {
+            discord_user: {
                 select: {
-                    uuid: true,
-                },
-            },
-            user: {
-                select: {
-                    mc_player_uuid: true,
+                    user: {
+                        select: {
+                            id: true,
+                        },
+                    },
                 },
             },
         },
     })
 
-    let createdUsers = 0
-    let linkedPlayers = 0
+    const webhooksWithUser = webhooks.filter(
+        webhook => webhook.discord_user.user,
+    )
 
-    for (const discordUser of discordUsers) {
-        const playerUuid = discordUser.player?.uuid
-
-        await db.user.upsert({
-            where: {
-                discord_user_id: discordUser.id,
-            },
-            create: {
-                discord_user_id: discordUser.id,
-                ...(playerUuid ? { mc_player_uuid: playerUuid } : {}),
-            },
-            update:
-                playerUuid && discordUser.user?.mc_player_uuid !== playerUuid ?
-                    {
-                        mc_player_uuid: playerUuid,
-                    }
-                :   {},
-        })
-
-        if (!discordUser.user) {
-            createdUsers++
-        }
-        if (playerUuid && discordUser.user?.mc_player_uuid !== playerUuid) {
-            linkedPlayers++
-        }
-    }
+    await db.$transaction(
+        webhooksWithUser.map(webhook =>
+            db.webhookToken.update({
+                where: {
+                    id: webhook.id,
+                },
+                data: {
+                    user_id: webhook.discord_user.user!.id,
+                },
+            }),
+        ),
+    )
 
     logger.info(
         {
-            createdUsers,
-            linkedPlayers,
-            processedDiscordUsers: discordUsers.length,
+            linkedWebhooks: webhooksWithUser.length,
+            missingUsers: webhooks.length - webhooksWithUser.length,
         },
-        'Migración de usuarios completada',
+        'Migración de usuarios de webhooks completada',
     )
 }
 
@@ -106,7 +89,6 @@ app.listen(envs.API_PORT, async () => {
  * coordinación entre las interacciones de Discord y la API HTTP.
  */
 const scheduler = new Scheduler(inactivityService, monitoredService)
-await migrateDiscordUsers()
 await interactionService.registerInteractionHandlers()
 
 if (envs.DEPLOY_INACTIVITY_PANEL) {
@@ -115,9 +97,9 @@ if (envs.DEPLOY_INACTIVITY_PANEL) {
 } else {
     logger.info('Saltando el despliegue del panel de inactividad')
 }
-await deployWebhookPanel()
-initializeRankService()
 // Activa los jobs programados que mantienen el sistema actualizado.
+await migrateWebhookUsers()
+await deployWebhookPanel()
 scheduler.start()
 await blogService.start()
 await welcomeService.start()

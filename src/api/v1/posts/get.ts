@@ -18,8 +18,7 @@ export async function getPosts(req: Request, res: Response<BlogPost[]>) {
         },
         omit: {
             thread_id: true,
-            discord_user_id: true,
-            player_uuid: true,
+            user_id: true,
             status: true,
             cover_media_id: true,
         },
@@ -45,30 +44,30 @@ export async function getPosts(req: Request, res: Response<BlogPost[]>) {
                     author_id: true,
                 },
             },
-            discord_user: true,
-            player: {
+            user: {
                 select: {
-                    digs: true,
-                    uuid: true,
-                    nickname: true,
-                    user: {
+                    discord_user: true,
+                    linked_roles: {
                         select: {
-                            linked_roles: {
+                            role: {
                                 select: {
-                                    role: {
-                                        select: {
-                                            name: true,
-                                        },
-                                    },
+                                    name: true,
                                 },
                             },
                         },
                     },
-                    linked_roles: {
+                    mc_player: {
                         select: {
-                            role: {
-                                omit: {
-                                    id: true,
+                            digs: true,
+                            uuid: true,
+                            nickname: true,
+                            linked_roles: {
+                                select: {
+                                    role: {
+                                        omit: {
+                                            id: true,
+                                        },
+                                    },
                                 },
                             },
                         },
@@ -81,12 +80,11 @@ export async function getPosts(req: Request, res: Response<BlogPost[]>) {
         ({
             created_at,
             cover_media,
-            discord_user,
             id,
             title,
-            player,
             post_blocks,
             updated_at,
+            user,
         }) => ({
             id,
             title,
@@ -94,20 +92,17 @@ export async function getPosts(req: Request, res: Response<BlogPost[]>) {
                 cover_media?.media_type === POST_BLOCK_MEDIA_TYPE.IMAGE ?
                     cover_media
                 :   null,
-            user: discord_user,
+            user: user.discord_user,
             created_at: created_at.getTime(),
             updated_at: updated_at.getTime(),
             player:
-                player ?
+                user.mc_player ?
                     {
-                        ...player,
-                        uuid: player.uuid,
-                        nickname: player.nickname,
-                        digs: player.digs,
-                        rank:
-                            player.user?.linked_roles[0]?.role.name ??
-                            'Miembro',
-                        roles: player.linked_roles.map(l => l.role.name),
+                        ...user.mc_player,
+                        rank: user.linked_roles[0]?.role.name ?? 'Miembro',
+                        roles: user.mc_player.linked_roles.map(
+                            l => l.role.name,
+                        ),
                     }
                 :   null,
             post_blocks: post_blocks.map(p => ({
@@ -135,8 +130,7 @@ export async function getPostsById(
         },
         omit: {
             thread_id: true,
-            discord_user_id: true,
-            player_uuid: true,
+            user_id: true,
             status: true,
             cover_media_id: true,
         },
@@ -162,30 +156,30 @@ export async function getPostsById(
                     author_id: true,
                 },
             },
-            discord_user: true,
-            player: {
+            user: {
                 select: {
-                    digs: true,
-                    uuid: true,
-                    nickname: true,
-                    user: {
+                    discord_user: true,
+                    linked_roles: {
                         select: {
-                            linked_roles: {
+                            role: {
                                 select: {
-                                    role: {
-                                        select: {
-                                            name: true,
-                                        },
-                                    },
+                                    name: true,
                                 },
                             },
                         },
                     },
-                    linked_roles: {
+                    mc_player: {
                         select: {
-                            role: {
-                                omit: {
-                                    id: true,
+                            digs: true,
+                            uuid: true,
+                            nickname: true,
+                            linked_roles: {
+                                select: {
+                                    role: {
+                                        omit: {
+                                            id: true,
+                                        },
+                                    },
                                 },
                             },
                         },
@@ -201,12 +195,11 @@ export async function getPostsById(
         ({
             created_at,
             cover_media,
-            discord_user,
             id,
             title,
-            player,
             post_blocks,
             updated_at,
+            user,
         }) => ({
             id,
             title,
@@ -214,20 +207,17 @@ export async function getPostsById(
                 cover_media?.media_type === POST_BLOCK_MEDIA_TYPE.IMAGE ?
                     cover_media
                 :   null,
-            user: discord_user,
+            user: user.discord_user,
             created_at: created_at.getTime(),
             updated_at: updated_at.getTime(),
             player:
-                player ?
+                user.mc_player ?
                     {
-                        ...player,
-                        uuid: player.uuid,
-                        nickname: player.nickname,
-                        digs: player.digs,
-                        rank:
-                            player.user?.linked_roles[0]?.role.name ??
-                            'Miembro',
-                        roles: player.linked_roles.map(l => l.role.name),
+                        ...user.mc_player,
+                        rank: user.linked_roles[0]?.role.name ?? 'Miembro',
+                        roles: user.mc_player.linked_roles.map(
+                            l => l.role.name,
+                        ),
                     }
                 :   null,
             post_blocks: post_blocks.map(p => ({

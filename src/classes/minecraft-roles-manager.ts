@@ -11,7 +11,11 @@ export class MinecraftRolesManager {
             include: {
                 linked_roles: {
                     include: {
-                        player: true,
+                        player: {
+                            include: {
+                                user: true,
+                            },
+                        },
                     },
                 },
             },
@@ -27,7 +31,9 @@ export class MinecraftRolesManager {
                     players: new Collection(
                         r.linked_roles
                             .filter(
-                                l => l.player.status === PLAYER_STATUS.ACTIVE,
+                                l =>
+                                    l.player.status === PLAYER_STATUS.ACTIVE &&
+                                    l.player.user,
                             )
                             .map(l => {
                                 return [
@@ -37,7 +43,8 @@ export class MinecraftRolesManager {
                                         () => {
                                             return new Player({
                                                 discord_user_id:
-                                                    l.player.discord_user_id,
+                                                    l.player.user!
+                                                        .discord_user_id,
                                                 nickname: l.player.nickname,
                                                 uuid: l.mc_user_uuid,
                                                 role: r.id,
