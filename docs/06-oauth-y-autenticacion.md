@@ -268,6 +268,49 @@ El `access_token` es un JWT firmado que incluye `sub`, `iss`, `aud`, `exp`, `ses
 
 Cuando se combinan scopes, `/auth/me` combina las secciones correspondientes en el mismo objeto JSON.
 
+### `GET /oauth/minecraft`
+
+Inicia el OAuth de Microsoft para vincular la cuenta de Minecraft con el
+usuario Triskcraft autenticado.
+
+**Requisitos:**
+
+- Sesión OAuth mediante cookie o `Authorization: Bearer <access_token>`
+- Scope `minecraft`
+- La sesión OAuth debe estar activa cuando se usa un access token
+
+La ruta genera `state` y PKCE, guarda el contexto cifrado en una cookie
+HTTP-only y redirige al inicio de sesión de Microsoft. Microsoft debe tener
+registrada la URI `${API_URL}/oauth/minecraft/callback`.
+
+### `GET /oauth/minecraft/callback`
+
+Recibe el código de Microsoft y ejecuta el flujo:
+
+1. Microsoft OAuth
+2. Xbox Live
+3. Xbox Secure Token Service
+4. Minecraft Services
+5. Consulta de `/minecraft/profile`
+6. Creación o actualización de `Player`
+7. Vinculación de `User.mc_player_uuid`
+
+La ruta no acepta nicknames ni UUID enviados por el cliente. El perfil se
+obtiene directamente desde Minecraft Services y se rechazan asociaciones que
+pertenezcan a otro usuario de Discord.
+
+**Respuesta:**
+
+```json
+{
+    "linked": true,
+    "mc_player": {
+        "nickname": "Steve",
+        "uuid": "8667ba71b85a4004af54457a9734eed7"
+    }
+}
+```
+
 ### `GET /auth/discord`
 
 **Propósito:** Callback de autenticación con Discord OAuth integrada.

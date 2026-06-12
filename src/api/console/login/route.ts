@@ -177,7 +177,7 @@ function createLoginUrl(res: Response) {
         code_challenge: codeChallenge,
         code_challenge_method: 'S256',
         redirect_uri: CONSOLE_LOGIN_CALLBACK,
-        scope: 'openid identify',
+        scope: 'openid identify minecraft',
         state,
     })}`
 }

@@ -29,6 +29,12 @@ export class ForbiddenError extends ApiError {
     }
 }
 
+export class ConflictError extends ApiError {
+    constructor(message = 'Conflict', cause: Record<string, unknown> = {}) {
+        super(message, 409, { cause })
+    }
+}
+
 export class NotFoundError extends ApiError {
     constructor(message = 'NotFound', cause: Record<string, unknown> = {}) {
         super(message, 404, { cause })

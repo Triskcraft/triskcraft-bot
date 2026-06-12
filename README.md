@@ -64,6 +64,8 @@ Crea un archivo `.env` en la raíz con al menos estas claves obligatorias:
 | `S3_SECRET_ACCESS_KEY`          | Secret key para el servicio S3.                                                        |
 | `DISCORD_CLIENT_SECRET`         | Secreto del cliente de Discord para OAuth.                                             |
 | `DISCORD_REDIRECT_URI`          | URI de redirección usada por OAuth de Discord.                                         |
+| `MICROSOFT_CLIENT_ID`           | ID de la aplicación Microsoft usada para vincular cuentas de Minecraft.                |
+| `MICROSOFT_CLIENT_SECRET`       | Secreto de la aplicación Microsoft.                                                    |
 | `API_URL`                       | URL pública de la API, usada por OAuth y callbacks.                                    |
 | `DATABASE_PATH`                 | Cadena de conexión PostgreSQL para Prisma (ej. `postgresql://user:pass@host:5432/db`). |
 
@@ -110,12 +112,21 @@ S3_ACCESS_KEY_ID=AKIA...
 S3_SECRET_ACCESS_KEY=...
 DISCORD_CLIENT_SECRET=tu_secreto
 DISCORD_REDIRECT_URI=https://tudominio.com/oauth/callback
+MICROSOFT_CLIENT_ID=tu_client_id
+MICROSOFT_CLIENT_SECRET=tu_client_secret
 API_URL=https://api.tudominio.com
 DATABASE_PATH=postgresql://user:pass@localhost:5432/bot_inactividad
 DEPLOY_COMMAND=true
 DEPLOY_INACTIVITY_PANEL=true
 REMINDER_INTERVAL_MINUTES=5
 API_PORT=3000
+```
+
+La aplicación registrada en Microsoft debe aceptar cuentas personales y tener
+registrada esta URI de redirección web:
+
+```text
+https://api.tudominio.com/oauth/minecraft/callback
 ```
 
 ## Puesta en marcha
