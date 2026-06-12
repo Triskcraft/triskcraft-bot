@@ -5,6 +5,7 @@ import {
 } from 'discord.js'
 import { StringMenuHandler } from '#/services/interactions.service.ts'
 import { mcRoleService } from '#/services/mcroles.service.ts'
+import { db } from '#/db/prisma.ts'
 
 export default class extends StringMenuHandler {
     override regex = /^role:add:(?<uuid>[^:]+)$/
@@ -34,10 +35,15 @@ export default class extends StringMenuHandler {
         await interaction.deferUpdate()
         const uuid = this.regex.exec(interaction.customId)?.groups?.uuid
         if (!uuid) return
-        // TODO: check
-        // for (const role of interaction.values) {
-        //     await mcRoleService.roles.cache.get(role)?.addPlayer(uuid)
-        // }
+
+        await db.linkedMinecraftRole.createMany({
+            data: interaction.values.map(roleId => ({
+                mc_user_uuid: uuid,
+                role_id: roleId,
+            })),
+            skipDuplicates: true,
+        })
+
         await mcRoleService.renderPannel()
     }
 }
