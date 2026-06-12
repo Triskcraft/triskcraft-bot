@@ -107,19 +107,16 @@ enum PLAYER_STATUS {
 /// Información de jugador de Minecraft enlazada con su usuario de Discord.
 model Player {
     /// El uuid del jugador en formato UUID
-    uuid            String        @id
-    nickname        String        @unique
-    digs            Int           @default(0)
-    description     String        @default("")
-    discord_user_id String        @unique
-    status          PLAYER_STATUS @default(ACTIVE)
+    uuid        String        @id
+    nickname    String        @unique
+    digs        Int           @default(0)
+    description String        @default("")
+    status      PLAYER_STATUS @default(ACTIVE)
     /// La ultima vez que entró
-    last_seen       DateTime?
+    last_seen   DateTime?
 
-    discord_user DiscordUser           @relation(fields: [discord_user_id], references: [id])
     linked_roles LinkedMinecraftRole[]
     medias       Media[]
-    posts        Post[]
     user         User?
 
     @@map("minecraft_users")
@@ -131,10 +128,8 @@ model DiscordUser {
     username String @unique
 
     inactivity_periods InactivityPeriod[]
-    player             Player?
     link_code          LinkCode?
     webhook_tokens     WebhookToken[]
-    posts              Post[]
     post_blocks        PostBlocks[]
     user               User?
 
@@ -145,11 +140,13 @@ model WebhookToken {
     id              String   @id @default(dbgenerated("snowflake()"))
     name            String   @unique
     discord_user_id String
+    user_id         String?
     secret          String
     permissions     String[]
     created_at      DateTime @default(now())
 
     discord_user DiscordUser @relation(fields: [discord_user_id], references: [id])
+    user         User?       @relation(fields: [user_id], references: [id])
 
     @@map("webhook_tokens")
 }
@@ -170,22 +167,18 @@ enum POST_STATUS {
 }
 
 model Post {
-    id              String      @id @default(dbgenerated("snowflake()"))
-    title           String      @unique
-    discord_user_id String
-    user_id         String?
-    player_uuid     String?     @map("minecraft_player_uuid")
-    thread_id       String
-    status          POST_STATUS @default(DRAFT)
-    cover_media_id  String?     @unique
-    created_at      DateTime    @default(now())
-    updated_at      DateTime    @updatedAt
+    id             String      @id @default(dbgenerated("snowflake()"))
+    title          String      @unique
+    user_id        String
+    thread_id      String
+    status         POST_STATUS @default(DRAFT)
+    cover_media_id String?     @unique
+    created_at     DateTime    @default(now())
+    updated_at     DateTime    @updatedAt
 
-    user         User?        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    discord_user DiscordUser  @relation(fields: [discord_user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    player       Player?      @relation(fields: [player_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
-    post_blocks  PostBlocks[]
-    cover_media  PostMedia?   @relation("PostCoverMedia", fields: [cover_media_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+    user        User?        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    post_blocks PostBlocks[]
+    cover_media PostMedia?   @relation("PostCoverMedia", fields: [cover_media_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
     @@map("posts")
 }
@@ -260,6 +253,7 @@ model User {
     sessions            Session[]
     linked_roles        LinkedRole[]
     posts               Post[]
+    webhook_tokens      WebhookToken[]
 
     @@map("users")
 }

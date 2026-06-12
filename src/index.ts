@@ -7,10 +7,6 @@ import { db } from '#/db/prisma.ts'
 import { inactivityService } from '#/services/inactivity.service.ts'
 import { interactionService } from '#/services/interactions.service.ts'
 import { deployWebhookPanel } from '#/services/webhook.service.ts'
-import {
-    initializeRankService,
-    unregisterRankService,
-} from '#/services/rank.service.ts'
 import { monitoredService } from '#/services/monitored.service.ts'
 import { Scheduler } from '#/services/scheduler.ts'
 import { mcRoleService } from '#/services/mcroles.service.ts'
@@ -25,7 +21,6 @@ import { usersService } from './services/users.service.ts'
 async function shutdown(signal: string) {
     logger.info({ signal }, 'Cerrando bot')
     scheduler.stop()
-    unregisterRankService()
     welcomeService.stop()
     await client.destroy()
     await db.$disconnect()
@@ -57,9 +52,8 @@ if (envs.DEPLOY_INACTIVITY_PANEL) {
 } else {
     logger.info('Saltando el despliegue del panel de inactividad')
 }
-await deployWebhookPanel()
-initializeRankService()
 // Activa los jobs programados que mantienen el sistema actualizado.
+await deployWebhookPanel()
 scheduler.start()
 await blogService.start()
 await welcomeService.start()
