@@ -8,7 +8,6 @@ import {
 } from 'discord.js'
 import { ButtonInteractionHandler } from '#/services/interactions.service.ts'
 import { roleService } from '#/services/roles.service.ts'
-import { envs } from '#/config.ts'
 
 export default class RoleDelete extends ButtonInteractionHandler<'id' | 'q'> {
     override regex = /^role:delete:(?<id>\d+):(?<q>q|y|n+)$/
@@ -73,6 +72,6 @@ export default class RoleDelete extends ButtonInteractionHandler<'id' | 'q'> {
             )
             .setStyle(q === 'n' ? ButtonStyle.Success : ButtonStyle.Danger)
             .setCustomId(`role:delete:${id}:${q}`)
-            .setDisabled(id === envs.DEFAULT_ROLE_ID)
+            .setDisabled(id === roleService.defaultRoleId)
     }
 }

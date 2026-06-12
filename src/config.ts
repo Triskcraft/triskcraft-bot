@@ -47,8 +47,6 @@ export function loadConfig() {
         'DEPLOY_INACTIVITY_PANEL',
         'API_PORT',
         'NODE_ENV',
-        'DEFAULT_ROLE_NAME',
-        'DEFAULT_ROLE_ID',
         'DEFAULT_RANK',
         'ROLE_SERVICE',
     ]
@@ -60,8 +58,6 @@ export function loadConfig() {
         DEPLOY_INACTIVITY_PANEL = false,
         PANEL_CHANNEL_ID = '',
         ENCRYPT_KEY = '',
-        DEFAULT_ROLE_NAME = 'Digger',
-        DEFAULT_ROLE_ID = '',
         DEFAULT_RANK = 'Miembro',
         BLOG_CHANNEL_ID = '',
         BLOG_ROLE_ID = '',
@@ -89,12 +85,6 @@ export function loadConfig() {
         logger.warn(text)
     }
 
-    if (!DEFAULT_ROLE_ID) {
-        logger.error('DEFAULT_ROLE_ID no establecido')
-        logger.error('Podria causar comportamientos inesperados en el programa')
-        logger.error('Ejecute `prisma db seed` para generar el id')
-    }
-
     const requiredMissing = required.filter(key => !process.env[key])
     if (requiredMissing.length > 0) {
         throw new Error(
@@ -118,8 +108,6 @@ export function loadConfig() {
         NODE_ENV,
         PANEL_CHANNEL_ID,
         ENCRYPT_KEY: Buffer.from(ENCRYPT_KEY, 'base64'),
-        DEFAULT_ROLE_NAME,
-        DEFAULT_ROLE_ID,
         DEFAULT_RANK,
         BLOG_CHANNEL_ID,
         BLOG_ROLE_ID,
@@ -184,6 +172,7 @@ export const WEBHOOK_PERMISSIONS = {
 export const STATE_KEYS = {
     SUPER_ROLE_ID: 'super_role_id',
     DEFAULT_ROLE_ID: 'default_role_id',
+    DEFAULT_MINECRAFT_ROLE_ID: 'default_minecraft_role_id',
     WEBHOOK_PANEL_MESSAGE_ID: 'wh_panel_message_id',
     ROLES_PANEL_MESSAGE_ID: 'roles_panel_message_id',
     ROLES_PANEL_SELECTED_USER: 'roles_panel_selected_user',

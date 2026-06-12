@@ -39,9 +39,10 @@ class RoleService {
 
     #selectedUser: string | null = null
 
-    #defaultRole = {
-        id: envs.DEFAULT_ROLE_ID,
-        name: envs.DEFAULT_ROLE_NAME,
+    #defaultRole: MinecraftRole | null = null
+
+    get defaultRoleId() {
+        return this.#defaultRole?.id
     }
 
     #roles = new MinecraftRolesManager()
@@ -56,11 +57,26 @@ class RoleService {
     async start() {
         logger.info('Inicializando Role Service')
         await this.#roles.fetch()
+        const defaultRoleState = await db.state.findUnique({
+            where: { key: STATE_KEYS.DEFAULT_MINECRAFT_ROLE_ID },
+            select: { value: true },
+        })
+        this.#defaultRole =
+            defaultRoleState ?
+                (this.#roles.cache.get(defaultRoleState.value) ?? null)
+            :   null
         await this.#chechDefaultRole()
         await this.renderPannel()
     }
 
     async #chechDefaultRole() {
+        if (!this.#defaultRole) {
+            logger.error(
+                '[ROLE SERVICE] No se encontró el rol de Minecraft por defecto. Ejecute `prisma db seed`.',
+            )
+            return
+        }
+
         const usersWithoutRoles = await db.player.findMany({
             where: {
                 linked_roles: {
