@@ -1,10 +1,10 @@
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 import { Router } from 'express'
-import { PrismaClientKnownRequestError } from '#/db/generated/internal/prismaNamespace.ts'
 import z from 'zod'
 import { logger } from '#/logger.ts'
 import { BadRequestError } from '#/api/errors.ts'
-import { PLAYER_STATUS } from '#/db/generated/enums.ts'
+import { PLAYER_STATUS } from '@triskcraft/db'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client'
 
 const router = Router()
 

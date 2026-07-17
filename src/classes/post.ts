@@ -1,9 +1,9 @@
 import { createHash } from 'node:crypto'
 import { inspect } from 'node:util'
-import { POST_BLOCK_MEDIA_TYPE, POST_STATUS } from '#/db/generated/enums.ts'
-import { db } from '#/db/prisma.ts'
+import { POST_BLOCK_MEDIA_TYPE, POST_STATUS } from '@triskcraft/db'
+import { db } from '#/db.ts'
 import { envs } from '#/config.ts'
-import { BUCKETS, s3 } from '#/db/s3.ts'
+import { BUCKETS, s3 } from '#/s3.ts'
 import { Upload } from '@aws-sdk/lib-storage'
 import type { Message } from 'discord.js'
 

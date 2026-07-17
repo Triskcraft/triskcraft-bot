@@ -1,7 +1,7 @@
 import { Permissions, PermissionsFlagsBits } from '#/classes/permissions.ts'
 import { STATE_KEYS } from '#/config.ts'
-import type { Role } from '#/db/generated/client.ts'
-import { db } from '#/db/prisma.ts'
+import type { Role } from '@triskcraft/db'
+import { db } from '#/db.ts'
 import { escapeAttribute, html } from '#/utils/html.ts'
 import {
     AnchorButton,

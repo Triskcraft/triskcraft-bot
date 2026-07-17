@@ -1,9 +1,9 @@
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 import { Collection } from 'discord.js'
 import { Player } from '#/classes/player.ts'
 import { MinecraftRole } from '#/classes/minecraft-role.ts'
 import { playersService } from '#/services/players.service.ts'
-import { PLAYER_STATUS } from '#/db/generated/enums.ts'
+import { PLAYER_STATUS } from '@triskcraft/db'
 
 export class MinecraftRolesManager {
     async fetch() {

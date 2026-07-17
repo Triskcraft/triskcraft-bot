@@ -1,5 +1,5 @@
-import { PLAYER_STATUS } from '#/db/generated/enums.ts'
-import { db } from '#/db/prisma.ts'
+import { PLAYER_STATUS } from '@triskcraft/db'
+import { db } from '#/db.ts'
 import type { RequestHandler } from 'express'
 import { type MinecraftPlayer } from '@triskcraft/api-types'
 

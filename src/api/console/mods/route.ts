@@ -1,6 +1,6 @@
 import { html, render } from '#/utils/html.ts'
 import { Router } from 'express'
-import { BUCKETS, ensureBucket, s3 } from '#/db/s3.ts'
+import { BUCKETS, ensureBucket, s3 } from '#/s3.ts'
 import { Upload } from '@aws-sdk/lib-storage'
 import Busboy from 'busboy'
 import type { CompleteMultipartUploadCommandOutput } from '@aws-sdk/client-s3'

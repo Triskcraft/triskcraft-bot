@@ -1,6 +1,6 @@
 import { client } from '#/client.ts'
 import { envs, STATE_KEYS } from '#/config.ts'
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 import { logger } from '#/logger.ts'
 import {
     ActionRowBuilder,
@@ -22,11 +22,11 @@ import {
 } from 'discord.js'
 import blogCreate from '#/interactions/buttons/blog/blog-create.ts'
 import { PostsManager } from '#/classes/posts-manager.ts'
-import { POST_STATUS } from '#/db/generated/enums.ts'
+import { POST_STATUS } from '@triskcraft/db'
 import type { Post } from '#/classes/post.ts'
 import blogState from '#/interactions/buttons/blog/blog-post.ts'
 import blogTitle from '#/interactions/buttons/blog/blog-title.ts'
-import { BUCKETS, ensureBucket } from '#/db/s3.ts'
+import { BUCKETS, ensureBucket } from '#/s3.ts'
 import blogCover from '#/interactions/buttons/blog/blog-cover.ts'
 
 const PANEL_NAME = '# 📰 **Panel de Publicaciones**'

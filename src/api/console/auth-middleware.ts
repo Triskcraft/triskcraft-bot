@@ -1,6 +1,6 @@
 import { type Request, type Response, type NextFunction } from 'express'
 import { Permissions } from '#/classes/permissions.ts'
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 import { type OAuthTokenResponse } from '@triskcraft/api-types'
 import { verifyToken } from '#/utils/encript.ts'
 

@@ -1,7 +1,7 @@
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 import { Collection } from 'discord.js'
 import { Player } from '#/classes/player.ts'
-import { PLAYER_STATUS } from '#/db/generated/enums.ts'
+import { PLAYER_STATUS } from '@triskcraft/db'
 
 type UUID = string
 

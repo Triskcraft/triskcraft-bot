@@ -1,6 +1,6 @@
 import { client } from '#/client.ts'
 import { envs } from '#/config.ts'
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 import { Router } from 'express'
 import z from 'zod'
 import {
@@ -8,7 +8,7 @@ import {
     InternalServerError,
     NotFoundError,
 } from '#/api/errors.ts'
-import { PLAYER_STATUS } from '#/db/generated/enums.ts'
+import { PLAYER_STATUS } from '@triskcraft/db'
 
 const router = Router()
 

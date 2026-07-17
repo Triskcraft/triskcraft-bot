@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { BUCKETS, s3 } from '#/db/s3.ts'
+import { BUCKETS, s3 } from '#/s3.ts'
 import { GetObjectCommand } from '@aws-sdk/client-s3'
 import { Readable } from 'node:stream'
 

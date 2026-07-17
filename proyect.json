@@ -1,0 +1,12 @@
+{
+    "general": {
+        "name": "Granja de Ender Pearls",
+        "alias": "Endermans"
+    },
+    "classification": {
+        "type": "Mob farm",
+        "mob_category": "Hostile",
+        "objetive": "Ender pearls",
+        "based": "Original"
+    }
+}

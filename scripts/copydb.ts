@@ -1,5 +1,5 @@
 import { PrismaPg } from '@prisma/adapter-pg'
-import { PrismaClient } from '#/db/generated/client.ts'
+import { PrismaClient } from '@triskcraft/db'
 try {
     process.loadEnvFile()
 } catch {

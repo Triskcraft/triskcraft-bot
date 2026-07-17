@@ -15,10 +15,10 @@ import { logger } from '#/logger.ts'
 import { inactivityService } from '#/services/inactivity.service.ts'
 import { formatForUser } from '#/utils/time.ts'
 import { envs } from '#/config.ts'
-import { PLAYER_STATUS, type RoleStatistic } from '#/db/generated/browser.ts'
+import { PLAYER_STATUS, type RoleStatistic } from '@triskcraft/db'
 import type { CommandInteractionHandler } from '#/services/interactions.service.ts'
 import { monitoredService } from '#/services/monitored.service.ts'
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 
 /**
  * Genera un código de vinculación de sesión y lo persiste en la base de datos.

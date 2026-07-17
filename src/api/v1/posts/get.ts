@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express'
-import { db } from '#/db/prisma.ts'
-import { POST_BLOCK_MEDIA_TYPE, POST_STATUS } from '#/db/generated/enums.ts'
+import { db } from '#/db.ts'
+import { POST_BLOCK_MEDIA_TYPE, POST_STATUS } from '@triskcraft/db'
 import type { BlogPost } from '@triskcraft/api-types'
 import { NotFoundError } from '#/api/errors.ts'
 /**
