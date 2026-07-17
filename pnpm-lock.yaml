@@ -18,7 +18,7 @@ importers:
         specifier: 3.1038.0
         version: 3.1038.0(@aws-sdk/client-s3@3.1039.0)
       '@eliyya/flagged-bitfield':
-        specifier: ^1.1.1
+        specifier: 1.1.1
         version: 1.1.1
       '@js-temporal/polyfill':
         specifier: 0.5.1
@@ -30,7 +30,7 @@ importers:
         specifier: 7.8.0
         version: 7.8.0(prisma@7.8.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@7.0.2))(typescript@7.0.2)
       '@triskcraft/api-types':
-        specifier: ^1.2.1
+        specifier: 1.2.1
         version: 1.2.1
       '@triskcraft/db':
         specifier: 0.1.0
