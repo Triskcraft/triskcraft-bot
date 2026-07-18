@@ -1,5 +1,5 @@
 import { PUBLIC_KEY, type WebhookPermission } from '#/config.ts'
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 import type { NextFunction, Request, Response } from 'express'
 import { jwtVerify } from 'jose'
 import { createHmac, timingSafeEqual } from 'node:crypto'

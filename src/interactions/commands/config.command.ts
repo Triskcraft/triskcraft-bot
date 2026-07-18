@@ -6,7 +6,7 @@ import {
     type ChatInputCommandInteraction,
 } from 'discord.js'
 import type { CommandInteractionHandler } from '#/services/interactions.service.ts'
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 import { STATE_KEYS } from '#/config.ts'
 import { mcRoleService } from '#/services/mcroles.service.ts'
 

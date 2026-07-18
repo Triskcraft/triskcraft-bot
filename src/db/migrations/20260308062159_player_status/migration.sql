@@ -1,5 +1,0 @@
--- CreateEnum
-CREATE TYPE "PLAYER_STATUS" AS ENUM ('ACTIVE', 'DELETED');
-
--- AlterTable
-ALTER TABLE "minecraft_users" ADD COLUMN     "status" "PLAYER_STATUS" NOT NULL DEFAULT 'ACTIVE';

@@ -1,5 +1,5 @@
 import { envs, PRIVATE_KEY, STATE_KEYS } from '#/config.ts'
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 import {
     OAUTH_SCOPES,
     getSession,

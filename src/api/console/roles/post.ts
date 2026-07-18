@@ -1,14 +1,13 @@
 import { type Request, type Response } from 'express'
 import { STATE_KEYS } from '#/config.ts'
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 import { render } from '#/utils/html.ts'
 import { Layout } from '#/web/components/layout.ts'
 import { ErrorCard } from '#/web/components/error-card.ts'
 import { logger } from '#/logger.ts'
 import { RolePanel, type FormAction } from './components.ts'
-import type { Role } from '#/db/generated/client.ts'
+import { PrismaClientKnownRequestError, type Role } from '@triskcraft/db'
 import { Permissions } from '#/classes/permissions.ts'
-import { PrismaClientKnownRequestError } from '#/db/generated/internal/prismaNamespace.ts'
 
 export async function isSystemRole(roleId: string) {
     const systemRoleState = await db.state.findUnique({

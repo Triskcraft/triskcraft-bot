@@ -5,6 +5,7 @@ saveExact: true
 
 minimumReleaseAgeExclude:
     - '@triskcraft/api-types'
+    - '@triskcraft/db'
 
 allowBuilds:
     '@prisma/engines': true

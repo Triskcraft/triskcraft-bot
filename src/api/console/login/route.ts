@@ -1,5 +1,5 @@
 import { envs } from '#/config.ts'
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 import { generateCodeChallenge, generateCodeVerifier } from '#/utils/encript.ts'
 import { html, render } from '#/utils/html.ts'
 import { ErrorCard } from '#/web/components/error-card.ts'

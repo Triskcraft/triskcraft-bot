@@ -1,7 +1,7 @@
 import { logger } from '#/logger.ts'
 import { client } from '#/client.ts'
 import { Events } from 'discord.js'
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 
 /**
  * Servicio para el manejo de jugadores en el gremio.

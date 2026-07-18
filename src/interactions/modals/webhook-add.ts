@@ -1,4 +1,4 @@
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 import {
     EmbedBuilder,
     LabelBuilder,
@@ -17,8 +17,10 @@ import { encrypt } from '#/utils/encript.ts'
 import { PRIVATE_KEY, WEBHOOK_PERMISSIONS } from '#/config.ts'
 import { ModalInteractionHandler } from '#/services/interactions.service.ts'
 import { deployWebhookPanel } from '#/services/webhook.service.ts'
-import type { WebhookToken } from '#/db/generated/client.ts'
-import { PrismaClientKnownRequestError } from '#/db/generated/internal/prismaNamespace.ts'
+import {
+    PrismaClientKnownRequestError,
+    type WebhookToken,
+} from '@triskcraft/db'
 import { logger } from '#/logger.ts'
 
 const alg = 'RS256'

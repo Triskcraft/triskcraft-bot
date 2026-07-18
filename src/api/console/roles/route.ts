@@ -1,7 +1,7 @@
 import { render } from '#/utils/html.ts'
 import { Router, urlencoded } from 'express'
 import { Layout } from '#/web/components/layout.ts'
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 import { PermissionsFlagsBits } from '#/classes/permissions.ts'
 import { ErrorCard } from '#/web/components/error-card.ts'
 import { requirePermission } from '#/api/console/auth-middleware.ts'

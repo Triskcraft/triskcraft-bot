@@ -1,10 +1,9 @@
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 import { inspect } from 'node:util'
 import { logger } from '#/logger.ts'
 import { Player } from '#/classes/player.ts'
 import { Collection } from 'discord.js'
-import { PrismaClientKnownRequestError } from '#/db/generated/internal/prismaNamespace.ts'
-import { PLAYER_STATUS } from '#/db/generated/enums.ts'
+import { PLAYER_STATUS, PrismaClientKnownRequestError } from '@triskcraft/db'
 import { playersService } from '#/services/players.service.ts'
 
 type UUID = string

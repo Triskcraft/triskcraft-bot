@@ -4,7 +4,7 @@ import {
     type ApplicationCommandDataResolvable,
     type ChatInputCommandInteraction,
 } from 'discord.js'
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 import { logger } from '#/logger.ts'
 import type { CommandInteractionHandler } from '#/services/interactions.service.ts'
 import { randomInt } from 'node:crypto'

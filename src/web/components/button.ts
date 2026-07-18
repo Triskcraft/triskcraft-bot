@@ -34,9 +34,9 @@ function getButtonAttributes({
         .filter(Boolean)
         .join(' ')
 
-    return html`class="${escapeAttribute(classes)}"${id ?
-        html` id="${escapeAttribute(id)}"`
-    :   ''}`
+    return html`class="${escapeAttribute(classes)}"${
+        id ? html` id="${escapeAttribute(id)}"` : ''
+    }`
 }
 
 export function Button({

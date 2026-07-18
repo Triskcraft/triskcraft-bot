@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express'
-import { db } from '#/db/prisma.ts'
-import { PLAYER_STATUS } from '#/db/generated/enums.ts'
+import { db } from '#/db.ts'
+import { PLAYER_STATUS } from '@triskcraft/db'
 
 /**
  * Endpoint que entrega el listado de miembros combinando la whitelist de

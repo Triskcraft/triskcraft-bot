@@ -1,7 +1,7 @@
 import { Permissions, PermissionsFlagsBits } from '#/classes/permissions.ts'
 import { STATE_KEYS } from '#/config.ts'
-import type { Role } from '#/db/generated/client.ts'
-import { db } from '#/db/prisma.ts'
+import type { Role } from '@triskcraft/db'
+import { db } from '#/db.ts'
 import { escapeAttribute, html } from '#/utils/html.ts'
 import {
     AnchorButton,
@@ -43,22 +43,26 @@ async function GenRoleLIst({
                 html`<li class="role-item">
                     <a
                         href="/console/roles/${id}"
-                        class="role-link ${selectedRoleId == id ? 'active' : (
-                            ''
-                        )}"
+                        class="role-link ${
+                            selectedRoleId == id ? 'active' : ''
+                        }"
                     >
                         <span>${escapeAttribute(name)}</span>
-                        ${id === defaultRoleId ?
-                            html`<span class="role-badge">Default</span>`
-                        :   ''}
+                        ${
+                            id === defaultRoleId ?
+                                html`<span class="role-badge">Default</span>`
+                            :   ''
+                        }
                     </a>
-                    ${id === systemRoleId || id === defaultRoleId ?
-                        ''
-                    :   AnchorButton({
-                            href: `/console/roles/${id}/delete`,
-                            children: '-',
-                            variant: 'danger',
-                        })}
+                    ${
+                        id === systemRoleId || id === defaultRoleId ?
+                            ''
+                        :   AnchorButton({
+                                href: `/console/roles/${id}/delete`,
+                                children: '-',
+                                variant: 'danger',
+                            })
+                    }
                 </li>`,
         )
         .join('\n')
@@ -266,27 +270,29 @@ export async function RolePanel({ role }: RolePanelProps) {
                     <p class="roles-description">
                         Configura los permisos y miembros asociados a cada rol.
                     </p>
-                    ${isDefaultRole ?
-                        html`<p class="default-role-status">
-                            <span class="role-badge">Default</span>
-                            Este rol se asigna automáticamente a los nuevos
-                            usuarios.
-                        </p>`
-                    : isSystemRole ?
-                        html`<p class="default-role-status">
-                            El rol Super no puede establecerse como Default.
-                        </p>`
-                    :   html`<form
-                            action="?ac=${FORM_ACTIONS.SETDEFAULT}"
-                            method="POST"
-                            class="default-role-form"
-                        >
-                            ${Button({
-                                type: 'submit',
-                                variant: 'secondary',
-                                children: 'Establecer como Default',
-                            })}
-                        </form>`}
+                    ${
+                        isDefaultRole ?
+                            html`<p class="default-role-status">
+                                <span class="role-badge">Default</span>
+                                Este rol se asigna automáticamente a los nuevos
+                                usuarios.
+                            </p>`
+                        : isSystemRole ?
+                            html`<p class="default-role-status">
+                                El rol Super no puede establecerse como Default.
+                            </p>`
+                        :   html`<form
+                                action="?ac=${FORM_ACTIONS.SETDEFAULT}"
+                                method="POST"
+                                class="default-role-form"
+                            >
+                                ${Button({
+                                    type: 'submit',
+                                    variant: 'secondary',
+                                    children: 'Establecer como Default',
+                                })}
+                            </form>`
+                    }
                 </div>
                 <a href="/console" class="back-link">Volver al menú</a>
             </header>

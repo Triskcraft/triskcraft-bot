@@ -5,7 +5,7 @@ import {
 } from 'discord.js'
 import { StringMenuHandler } from '#/services/interactions.service.ts'
 import { mcRoleService } from '#/services/mcroles.service.ts'
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 
 export default class extends StringMenuHandler {
     override regex = /^role:add:(?<uuid>[^:]+)$/

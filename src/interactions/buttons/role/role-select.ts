@@ -1,7 +1,7 @@
 import { ButtonBuilder, ButtonStyle, type ButtonInteraction } from 'discord.js'
 import { ButtonInteractionHandler } from '#/services/interactions.service.ts'
 import { mcRoleService } from '#/services/mcroles.service.ts'
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 
 export default class extends ButtonInteractionHandler<'id'> {
     override regex = /^role:select:(?<id>\d+)$/

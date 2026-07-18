@@ -30,8 +30,6 @@ jobs:
                       sudo -u bot env CI=true pnpm install --frozen-lockfile
 
                       echo "Generando build..."
-                      sudo -u bot pnpm exec prisma migrate deploy
-                      sudo -u bot pnpm exec prisma generate
                       sudo -u bot pnpm run build
 
                       echo "Reiniciando servicio..."

@@ -1,5 +1,5 @@
 import { BadRequestError } from '#/api/errors.ts'
-import { db } from '#/db/prisma.ts'
+import { db } from '#/db.ts'
 import { createJWT } from '#/utils/api.ts'
 import { generateCodeVerifier, verifyPKCE, weakHash } from '#/utils/encript.ts'
 import { Router } from 'express'
