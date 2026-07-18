@@ -1,12 +1,8 @@
 import {
-    ContainerBuilder,
-    Embed,
     EmbedBuilder,
     MessageFlags,
     PermissionFlagsBits,
-    SeparatorBuilder,
     SlashCommandBuilder,
-    TextDisplayBuilder,
     type ApplicationCommandDataResolvable,
     type ChatInputCommandInteraction,
 } from 'discord.js'
@@ -89,6 +85,7 @@ export default class implements CommandInteractionHandler {
             })
         }
         const req = await fetch(file.url)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const json = (await req.json()) as any
         console.log(json)
 
