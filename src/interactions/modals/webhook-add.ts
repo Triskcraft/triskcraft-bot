@@ -17,9 +17,8 @@ import { encrypt } from '#/utils/encript.ts'
 import { PRIVATE_KEY, WEBHOOK_PERMISSIONS } from '#/config.ts'
 import { ModalInteractionHandler } from '#/services/interactions.service.ts'
 import { deployWebhookPanel } from '#/services/webhook.service.ts'
-import type { WebhookToken } from '@triskcraft/db'
+import { PrismaClientKnownRequestError, type WebhookToken } from '@triskcraft/db'
 import { logger } from '#/logger.ts'
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client'
 
 const alg = 'RS256'
 

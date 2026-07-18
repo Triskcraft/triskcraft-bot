@@ -6,7 +6,7 @@ import {
     InternalServerError,
     NotFoundError,
 } from '#/api/errors.ts'
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client'
+import { PrismaClientKnownRequestError } from '@triskcraft/db'
 
 const router = Router()
 

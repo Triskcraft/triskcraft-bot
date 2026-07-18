@@ -3,8 +3,7 @@ import { Router } from 'express'
 import z from 'zod'
 import { logger } from '#/logger.ts'
 import { BadRequestError } from '#/api/errors.ts'
-import { PLAYER_STATUS } from '@triskcraft/db'
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client'
+import { PLAYER_STATUS, PrismaClientKnownRequestError } from '@triskcraft/db'
 
 const router = Router()
 

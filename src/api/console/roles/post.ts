@@ -6,9 +6,8 @@ import { Layout } from '#/web/components/layout.ts'
 import { ErrorCard } from '#/web/components/error-card.ts'
 import { logger } from '#/logger.ts'
 import { RolePanel, type FormAction } from './components.ts'
-import type { Role } from '@triskcraft/db'
+import { PrismaClientKnownRequestError, type Role } from '@triskcraft/db'
 import { Permissions } from '#/classes/permissions.ts'
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client'
 
 export async function isSystemRole(roleId: string) {
     const systemRoleState = await db.state.findUnique({
