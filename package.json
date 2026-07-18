@@ -8,9 +8,8 @@
     "scripts": {
         "start": "node src/index.ts",
         "lint": "eslint .",
-        "build": "prisma generate && tsc",
+        "build": "tsc",
         "dev": "node --watch src/index.ts",
-        "db:copy-prod": "prisma migrate reset && prisma generate && node scripts/copydb.ts",
         "format:check": "prettier --check .",
         "format:fix": "prettier --write ."
     },

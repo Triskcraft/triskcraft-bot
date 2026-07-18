@@ -13,9 +13,6 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": "always"
     },
-    "[prisma]": {
-        "editor.defaultFormatter": "Prisma.prisma"
-    },
     "[jsonc]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
@@ -29,6 +26,5 @@
     "[javascript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-    "webPreview.schemaPath": "c:\\Users\\tecno\\code\\bot-inactividad\\src\\prisma\\main.schema.prisma",
     "lit-plugin.rules.no-incompatible-type-binding": "off"
 }
