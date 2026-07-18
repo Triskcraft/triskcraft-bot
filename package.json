@@ -21,6 +21,7 @@
         "@aws-sdk/lib-storage": "3.1090.0",
         "@eliyya/flagged-bitfield": "1.1.1",
         "@js-temporal/polyfill": "0.5.1",
+        "@prisma/client": "7.8.0",
         "@triskcraft/api-types": "1.2.1",
         "@triskcraft/db": "0.1.0",
         "argon2": "0.45.0",
