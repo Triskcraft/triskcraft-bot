@@ -287,10 +287,10 @@ export async function RolePanel({ role }: RolePanelProps) {
                                 class="default-role-form"
                             >
                                 ${Button({
-                                type: 'submit',
-                                variant: 'secondary',
-                                children: 'Establecer como Default',
-                            })}
+                                    type: 'submit',
+                                    variant: 'secondary',
+                                    children: 'Establecer como Default',
+                                })}
                             </form>`
                     }
                 </div>
