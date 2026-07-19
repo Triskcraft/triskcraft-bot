@@ -24,11 +24,11 @@ importers:
         specifier: 0.5.1
         version: 0.5.1
       '@triskcraft/api-types':
-        specifier: 1.2.1
-        version: 1.2.1
+        specifier: 1.3.0
+        version: 1.3.0
       '@triskcraft/db':
-        specifier: 0.1.1
-        version: 0.1.1(typescript@6.0.2)
+        specifier: 0.1.3
+        version: 0.1.3(typescript@6.0.2)
       argon2:
         specifier: 0.44.0
         version: 0.44.0
@@ -379,12 +379,12 @@ packages:
     resolution: {integrity: sha512-0JFs3V2y2M9tKW5na/qxe69Zv+uxLMO7QBbhxF/FHu/Gp2NFZAAL9tWl9PU02xxo07pb3G9FTyjNc6D5uZrJIg==}
     engines: {node: '>=18.0.0'}
 
-  '@triskcraft/api-types@1.2.1':
-    resolution: {integrity: sha512-WP0gPDxW60apUrdQ9y7FkZTzJgwI5nGPPSoR+eEa4Ec7EcfbgEOyZN+MUUd4u5kHWDKa4u/4th1YIMs5l48CZg==}
+  '@triskcraft/api-types@1.3.0':
+    resolution: {integrity: sha512-i7r68FsD8UvOS7HOrXfpvj1Yqjnau58TFKOIj0p3qdKYtRKIftqLXKn31CuSWz6IBe+wGcBGr/uAw8Zgs02nAw==}
     engines: {node: '>=24.14'}
 
-  '@triskcraft/db@0.1.1':
-    resolution: {integrity: sha512-o23emimqOcvohmvwYHB3F2WQLNS3UcAfwg9bqBy28JG+5tvql01BGQu+W33DBhuB/f56R/hd8KnyeeXVMTMWJA==}
+  '@triskcraft/db@0.1.3':
+    resolution: {integrity: sha512-imnAQNYTPS4Ep0twyrqe5HEyodJDz+MxVxhOgE8rRDvqXDFWfs3ukeH/5R//iFFHIAwEv1wg+tKf4Mq45QFtLQ==}
     engines: {node: '>=24.14'}
 
   '@types/body-parser@1.19.6':
@@ -2101,14 +2101,16 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@triskcraft/api-types@1.2.1':
+  '@triskcraft/api-types@1.3.0':
     dependencies:
+      '@eliyya/flagged-bitfield': 1.1.1
       zod: 4.4.1
 
-  '@triskcraft/db@0.1.1(typescript@6.0.2)':
+  '@triskcraft/db@0.1.3(typescript@6.0.2)':
     dependencies:
       '@prisma/adapter-pg': 7.8.0
       '@prisma/client': 7.8.0(typescript@6.0.2)
+      '@triskcraft/api-types': 1.3.0
     transitivePeerDependencies:
       - pg-native
       - prisma

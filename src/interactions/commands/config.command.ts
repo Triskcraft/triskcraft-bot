@@ -7,7 +7,7 @@ import {
 } from 'discord.js'
 import type { CommandInteractionHandler } from '#/services/interactions.service.ts'
 import { db } from '#/db.ts'
-import { STATE_KEYS } from '#/config.ts'
+import { STATE_KEYS } from '@triskcraft/db'
 import { mcRoleService } from '#/services/mcroles.service.ts'
 
 const GROUPS = {

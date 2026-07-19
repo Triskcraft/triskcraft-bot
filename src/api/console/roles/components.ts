@@ -1,5 +1,5 @@
 import { Permissions, PermissionsFlagsBits } from '#/classes/permissions.ts'
-import { STATE_KEYS } from '#/config.ts'
+import { STATE_KEYS } from '@triskcraft/db'
 import type { Role } from '@triskcraft/db'
 import { db } from '#/db.ts'
 import { escapeAttribute, html } from '#/utils/html.ts'

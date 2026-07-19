@@ -1,5 +1,5 @@
 import { client } from '#/client.ts'
-import { envs, STATE_KEYS } from '#/config.ts'
+import { envs } from '#/config.ts'
 import {
     ActionRowBuilder,
     ButtonBuilder,
@@ -16,6 +16,7 @@ import {
 } from 'discord.js'
 import { logger } from '#/logger.ts'
 import { db } from '#/db.ts'
+import { STATE_KEYS } from '@triskcraft/db'
 
 const PANNEL_NAME = '# 🔐 **Panel de Webhooks**'
 
