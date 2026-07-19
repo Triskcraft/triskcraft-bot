@@ -1,5 +1,5 @@
 import { type Request, type Response } from 'express'
-import { STATE_KEYS } from '#/config.ts'
+import { STATE_KEYS } from '@triskcraft/db'
 import { db } from '#/db.ts'
 import { render } from '#/utils/html.ts'
 import { Layout } from '#/web/components/layout.ts'

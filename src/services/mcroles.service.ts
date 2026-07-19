@@ -1,5 +1,5 @@
 import { client } from '#/client.ts'
-import { envs, STATE_KEYS } from '#/config.ts'
+import { envs } from '#/config.ts'
 import { db } from '#/db.ts'
 import { logger } from '#/logger.ts'
 import {
@@ -24,7 +24,7 @@ import { randomUUID } from 'node:crypto'
 import rolePage from '#/interactions/buttons/role/role-page.ts'
 import { Player } from '#/classes/player.ts'
 import roleBack from '#/interactions/buttons/role/role-back.ts'
-import { PLAYER_STATUS } from '@triskcraft/db'
+import { PLAYER_STATUS, STATE_KEYS } from '@triskcraft/db'
 import { playersService } from './players.service.ts'
 import type { MinecraftRole } from '@triskcraft/db'
 

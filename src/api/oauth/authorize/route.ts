@@ -1,4 +1,5 @@
-import { envs, PRIVATE_KEY, STATE_KEYS } from '#/config.ts'
+import { envs, PRIVATE_KEY } from '#/config.ts'
+import { STATE_KEYS } from '@triskcraft/db'
 import { db } from '#/db.ts'
 import {
     OAUTH_SCOPES,

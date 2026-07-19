@@ -1,5 +1,6 @@
 import { client } from '#/client.ts'
-import { envs, STATE_KEYS } from '#/config.ts'
+import { envs } from '#/config.ts'
+import { STATE_KEYS, POST_STATUS } from '@triskcraft/db'
 import { db } from '#/db.ts'
 import { logger } from '#/logger.ts'
 import {
@@ -22,7 +23,6 @@ import {
 } from 'discord.js'
 import blogCreate from '#/interactions/buttons/blog/blog-create.ts'
 import { PostsManager } from '#/classes/posts-manager.ts'
-import { POST_STATUS } from '@triskcraft/db'
 import type { Post } from '#/classes/post.ts'
 import blogState from '#/interactions/buttons/blog/blog-post.ts'
 import blogTitle from '#/interactions/buttons/blog/blog-title.ts'
